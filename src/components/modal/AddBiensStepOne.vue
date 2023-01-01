@@ -55,6 +55,7 @@ import * as Components from '@/components';
 
 // Helpers
 import { getUploadConfig, buildSubmissionData, handleUploadResponseUnified } from '@/utils/formUtils';
+import { getFileTypeByStep } from '@/utils/filepondUtils';
 export default {
     name: 'AddBiensStepOne',
 
@@ -85,8 +86,8 @@ export default {
 
             stepLabels: [
                 'Infos de base',
+                'Autres Informations',
                 'Détails du bien',
-                'Image & Confirmation',
                 'Géolocalisation & Confirmation',
             ],
 
@@ -94,6 +95,7 @@ export default {
                 nom: '',
                 adresse: '',
                 typeBiensImmobiliereId: null,
+
                 prix: null,
                 superficie: null,
                 latitude: null,
@@ -110,7 +112,17 @@ export default {
                 typeUnite: 'MONTH',
                 uniteSurface: null,
                 detailsBiensImmobiliers: [],
-                equipements: [],
+                equipements: {
+                    services: [],
+                    securites: [],
+                    activites: [],
+                    modesPaiement: [],
+                    languesPersonnel: [],
+                    typeCuisine: [],
+                    typesClimatisation: [],
+                    typeGarage: [],
+                    typeVue: []
+                },
                 userInfo: { id: this.userId },
             },
 
@@ -164,8 +176,12 @@ export default {
         isFormValid() {
             return this.form.nom && this.form.adresse && this.form.typeBiensImmobiliereId;
         },
+        fileType() {
+            return getFileTypeByStep(this.activeStep);
+        },
         uploadConfig() {
-            return getUploadConfig(this.activeStep, this.form, this.fileType, true, 0);
+            const fileType = this.fileType;
+            return getUploadConfig(this.activeStep, this.form, fileType, true, 0);
         },
     },
 
@@ -264,7 +280,8 @@ export default {
             if (this.submitting) return;
             this.submitting = true;
             try {
-                const formData = this.buildSubmissionData();
+                // ✅ utilise le helper
+                const formData = buildSubmissionData(this.form, this.userId);
                 const response = await this.$store.dispatch('biensImmobiliers/create', formData);
                 ElMessage.success('Bien enregistré avec succès');
                 this.resetForm();
@@ -277,19 +294,24 @@ export default {
                 this.submitting = false;
             }
         },
-        buildSubmissionData() {
-            return buildSubmissionData(this.form, this.userId, {
-                services: this.services,
-                securites: this.securites,
-                activites: this.activites,
-                modesPaiement: this.modesPaiement,
-                languesPersonnel: this.languesPersonnel,
-                typeCuisine: this.typeCuisine,
-                typesClimatisation: this.typesClimatisation,
-                typeGarage: this.typeGarage,
-                typeVue: this.typeVue,
-            });
-        },
+        // buildSubmissionData(form, userId) {
+        //     return {
+        //         ...form,
+        //         userInfo: { id: userId },
+        //         equipements: {
+        //             services: form.equipements.services,
+        //             securites: form.equipements.securites,
+        //             activites: form.equipements.activites,
+        //             modesPaiement: form.equipements.modesPaiement,
+        //             languesPersonnel: form.equipements.languesPersonnel,
+        //             typeCuisine: form.equipements.typeCuisine,
+        //             typesClimatisation: form.equipements.typesClimatisation,
+        //             typeGarage: form.equipements.typeGarage,
+        //             typeVue: form.equipements.typeVue,
+        //         }
+        //     };
+        // }
+
     },
 };
 </script>

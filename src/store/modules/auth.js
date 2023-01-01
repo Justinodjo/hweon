@@ -3,6 +3,9 @@ import {
   getToken,
   setToken,
   removeToken,
+  setRefreshToken,
+  getRefreshToken,
+  removeRefreshToken,
   getRoles,
   setRoles,
   removeRoles,
@@ -32,10 +35,13 @@ const state = {
   roles: JSON.parse(getRoles() || "[]"),
   permissions: JSON.parse(getPermissions() || "[]"),
   userInfo: getUserInfo("userInfo") || null,
-  userName: getUserName("userName") || "",
+  userName: (() => {
+    const name = getUserName("userName") || getUserName("name");
+    return name && name !== "undefined" ? name : "";
+  })(),
   secondName: getSecondName("secondName") || "",
   email: getEmail("email") || "",
-  fichier: getFichier("fichier") || "",
+  fichier: getFichier("fichier") || [],
 };
 
 const mutations = {
@@ -50,14 +56,14 @@ const mutations = {
       state.fichier = authData.fichier || "";
       state.userInfo = authData.id;
 
-      state.userName = authData.userName;
+      state.userName = authData.userName || authData.name || "";
       state.email = authData.email;
       state.secondName = authData.secondName;
       setToken("token", authData.token, "7d");
       setRoles(JSON.stringify(state.roles));
       setPermissions(JSON.stringify(state.permissions));
-      setFichier("fichier", authData.fichier, "7d");
-      setUserInfo("userInfo", authData.id, "7d");
+      setUserInfo(authData.id);
+      setFichier(authData.fichier);
       setEmail("email", authData.email, "7d");
       setUserName("userName", authData.userName, "7d");
       setSecondName("secondName", authData.secondName, "7d");
@@ -67,11 +73,15 @@ const mutations = {
     }
   },
   SET_USER_DETAILS(state, authData) {
-    state.userName = authData.userName;
+    state.userName = authData.userName || authData.name || "";
     state.secondName = authData.secondName;
     state.email = authData.email;
     state.userInfo = authData.id;
     state.fichier = authData.fichier || "";
+  },
+  SET_USER_FICHIER(state, fichierId) {
+    state.fichier = fichierId;
+    setFichier(fichierId); // synchronisation cookie/localStorage
   },
   LOGOUT(state) {
     // console.log("Mutation LOGOUT called");
@@ -88,8 +98,8 @@ const mutations = {
     removeUserName("userName");
     removeSecondName("secondName");
     removeFichier("fichier");
-    removeToken("roles");
     removePermissions("permissions");
+    removeRefreshToken();
   },
 };
 
@@ -127,7 +137,9 @@ const actions = {
         );
         throw new Error("Les rôles ne sont pas un tableau valide !");
       }
-
+      if (authData.refreshToken) {
+        setRefreshToken(authData.refreshToken, "7d"); // stocker refresh token
+      }
       // 🎯 Séparation rôles vs permissions
       const authorities = authData.roles || [];
 
@@ -152,21 +164,60 @@ const actions = {
       // ✅ Si tout est bon, on enregistre les données
       commit("SET_AUTH", authData);
       console.log("Token reçu :", authData.token);
+      return authData;
     } catch (error) {
       console.error("Login API error:", error);
       throw error; // Permet au composant d'attraper l'erreur
     }
   },
+  async oauthLogin({ commit }, authData) {
+    if (!authData || !authData.token) {
+      throw new Error("Réponse OAuth invalide !");
+    }
 
+    const authorities = authData.roles || authData.permissions || [];
+
+    // On considère comme rôle tout ce qui finit par _ROLES
+    const extractedRoles = authorities.filter((r) => r.endsWith("_ROLES"));
+    const extractedPermissions = authorities.filter(
+      (r) => !r.endsWith("_ROLES")
+    );
+
+    authData.roles = extractedRoles; // ex: ["LOCATAIRE_ROLES"]
+    authData.permissions = extractedPermissions;
+
+    commit("SET_AUTH", authData);
+    return authData;
+  },
+  async getCurrentUser({ commit, state }) {
+    try {
+      const token = state.token;
+      if (!token) throw new Error("Token manquant");
+
+      const response = await request.get("auth/me", { withCredentials: true });
+
+      const authData = response.data;
+      console.log("userData:", authData);
+      // Mettre à jour le store
+      commit("SET_USER_DETAILS", authData);
+
+      // Mettre à jour cookies/localStorage si nécessaire
+      setUserInfo(authData.id);
+      setFichier(authData.fichier);
+      setUserName(authData.userName, "7d");
+      setSecondName(authData.secondName, "7d");
+      setEmail(authData.email, "7d");
+      return authData;
+    } catch (error) {
+      console.error("Erreur récupération user info:", error);
+      // Si l'erreur est 401, déconnecter l'utilisateur
+      if (error.response?.status === 401) {
+        commit("LOGOUT");
+      }
+    }
+  },
   logout({ commit }) {
-    // Vous pouvez ajouter des actions supplémentaires ici, comme supprimer le token, etc.
     commit("LOGOUT");
-    removeEmail("email");
-    removeUserName("userName");
-    removeSecondName("secondName");
-    removeFichier("fichier");
-    removeRoles("roles");
-    removePermissions("permissions");
   },
   async deleteAccount({ commit }) {
     try {
@@ -178,8 +229,9 @@ const actions = {
       removeToken("token");
       removeUserName("userName");
       removeSecondName("secondName");
-      removeEmail("email");
       removeFichier("fichier");
+
+      removeEmail("email");
       removeRoles("roles");
       removePermissions("permissions");
 
@@ -210,6 +262,25 @@ const actions = {
       );
     }
   },
+
+  // Nouvelle action pour vérifier la validité du token au chargement
+  async checkAuth({ commit, state, dispatch }) {
+    const token = state.token;
+
+    if (!token) {
+      return false;
+    }
+
+    try {
+      // Vérifier si le token est toujours valide
+      await dispatch("getCurrentUser");
+      return true;
+    } catch (error) {
+      // Token invalide, déconnecter
+      commit("LOGOUT");
+      return false;
+    }
+  },
 };
 
 const getters = {
@@ -219,12 +290,25 @@ const getters = {
   hasPermission: (state) => (permission) => {
     return (state.permissions || []).includes(permission);
   },
-  userFichier: (state) => state.fichier,
+  userFichier: (state) => state.fichier || "",
+  hasRole: (state) => (role) => {
+    return (state.roles || []).includes(role);
+  },
+  hasAnyRole: (state) => (roles) => {
+    return roles.some((role) => (state.roles || []).includes(role));
+  },
   usernameOrEmail: (state) => state.usernameOrEmail,
   userInfo: (state) => state.userInfo,
   userName: (state) => state.userName,
   secondName: (state) => state.secondName,
   email: (state) => state.email,
+  currentUser: (state) => ({
+    name: state.userName,
+    secondName: state.secondName,
+    email: state.email,
+    fichier: state.fichier,
+    id: state.userInfo,
+  }),
 };
 
 export default {

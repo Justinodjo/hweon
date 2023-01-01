@@ -4,9 +4,16 @@
             <!-- Avatar and info START -->
             <div class="d-sm-flex align-items-center">
                 <div class="avatar avatar-xl mb-2 mb-sm-0">
-                    <img class="avatar-img rounded-circle" src="../../assets/images/avatar/01.jpg" alt="">
+                    <img class="avatar-img rounded-circle" :src="avatarUrl" alt="">
+                    <div class="position-absolute top-0 end-2 p-1">
+                        <a class="text-primary-hover" data-bs-toggle="tooltip" data-bs-title="Edit profile"
+                            style="transform: translate(50%, 50%);" @click="openEditProfileModal">
+                            <i class="bi bi-pencil-square"></i>
+                        </a>
+                    </div>
                 </div>
-                <h4 class="mb-2 mb-sm-0 ms-sm-3"><span class="fw-light">Hello</span> Gestionnaire</h4>
+                <h4 class="mb-2 mb-sm-0 ms-sm-3"><span class="fw-light">Hello</span> {{ userName + ' ' + secondName }}
+                </h4>
                 <a href="#" class="btn btn-sm btn-primary-soft mb-0 ms-auto flex-shrink-0" v-if="hideAddAnnonce"
                     @click="openUserModal"><i
                         :class="hideAddAnnonce ? 'bi bi-plus-lg fa-fw me-2' : 'bi bi-dash-lg fa-fw me-2'"></i>Ajouter
@@ -33,8 +40,13 @@
 </template>
 
 <script>
+import { ref, shallowRef, nextTick } from 'vue';
 import NavbarDashboard from './NavbarDashboard.vue'
 import AddBiensStepOne from '@/components/modal/AddBiensStepOne.vue'
+import { API_URLS } from "@/config/api";
+import { mapActions, mapGetters } from "vuex";
+import ProfilsDetailsLocataire from "@/views/locataire/ProfilsDetailsLocataire.vue"
+import { setEmail, setUserName, setSecondName, getFichier } from "@/helpers/auth";
 import { useStore } from "vuex";
 export default {
     name: "UserDashboard",
@@ -42,6 +54,7 @@ export default {
     components: {
         NavbarDashboard,
         AddBiensStepOne,
+        ProfilsDetailsLocataire,
     },
     setup() {
         const store = useStore();
@@ -59,14 +72,28 @@ export default {
     data() {
         return {
             services: [],
-            defaultAvatarUrl: new URL('@/assets/images/avatar/04.jpg', import.meta.url).href,
         }
     },
 
     computed: {
+        ...mapGetters('auth', ['userName', 'secondName', 'email', 'userRoles', 'userInfo', 'userFichier', 'email', "isAuthenticated"]),
+        ...mapGetters('notifications', ['notifications', 'unreadCount', 'isConnected']),
         hideAddAnnonce() {
             return this.$route.meta?.hideAddAnnonce === true
-        }
+        },
+
+        avatarUrl() {
+            // 1. Priorité au fichier uploadé (depuis cookie ou store)
+            let fileId = this.userFichier || getFichier();
+            console.log("userFichier dans avatarUrl :", this.userFichier);
+            // 2. Si tu veux prendre le dernier fichier uploadé via FilePond
+            if (fileId) {
+                return `${API_URLS.API_BASE}/fichier/download/${fileId}`;
+            }
+
+            // 3. Avatar par défaut
+            return new URL('@/assets/images/avatar/user_profil.png', import.meta.url).href;
+        },
     },
 
     methods: {
@@ -96,7 +123,6 @@ export default {
             //     type: 'success'
             // });
         },
-
         // 🎯 Gestionnaire quand la modal se ferme
         handleModalClose() {
             console.log('Modal fermée');
@@ -112,7 +138,14 @@ export default {
             // Utilisation de la référence pour fermer la modal
             const p = this.$refs.addBienModal.hide();
             console.log('Fermeture du modal:', p);
-        }
+        },
+        openEditProfileModal() {
+            const userId = this.$store.getters["auth/userInfo"];
+            this.$store.dispatch("modal/openModal", {
+                component: ProfilsDetailsLocataire,
+                props: { userId }
+            });
+        },
     }
 }
 </script>

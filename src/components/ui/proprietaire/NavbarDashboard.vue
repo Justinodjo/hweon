@@ -12,8 +12,7 @@
             <div class="navbar navbar-expand-xl">
                 <ul class="navbar-nav navbar-offcanvas-menu">
 
-                    <li class="nav-item"> <router-link class="nav-link active"
-                            to="/proprietaire/proprietaire_dashboard/vue_initial"><i
+                    <li class="nav-item"> <router-link class="nav-link active" to="/home"><i
                                 class="bi bi-house-door fa-fw me-1"></i>Accueil</router-link> </li>
 
                     <!-- <li class="nav-item"> <router-link class="nav-link" to="/manager_service"><i
@@ -22,14 +21,19 @@
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
                             data-bs-toggle="dropdown" aria-expanded="false">
-                            <i class="bi bi-ticket-perforated fa-fw me-2"></i>Mes Propriétés
+                            <i class="bi bi-house-door fa-fw me-2"></i>Mes Propriétés
                         </a>
                         <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <li><router-link class="dropdown-item" to="/vue_ensemble_biens">
-                                    Vue d'ensemble du patrimoine</router-link></li>
-                            <li><router-link class="dropdown-item" to="/details_biens">
-                                    Détails des biens</router-link></li>
-                            <li><router-link class="dropdown-item" to="/transactions">Historique des
+                            <li><router-link class="dropdown-item" :to="{ name: 'vue_ensemble_biens' }"
+                                    :class="{ 'active': isActive('/vue_ensemble_biens') }">
+                                    <i class="bi bi-building fa-fw me-2"></i>Vue d'ensemble du patrimoine</router-link>
+                            </li>
+                            <li><router-link class="dropdown-item" :to="{ name: 'details_biens' }"
+                                    :class="{ 'active': isActive('/details_biens') }">
+                                    <i class="bi bi-list-ul fa-fw me-2"></i>Détails des biens</router-link></li>
+                            <li><router-link class="dropdown-item" :to="{ name: 'transactions' }"
+                                    :class="{ 'active': isActive('/transactions') }"> <i
+                                        class="bi bi-clock-history fa-fw me-2"></i>Historique des
                                     transactions</router-link></li>
                         </ul>
                     </li>
@@ -37,39 +41,54 @@
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
                             data-bs-toggle="dropdown" aria-expanded="false">
-                            <i class="bi bi-ticket-perforated fa-fw me-2"></i>Revenus & Finances </a>
+                            <i class="bi bi-wallet2 fa-fw me-2"></i>Revenus & Finances </a>
                         <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <li><router-link class="dropdown-item" to="/profils/reservations_details">
-                                    Suivi des loyers perçus</router-link></li>
-                            <li><router-link class="dropdown-item" to="/profils/annuler_reservation">
-                                    Relevés de compte</router-link></li>
-                            <li><router-link class="dropdown-item" to="/profils/historique_reservations">Déclarations
+                            <li><router-link class="dropdown-item" :to="{ name: 'suivi_loyers' }"
+                                    :class="{ 'active': isActive('/suivi_loyers') }">
+                                    <i class="bi bi-cash-stack fa-fw me-2"></i>Suivi des loyers perçus</router-link>
+                            </li>
+                            <li><router-link class="dropdown-item" :to="{ name: 'releve_de_compte' }"
+                                    :class="{ 'active': isActive('/releve_de_compte') }">
+                                    <i class="bi bi-credit-card fa-fw me-2"></i>Relevés de compte</router-link></li>
+                            <li><router-link class="dropdown-item" :to="{ name: 'declarations_fiscales' }"
+                                    :class="{ 'active': isActive('/declarations_fiscales') }"><i
+                                        class="bi bi-file-earmark-bar-graph fa-fw me-2"></i>Déclarations
                                     fiscales</router-link></li>
                         </ul>
                     </li>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
                             data-bs-toggle="dropdown" aria-expanded="false">
-                            <i class="bi bi-ticket-perforated fa-fw me-2"></i>Contrats & Locataires </a>
+                            <i class="bi bi-person-lines-fill fa-fw me-2"></i>Contrats & Locataires </a>
                         <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <li><router-link class="dropdown-item" to="/profils/reservations_details">
-                                    Gestion des baux </router-link></li>
-                            <li><router-link class="dropdown-item" to="/profils/annuler_reservation">
-                                    Informations locataires </router-link></li>
-                            <li><router-link class="dropdown-item" to="/profils/historique_reservations">Historique
+                            <li><router-link class="dropdown-item" :to="{ name: 'details_baux_list' }"
+                                    :class="{ 'active': isActive('/details_baux_list') }">
+                                    <i class="bi bi-file-earmark-lock fa-fw me-2"></i>Gestion des baux </router-link>
+                            </li>
+                            <li><router-link class="dropdown-item" :to="{ name: 'informations_locataires_list' }"
+                                    :class="{ 'active': isActive('/informations_locataires_list') }">
+                                    <i class="bi bi-person-check fa-fw me-2"></i> Informations locataires </router-link>
+                            </li>
+                            <li><router-link class="dropdown-item" :to="{ name: 'historiques_locatif' }"
+                                    :class="{ 'active': isActive('/historiques_locatif') }"><i
+                                        class="bi bi-file-earmark-text fa-fw me-2"></i>Historique
                                     locatif</router-link></li>
                         </ul>
                     </li>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
                             data-bs-toggle="dropdown" aria-expanded="false">
-                            <i class="bi bi-ticket-perforated fa-fw me-2"></i>Maintenance & Travaux </a>
+                            <i class="bi bi-tools fa-fw me-2"></i>Maintenance & Travaux </a>
                         <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <li><router-link class="dropdown-item" to="/profils/reservations_details">
-                                    Demandes d'intervention </router-link></li>
-                            <li><router-link class="dropdown-item" to="/profils/annuler_reservation">
-                                    Suivi des travaux </router-link></li>
-                            <li><router-link class="dropdown-item" to="/profils/historique_reservations">Historique
+                            <li><router-link class="dropdown-item" :to="{ name: 'demandes_interventions' }"
+                                    :class="{ 'active': isActive('/demandes_interventions') }">
+                                    <i class="bi bi-gear fa-fw me-2"></i>Demandes d'intervention </router-link></li>
+                            <li><router-link class="dropdown-item" :to="{ name: 'suivi_travaux' }"
+                                    :class="{ 'active': isActive('/suivi_travaux') }">
+                                    <i class="bi bi-arrow-repeat fa-fw me-2"></i>Suivi des travaux </router-link></li>
+                            <li><router-link class="dropdown-item" :to="{ name: 'historiques_maintenances' }"
+                                    :class="{ 'active': isActive('/historiques_maintenances') }"><i
+                                        class="bi bi-clock fa-fw me-2"></i>Historique
                                     maintenance</router-link></li>
                         </ul>
                     </li>
@@ -107,6 +126,12 @@ export default {
             // secondName: "",
             // name: ""
         };
+    },
+    methods: {
+        // Méthode qui vérifie si l'URL actuelle correspond au lien
+        isActive(path) {
+            return this.$route.path.startsWith(path);
+        }
     }
 }
 </script>

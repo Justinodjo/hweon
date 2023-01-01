@@ -6,11 +6,13 @@
 			<div class="container">
 				<!-- Logo START -->
 				<router-link class="navbar-brand" to="/home">
-					<img class="light-mode-item navbar-brand-item" src="../../assets/images/logo.png" alt="logo">
-					<img class="dark-mode-item navbar-brand-item" src="../../assets/images/logo.png" alt="logo">
-					<!-- <img :src="isDark ? '../../assets/images/logo-light.svg' : '../../assets/images/logo.svg'"
+					<img class="light-mode-item navbar-brand-item h-50px"
+						src="../../assets/images/hweon_logo_transparent.png" alt="logo">
+					<img class="dark-mode-item navbar-brand-item" src="../../assets/images/hweon_logo_transparent.png"
+						alt="logo">
+					<!-- <img :src="isDark ? '../../assets/images/logo-light.svg' : '../../assets/images/hweon_logo_transparent.png'"
 						alt="logo" class="navbar-brand-item"> -->
-					<span>Hweon</span>
+					<!-- <span>Hweon</span> -->
 				</router-link>
 				<!-- Logo END -->
 
@@ -35,14 +37,15 @@
 				</button>
 
 				<!-- Nav category menu START -->
-				<div class="navbar-collapse collapse" id="navbarCategoryCollapse" v-if="!isDirectoryDetails">
-					<ul class="navbar-nav navbar-nav-scroll nav-pills-primary-soft text-center ms-auto p-2 p-xl-0">
+				<div class="navbar-collapse collapse justify-content-center" id="navbarCategoryCollapse"
+					v-if="!isDirectoryDetails">
+					<ul class="navbar-nav navbar-nav-scroll nav-pills-primary-soft text-center  p-2 p-xl-0">
 						<!-- Nav item Hotel -->
 						<li class="nav-item" v-for="(item, index) in services" :key="index">
 							<router-link class="nav-link active" data-bs-target="#navbarCategoryCollapse"
 								:to="{ name: 'DirectoryDetailsMenu', params: { id: item.id } }">
-								<!-- <i class="fa-solid fa-hotel me-2"></i> -->
-								{{ item.nomTypeBiensImmo }}
+								<i :id="`lottie-${item.id}`" class="menu-lottie"></i>
+								<span class="menu-label mt-1">{{ item.nomTypeBiensImmo }}</span>
 							</router-link>
 						</li>
 					</ul>
@@ -51,16 +54,20 @@
 
 				<!-- Profile and Notification START -->
 				<ul class="nav flex-row align-items-center list-unstyled ms-xl-auto">
-
 					<!-- Notification dropdown START -->
-					<li class="nav-item dropdown ms-0 ms-md-3" v-if="hideNotifications">
+					<li class="nav-item dropdown ms-0 ms-md-3" v-if="!hideNotifications && isAuthenticated">
 						<!-- Notification button -->
 						<a class="nav-notification btn btn-light p-0 mb-0" href="#" role="button"
-							data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside">
+							data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside"
+							@click="clearNotifications">
 							<i class="bi bi-bell fa-fw"></i>
+							<!-- Badge dynamique -->
+							<span v-if="unreadCount > 0" class="notif-badge animation-blink">{{ unreadCount }}</span>
+							<!-- <span v-if="unreadCount > 0" class="badge rounded-pill bg-danger"
+								style="font-size: 0.6rem;">
+								{{ unreadCount }}
+							</span> -->
 						</a>
-						<!-- Notification dote -->
-						<span class="notif-badge animation-blink"></span>
 
 						<!-- Notification dropdown menu START -->
 						<div
@@ -69,32 +76,29 @@
 								<!-- Card header -->
 								<div
 									class="card-header bg-transparent d-flex justify-content-between align-items-center border-bottom">
-									<h6 class="m-0">Notifications <span
-											class="badge bg-danger bg-opacity-10 text-danger ms-2">4 new</span></h6>
-									<a class="small" href="#">Clear all</a>
+									<h6 class="m-0">
+										Notifications
+										<span v-if="unreadCount" class="badge bg-danger bg-opacity-10 text-danger ms-2">
+											{{ unreadCount }} nouvelles
+										</span>
+									</h6>
+									<a class="small" href="#" @click.prevent="clearNotifications">
+										<i class="fa fa-trash"></i></a>
 								</div>
 
 								<!-- Card body START -->
-								<div class="card-body p-0">
+								<div class="card-body p-0" style="max-height: 300px; overflow-y: auto;">
 									<ul class="list-group list-group-flush list-unstyled p-2">
-										<!-- Notification item -->
-										<li>
-											<a href="#"
-												class="list-group-item list-group-item-action rounded notif-unread border-0 mb-1 p-3">
-												<h6 class="mb-2">New! Booking flights from New York ✈️</h6>
-												<p class="mb-0 small">Find the flexible ticket on flights around the
-													world. Start searching today</p>
-												<span>Wednesday</span>
-											</a>
-										</li>
-										<!-- Notification item -->
-										<li>
-											<a href="#"
-												class="list-group-item list-group-item-action rounded border-0 mb-1 p-3">
-												<h6 class="mb-2">Sunshine saving are here 🌞 save 30% or more on a stay
+										<li v-for="(notif, index) in notifications" :key="index">
+											<div class="list-group-item list-group-item-action rounded border-0 mb-1 p-3"
+												:class="{ 'notif-unread': index < unreadCount }">
+												<h6 class="mb-2">
+													{{ notif.message || notif.contenu || 'Nouvelle notification' }}
 												</h6>
-												<span>15 Nov 2022</span>
-											</a>
+												<span class="small text-muted">
+													{{ formatDate(notif.dateNotification) }}
+												</span>
+											</div>
 										</li>
 									</ul>
 								</div>
@@ -102,9 +106,10 @@
 
 								<!-- Card footer -->
 								<div class="card-footer bg-transparent text-center border-top">
-									<a href="#" class="btn btn-sm btn-link mb-0 p-0">See all incoming activity</a>
+									<a href="#" class="btn btn-sm btn-link mb-0 p-0">Voir toutes les notifications</a>
 								</div>
 							</div>
+
 						</div>
 						<!-- Notification dropdown menu END -->
 					</li>
@@ -139,15 +144,20 @@
 							<li>
 								<hr class="dropdown-divider">
 							</li>
-							<li v-if="fullName !== 'Non Connecté'"><router-link class="dropdown-item"
+							<!-- Bouton tableau de bord -->
+							<li v-if="isAuthenticated"> <a class="dropdown-item" @click="goToDashboard"><i
+										class="bi bi-speedometer2 fa-fw me-2"></i>Mon tableau de bord</a>
+							</li>
+							<!-- <li v-if="fullName !== 'Non Connecté'"><router-link class="dropdown-item"
 									to="directory/profils/details_profil"><i
 										class="bi bi-bookmark-check fa-fw me-2"></i>Mon
-									profil</router-link></li>
-							<li><a class="dropdown-item" href="#"><i class="bi bi-heart fa-fw me-2"></i>My Wishlist</a>
+									profil</router-link></li> -->
+
+							<!-- <li><a class="dropdown-item" href="#"><i class="bi bi-heart fa-fw me-2"></i>My Wishlist</a>
 							</li>
 							<li><a class="dropdown-item" href="#"><i class="bi bi-gear fa-fw me-2"></i>Settings</a></li>
 							<li><a class="dropdown-item" href="#"><i class="bi bi-info-circle fa-fw me-2"></i>Help
-									Center</a></li>
+									Center</a></li> -->
 							<li v-if="fullName !== 'Non Connecté'"><router-link
 									class="dropdown-item bg-danger-soft-hover" to="/directory/login" @click="logout">
 									<i class="bi bi-power fa-fw me-2"></i>Se déconnecter
@@ -223,14 +233,21 @@
 import { tns } from 'tiny-slider';
 import { mapActions, mapGetters } from "vuex";
 import { API_URLS } from "@/config/api";
-import { setEmail, setUserName, setSecondName, } from "@/helpers/auth";
+import { setEmail, setUserName, setSecondName, getFichier } from "@/helpers/auth";
+import { setTheme, getPreferredTheme, setupThemeSwitcher } from '@/utils/theme';
+import { ElNotification } from 'element-plus';
+import { useRouter } from 'vue-router';
+import lottie from 'lottie-web';
+import getRedirectByRole from "@/helpers/getRedirectByRole";
 export default {
 	name: "Header",
 	data() {
 		return {
 			services: [],
-			defaultAvatarUrl: new URL('@/assets/images/avatar/04.jpg', import.meta.url).href,
+			defaultAvatarUrl: new URL('@/assets/images/avatar/user_profil.png', import.meta.url).href,
 			collapseInstance: null,
+			previousNotifCount: 0,
+			lottieInstances: [],
 			// secondName: "",
 			// name: ""
 		};
@@ -246,36 +263,54 @@ export default {
 		// 		this.collapseInstance.hide();
 		// 	}
 		// });
+		setupThemeSwitcher();
 		this.loadService();
+		// this.initLottieAnimations();
+
+		// DEBUG : afficher l'état au montage
+		console.log('Header mounted:', { currentUser: this.currentUser, isConnected: this.isConnected });
+
+		// Démarrer la WebSocket si utilisateur connecté et notification non connectée
+		if (this.currentUser && !this.isConnected) {
+			try {
+				// utilise l'action mappée 'start' (méthode)
+				this.start();
+				console.log('Notifications WS démarrées');
+			} catch (e) {
+				console.error('Erreur démarrage Notifications WS:', e);
+			}
+		}
+		// ✅ Initialiser le compteur de notifications
+		this.previousNotifCount = this.notifications.length;
+		console.log("Voici mes notifications" + this.notifications)
 	},
 	computed: {
-		...mapGetters('auth', ['userName', 'secondName', 'email', 'userRoles', 'userInfo', 'userFichier', 'email']),
+		...mapGetters('auth', ['userName', 'secondName', 'email', 'currentUser', 'userFichier', "isAuthenticated"]),
+		...mapGetters('notifications', ['notifications', 'unreadCount', 'isConnected']),
 
 		fullName() {
-			// Ici vous pouvez ajouter des calculs ou récupérer le nom de l'utilisateur
-			// Exemple avec vuex
-			if (this.userName && this.secondName) {
-				console.log(this.userName + " " + this.secondName)
-				return this.userName + ' ' + this.secondName
-			} else {
-				return 'Non Connecté'
-			}
+			return this.currentUser.name && this.currentUser.secondName
+				? `${this.currentUser.name} ${this.currentUser.secondName}`
+				: 'Non Connecté';
 		},
-
-
 		handleEmail() {
-			// Idem pour l'email
-			return this.email || 'non@connecte.com';
+			return this.currentUser.email || 'non@connecte.com';
 		},
-
 		avatarUrl() {
-			if (this.userFichier) {
-				// Construire l'URL de l'avatar à partir du dossier assets
-				return this.userFichier
-					? `${API_URLS.API_BASE}/tfe/uploads/${this.userFichier}`
-					: new URL('@/assets/images/avatar/04.jpg', import.meta.url).href;
+			// 1. Priorité au fichier uploadé (depuis cookie ou store)
+			let fileId = this.userFichier || getFichier();
+			console.log("userFichier dans avatarUrl :", this.userFichier);
+			// 2. Si tu veux prendre le dernier fichier uploadé via FilePond
+			if (this.$refs.fileUpload?.fichier?.length) {
+				fileId = this.$refs.fileUpload.fichier.slice(-1)[0].id; // ou fileId selon ta réponse serveur
 			}
-			return this.defaultAvatarUrl;
+
+			if (fileId) {
+				return `${API_URLS.API_BASE}/fichier/download/${fileId}`;
+			}
+
+			// 3. Avatar par défaut
+			return new URL('@/assets/images/avatar/user_profil.png', import.meta.url).href;
 		},
 		// Vérifier si la route actuelle est "DirectoryDetails"
 		isDirectoryDetails() {
@@ -284,15 +319,66 @@ export default {
 
 		hideNotifications() {
 			return this.$route.meta?.hideNotifications === true;
-		}
+		},
+
 
 	},
 
+	beforeUnmount() {
+		// ✅ Détruire toutes les instances Lottie
+		this.lottieInstances.forEach(instance => {
+			if (instance) instance.destroy();
+		});
+		this.lottieInstances = [];
 
+		// 🔌 Déconnexion WebSocket
+		if (this.isConnected) {
+			this.stop();
+		}
+	},
+	watch: {
+		notifications(newList) {
+			const newCount = newList.length - this.previousNotifCount;
+			if (newCount > 0) {
+				// 🔔 Animation cloche
+				const bell = document.querySelector('.bi-bell');
+				if (bell) {
+					bell.classList.add('notification-shake');
+					setTimeout(() => bell.classList.remove('notification-shake'), 500);
+				}
 
+				// ✅ Toast visuel
+				newList.slice(-newCount).forEach(newNotif => {
+					ElNotification({
+						title: 'Nouvelle notification 📢',
+						message: newNotif.contenu || newNotif.message || 'Vous avez une nouvelle notification',
+						type: 'info',
+						duration: 5000,
+						position: 'top-right'
+					});
+				});
+			}
+			this.previousNotifCount = newList.length;
+		},
+		// ✅ Recharger les animations si les services changent
+		services() {
+			this.$nextTick(() => {
+				this.initLottieAnimations();
+			});
+		}
 
+	},
+	created() {
+		// setTimeout(() => {
+		// 	this.$store.commit('notifications/ADD_NOTIFICATION', {
+		// 		contenu: 'Ceci est une notification de test',
+		// 		dateNotification: new Date().toISOString()
+		// 	});
+		// }, 2000);
+	},
 	methods: {
 		...mapActions('auth', ['logout',]),
+		...mapActions('notifications', ['start', 'stop']),
 		closeMenu() {
 			if (this.collapseInstance) {
 				this.collapseInstance.hide();
@@ -303,10 +389,33 @@ export default {
 				this.collapseInstance.show();
 			}
 		},
+		goToDashboard() {
+			const userRoles = this.$store.getters['auth/userRoles'] || [];
+			// Utilise ta fonction utilitaire
+			const redirectPath = getRedirectByRole(userRoles);
+			// Redirection sécurisée
+			if (redirectPath) {
+				this.$router.push(redirectPath).catch(err => {
+					// Ignorer l'erreur NavigationDuplicated si l'utilisateur est déjà sur la même route
+					if (err.name !== 'NavigationDuplicated') {
+						console.error(err);
+					}
+				});
+			}
+		},
 		async loadService() {
 			try {
 				const response = await this.$store.dispatch('typeBiens/getAll');
 				this.services = response;
+				// ✅ Associe une icône Bootstrap à chaque service
+				this.services = response.map(service => ({
+					...service,
+					animation: this.getAnimationPath(service.nomTypeBiensImmo)
+				}));
+				// ⏳ Attends que le DOM soit mis à jour avant de charger Lottie
+				this.$nextTick(() => {
+					this.initLottieAnimations();
+				});
 			} catch (error) {
 				console.error('Erreur lors de l\'ajout de l\'élément fonction :', error);
 			}
@@ -315,76 +424,74 @@ export default {
 			this.$store.dispatch('auth/logout');  // Appel de l'action 'logout'
 			this.$router.push('/directory/login'); // Rediriger vers la page de connexion
 		},
+		// 🎬 Détermine quelle animation Lottie utiliser selon le nom du type
+		getAnimationPath(nom) {
+			if (!nom) return "/animations/default.json";
+
+			// Normalise le nom (pour éviter les différences de majuscules ou accents)
+			const name = nom.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+
+			// Correspondance automatique avec les fichiers Lottie
+			if (name.includes("residentiel")) return "/animations/residential.json";
+			if (name.includes("commercial")) return "/animations/commercial.json";
+			if (name.includes("industriel")) return "/animations/industrial.json";
+			if (name.includes("agricole")) return "/animations/agricole.json";
+			if (name.includes("invest")) return "/animations/investissement.json";
+
+			// 🔁 Par défaut (si un nouveau type inconnu arrive)
+			return "/animations/default.json";
+		},
+		// ✅ CORRECTION: Initialisation Lottie avec querySelector
+		initLottieAnimations() {
+			// Détruire les anciennes instances
+			this.lottieInstances.forEach(instance => {
+				if (instance) instance.destroy();
+			});
+			this.lottieInstances = [];
+
+			// Créer les nouvelles instances
+			this.services.forEach((service) => {
+				const container = document.getElementById(`lottie-${service.id}`);
+
+				if (container && service.animation) {
+					try {
+						const animation = lottie.loadAnimation({
+							container: container,
+							renderer: 'svg',
+							loop: true,
+							autoplay: true,
+							path: service.animation,
+						});
+
+						this.lottieInstances.push(animation);
+						console.log(`✅ Animation chargée pour ${service.nomTypeBiensImmo}`);
+					} catch (error) {
+						console.error(`❌ Erreur Lottie pour ${service.nomTypeBiensImmo}:`, error);
+					}
+				} else {
+					console.warn(`⚠️ Container manquant pour ${service.nomTypeBiensImmo}`);
+				}
+			});
+		},
 		getImageUrl(idfile) {
 			// return `https://93.115.20.172:8081/fichier/download/${idfile}`;
 			return `${API_URLS.API_BASE}/fichier/download/${idfile}`;
-		}
+		},
+		formatDate(date) {
+			if (!date) return '';
+			return new Date(date).toLocaleString('fr-FR', {
+				dateStyle: 'short',
+				timeStyle: 'short',
+			});
+		},
+
+		clearNotifications() {
+			this.$store.commit('notifications/CLEAR');
+		},
+
 	},
 };
-const storedTheme = localStorage.getItem("theme");
 
-const getPreferredTheme = () => {
-	if (storedTheme) {
-		return storedTheme;
-	}
-	return window.matchMedia("(prefers-color-scheme: dark)").matches
-		? "dark"
-		: "light";
-};
-
-const setTheme = function (theme) {
-	if (
-		theme === "auto" &&
-		window.matchMedia("(prefers-color-scheme: dark)").matches
-	) {
-		document.documentElement.setAttribute("data-bs-theme", "dark");
-	} else {
-		document.documentElement.setAttribute("data-bs-theme", theme);
-	}
-};
-
-setTheme(getPreferredTheme());
-
-window.addEventListener("DOMContentLoaded", () => {
-	var el = document.querySelector(".theme-icon-active");
-	if (el != "undefined" && el != null) {
-		const showActiveTheme = (theme) => {
-			const activeThemeIcon = document.querySelector(".theme-icon-active use");
-			const btnToActive = document.querySelector(
-				`[data-bs-theme-value="${theme}"]`
-			);
-			const svgOfActiveBtn = btnToActive
-				.querySelector(".mode-switch use")
-				.getAttribute("href");
-
-			document.querySelectorAll("[data-bs-theme-value]").forEach((element) => {
-				element.classList.remove("active");
-			});
-
-			btnToActive.classList.add("active");
-			activeThemeIcon.setAttribute("href", svgOfActiveBtn);
-		};
-
-		window
-			.matchMedia("(prefers-color-scheme: dark)")
-			.addEventListener("change", () => {
-				if (storedTheme !== "light" || storedTheme !== "dark") {
-					setTheme(getPreferredTheme());
-				}
-			});
-
-		showActiveTheme(getPreferredTheme());
-
-		document.querySelectorAll("[data-bs-theme-value]").forEach((toggle) => {
-			toggle.addEventListener("click", () => {
-				const theme = toggle.getAttribute("data-bs-theme-value");
-				localStorage.setItem("theme", theme);
-				setTheme(theme);
-				showActiveTheme(theme);
-			});
-		});
-	}
-});
 
 </script>
 <style>
@@ -395,5 +502,203 @@ window.addEventListener("DOMContentLoaded", () => {
 .header.header-sticky {
 	z-index: 1050;
 	position: relative;
+}
+
+.nav-notification {
+	position: relative;
+	display: inline-block;
+	/* obligatoire pour que absolute fonctionne correctement */
+	width: 2.5rem;
+	/* ajustable selon la taille de l'icône */
+	height: 2.5rem;
+	/* idem */
+	text-align: center;
+	/* centrer l'icône */
+	line-height: 2.5rem;
+	/* centrer verticalement */
+}
+
+.nav-notification .badge {
+	position: absolute;
+	top: 0.2rem;
+	/* légèrement en dessous du bord supérieur */
+	right: 0.2rem;
+	/* légèrement en retrait du bord droit */
+	font-size: 0.6rem;
+	min-width: 1rem;
+	height: 1rem;
+	padding: 0 0.25rem;
+	border-radius: 50%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background-color: #dc3545;
+	color: white;
+	z-index: 2100;
+}
+
+/* 🔔 Animation cloche */
+@keyframes shake {
+
+	0%,
+	100% {
+		transform: rotate(0);
+	}
+
+	25% {
+		transform: rotate(-10deg);
+	}
+
+	75% {
+		transform: rotate(10deg);
+	}
+}
+
+.notification-shake {
+	animation: shake 0.4s ease-in-out;
+}
+
+/* Clignotement du badge */
+@keyframes blink {
+
+	0%,
+	100% {
+		opacity: 1;
+	}
+
+	50% {
+		opacity: 0.4;
+	}
+}
+
+.animation-blink {
+	animation: blink 1s infinite;
+}
+
+.menu-item {
+	text-align: center;
+	transition: transform 0.3s ease;
+}
+
+.menu-lottie {
+	width: 60px;
+	height: 60px;
+	margin: auto;
+}
+
+.menu-label {
+	font-size: 0.8rem;
+	color: #6c757d;
+	transition: color 0.3s ease;
+}
+
+.menu-item:hover {
+	transform: translateY(-5px);
+}
+
+.menu-item:hover .menu-label {
+	color: #0d6efd;
+}
+
+.dropdown-menu {
+	z-index: 2000;
+}
+
+.header.header-sticky {
+	z-index: 1050;
+	position: relative;
+}
+
+.nav-notification {
+	position: relative;
+	display: inline-block;
+	width: 2.5rem;
+	height: 2.5rem;
+	text-align: center;
+	line-height: 2.5rem;
+}
+
+.notif-badge {
+	position: absolute;
+	top: 0.2rem;
+	right: 0.2rem;
+	font-size: 0.6rem;
+	min-width: 1rem;
+	height: 1rem;
+	padding: 0 0.25rem;
+	border-radius: 50%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background-color: #dc3545;
+	color: white;
+	z-index: 2100;
+}
+
+/* 🔔 Animation cloche */
+@keyframes shake {
+
+	0%,
+	100% {
+		transform: rotate(0);
+	}
+
+	25% {
+		transform: rotate(-10deg);
+	}
+
+	75% {
+		transform: rotate(10deg);
+	}
+}
+
+.notification-shake {
+	animation: shake 0.4s ease-in-out;
+}
+
+/* Clignotement du badge */
+@keyframes blink {
+
+	0%,
+	100% {
+		opacity: 1;
+	}
+
+	50% {
+		opacity: 0.4;
+	}
+}
+
+.animation-blink {
+	animation: blink 1s infinite;
+}
+
+/* ✅ Styles pour le menu Lottie */
+.menu-item {
+	text-align: center;
+	transition: transform 0.3s ease;
+}
+
+.menu-lottie {
+	width: 60px;
+	height: 60px;
+	margin: 0 auto;
+	display: block;
+}
+
+.menu-label {
+	display: block;
+	font-size: 0.8rem;
+	color: #6c757d;
+	transition: color 0.3s ease;
+	margin-top: 0.5rem;
+}
+
+.menu-item:hover {
+	transform: translateY(-5px);
+}
+
+.menu-item:hover .menu-label {
+	color: #0d6efd;
 }
 </style>

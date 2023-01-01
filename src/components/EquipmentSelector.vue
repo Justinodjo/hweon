@@ -15,8 +15,8 @@
                     <div class="equipment-grid">
                         <div v-for="activite in activites" :key="activite.key" class="form-check form-check-card">
                             <input class="form-check-input" type="checkbox" :id="`activite-${activite.key}`"
-                                :checked="equipements[activite.key]"
-                                @change="updateEquipement(activite.key, $event.target.checked)">
+                                :checked="isChecked('activites', activite.key)"
+                                @change="updateEquipement('activites', activite.key, $event.target.checked)">
                             <label class="form-check-label" :for="`activite-${activite.key}`">
                                 {{ activite.label }}
                             </label>
@@ -33,8 +33,8 @@
                     <div class="equipment-grid">
                         <div v-for="mode in modesPaiement" :key="mode.key" class="form-check form-check-card">
                             <input class="form-check-input" type="checkbox" :id="`paiement-${mode.key}`"
-                                :checked="equipements[mode.key]"
-                                @change="updateEquipement(mode.key, $event.target.checked)">
+                                :checked="isChecked('modesPaiement', mode.key)"
+                                @change="updateEquipement('modesPaiement', mode.key, $event.target.checked)">
                             <label class="form-check-label" :for="`paiement-${mode.key}`">
                                 {{ mode.label }}
                             </label>
@@ -50,8 +50,8 @@
                     <div class="equipment-grid">
                         <div v-for="langue in languesPersonnel" :key="langue.key" class="form-check form-check-card">
                             <input class="form-check-input" type="checkbox" :id="`langue-${langue.key}`"
-                                :checked="equipements[langue.key]"
-                                @change="updateEquipement(langue.key, $event.target.checked)">
+                                :checked="isChecked('languesPersonnel', langue.key)"
+                                @change="updateEquipement('languesPersonnel', langue.key, $event.target.checked)">
                             <label class="form-check-label" :for="`langue-${langue.key}`">
                                 {{ langue.label }}
                             </label>
@@ -69,8 +69,8 @@
                         <div v-for="climatisation in typesClimatisation" :key="climatisation.key"
                             class="form-check form-check-card">
                             <input class="form-check-input" type="checkbox" :id="`climat-${climatisation.key}`"
-                                :checked="equipements[climatisation.key]"
-                                @change="updateEquipement(climatisation.key, $event.target.checked)">
+                                :checked="isChecked('typesClimatisation', climatisation.key)"
+                                @change="updateEquipement('typesClimatisation', climatisation.key, $event.target.checked)">
                             <label class="form-check-label" :for="`climat-${climatisation.key}`">
                                 {{ climatisation.label }}
                             </label>
@@ -85,8 +85,8 @@
                     <div class="equipment-grid">
                         <div v-for="securite in securites" :key="securite.key" class="form-check form-check-card">
                             <input class="form-check-input" type="checkbox" :id="`securite-${securite.key}`"
-                                :checked="equipements[securite.key]"
-                                @change="updateEquipement(securite.key, $event.target.checked)">
+                                :checked="isChecked('securites', securite.key)"
+                                @change="updateEquipement('securites', securite.key, $event.target.checked)">
                             <label class="form-check-label" :for="`securite-${securite.key}`">
                                 {{ securite.label }}
                             </label>
@@ -102,8 +102,8 @@
                     <div class="equipment-grid">
                         <div v-for="garage in typeGarage" :key="garage.key" class="form-check form-check-card">
                             <input class="form-check-input" type="checkbox" :id="`garage-${garage.key}`"
-                                :checked="equipements[garage.key]"
-                                @change="updateEquipement(garage.key, $event.target.checked)">
+                                :checked="isChecked('typeGarage', garage.key)"
+                                @change="updateEquipement('typeGarage', garage.key, $event.target.checked)">
                             <label class="form-check-label" :for="`garage-${garage.key}`">
                                 {{ garage.label }}
                             </label>
@@ -119,8 +119,8 @@
                     <div class="equipment-grid">
                         <div v-for="cuisine in typeCuisine" :key="cuisine.key" class="form-check form-check-card">
                             <input class="form-check-input" type="checkbox" :id="`garage-${cuisine.key}`"
-                                :checked="equipements[cuisine.key]"
-                                @change="updateEquipement(cuisine.key, $event.target.checked)">
+                                :checked="isChecked('typeCuisine', cuisine.key)"
+                                @change="updateEquipement('typeCuisine', cuisine.key, $event.target.checked)">
                             <label class="form-check-label" :for="`garage-${cuisine.key}`">
                                 {{ cuisine.label }}
                             </label>
@@ -136,8 +136,8 @@
                     <div class="equipment-grid">
                         <div v-for="vue in typeVue" :key="vue.key" class="form-check form-check-card">
                             <input class="form-check-input" type="checkbox" :id="`garage-${vue.key}`"
-                                :checked="equipements[vue.key]"
-                                @change="updateEquipement(vue.key, $event.target.checked)">
+                                :checked="isChecked('typeVue', vue.key)"
+                                @change="updateEquipement('typeVue', vue.key, $event.target.checked)">
                             <label class="form-check-label" :for="`garage-${vue.key}`">
                                 {{ vue.label }}
                             </label>
@@ -152,8 +152,8 @@
                     <div class="equipment-grid">
                         <div v-for="service in services" :key="service.key" class="form-check form-check-card">
                             <input class="form-check-input" type="checkbox" :id="`service-${service.key}`"
-                                :checked="equipements[service.key]"
-                                @change="updateEquipement(service.key, $event.target.checked)">
+                                :checked="isChecked('services', service.key)"
+                                @change="updateEquipement('services', service.key, $event.target.checked)">
                             <label class="form-check-label" :for="`service-${service.key}`">
                                 {{ service.label }}
                             </label>
@@ -183,14 +183,16 @@
                 <div class="alert alert-info">
                     <h6 class="alert-heading">
                         <i class="bi bi-info-circle me-2"></i>
-                        Équipements sélectionnés ({{ selectedEquipments.length }})
+                        Équipements sélectionnés ({{ selectedEquipmentsCount }})
                     </h6>
                     <div class="selected-equipment-tags">
-                        <span v-for="equipment in selectedEquipments" :key="equipment.key"
+                        <span v-for="(items, category) in equipements" :key="category"
                             class="badge bg-primary me-2 mb-2">
-                            {{ equipment.label }}
-                            <button type="button" class="btn-close btn-close-white ms-2"
-                                @click="updateEquipement(equipment.key, false)" aria-label="Supprimer"></button>
+                            <span v-for="key in items" :key="key" class="badge bg-primary me-2 mb-2">
+                                {{ getLabelForKey(category, key) }}
+                                <button type="button" class="btn-close btn-close-white ms-2"
+                                    @click="updateEquipement(category, key, false)" aria-label="Supprimer"></button>
+                            </span>
                         </span>
                     </div>
                 </div>
@@ -206,7 +208,17 @@ export default {
     props: {
         equipements: {
             type: Object,
-            default: () => ({})
+            default: () => ({
+                services: [],
+                securites: [],
+                activites: [],
+                modesPaiement: [],
+                languesPersonnel: [],
+                typeCuisine: [],
+                typesClimatisation: [],
+                typeGarage: [],
+                typeVue: []
+            })
         },
         activites: {
             type: Array,
@@ -241,14 +253,10 @@ export default {
             default: ''
         },
         typeCuisine: {
-            type: String,
+            type: Array,
             default: () => []
         },
         typeVue: {
-            type: String,
-            default: () => []
-        },
-        typesBien: {
             type: Array,
             default: () => []
         },
@@ -283,18 +291,55 @@ export default {
             ]
 
             return allEquipments.filter(equipment => this.equipements[equipment.key])
+        },
+        selectedEquipmentsCount() {
+            return Object.values(this.equipements)
+                .reduce((sum, arr) => sum + (Array.isArray(arr) ? arr.length : 0), 0);
         }
     },
 
     methods: {
-        updateEquipement(key, value) {
-            const newEquipements = { ...this.equipements }
-            if (value) {
-                newEquipements[key] = true
-            } else {
-                delete newEquipements[key]
+        isChecked(category, key) {
+            const categoryArray = this.equipements[category];
+            return Array.isArray(categoryArray) && categoryArray.includes(key);
+        },
+        updateEquipement(category, key, checked) {
+            const newEquipements = { ...this.equipements };
+
+            // Initialiser le tableau si nécessaire
+            if (!Array.isArray(newEquipements[category])) {
+                newEquipements[category] = [];
             }
-            this.$emit('update:equipements', newEquipements)
+
+            if (checked) {
+                // Ajouter si pas déjà présent
+                if (!newEquipements[category].includes(key)) {
+                    newEquipements[category] = [...newEquipements[category], key];
+                }
+            } else {
+                // Retirer
+                newEquipements[category] = newEquipements[category].filter(k => k !== key);
+            }
+
+            console.log(`Updated ${category}:`, newEquipements[category]);
+            this.$emit('update:equipements', newEquipements);
+        },
+        getLabelForKey(category, key) {
+            const categoryMap = {
+                services: this.services,
+                securites: this.securites,
+                activites: this.activites,
+                modesPaiement: this.modesPaiement,
+                languesPersonnel: this.languesPersonnel,
+                typeCuisine: this.typeCuisine,
+                typesClimatisation: this.typesClimatisation,
+                typeGarage: this.typeGarage,
+                typeVue: this.typeVue
+            };
+
+            const items = categoryMap[category] || [];
+            const item = items.find(i => i.key === key);
+            return item ? item.label : key;
         }
     }
 }

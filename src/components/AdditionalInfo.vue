@@ -6,23 +6,6 @@
         </div>
         <div class="card-body">
             <div class="row g-3">
-                <!-- DPE -->
-                <div class="col-md-4">
-                    <label class="form-label">
-                        <i class="bi bi-lightning me-2"></i>
-                        DPE (A à G)
-                    </label>
-                    <select class="form-select" :value="form.typeDPE"
-                        @change="updateForm('typeDPE', $event.target.value)">
-                        <option value="">Non renseigné</option>
-                        <option v-for="typeDPE in typesDPE" :key="typeDPE.key" :value="typeDPE.key">
-                            {{ typeDPE.label }}
-                        </option>
-                    </select>
-                    <small class="form-text text-muted">
-                        Diagnostic de Performance Énergétique
-                    </small>
-                </div>
 
                 <!-- Charges mensuelles -->
                 <div class="col-md-4">
@@ -130,18 +113,9 @@
 export default {
     name: 'AdditionalInfo',
 
-    props: {
-        form: {
-            type: Object,
-            required: true
-        },
-        typesDPE: {
-            type: Array,
-            default: () => []
-        }
-    },
+    props: ['form', 'typesDPE', 'currentStep', 'activeStep'],
 
-    emits: ['update:form'],
+    emits: ['update:details', 'update:form', 'uploadResponse', 'update:preview'],
 
     data() {
         return {
@@ -176,7 +150,10 @@ export default {
                 ...this.form,
                 [field]: value
             });
-        }
+        },
+        updateDetail(index, field, value) {
+            const updated = [...this.detailsBiensImmobiliers]; updated[index] = { ...updated[index], [field]: value }; this.$emit('update:details', updated)
+        },
 
     }
 }

@@ -6,8 +6,8 @@
         <nav class="navbar sidebar navbar-expand-xl navbar-light">
             <div class="d-flex align-items-center">
                 <a class="navbar-brand" href="/supplier_dashboard">
-                    <img class="light-mode-item navbar-brand-item" src="../assets/images/logo.svg" alt="logo">
-                    <img class="dark-mode-item navbar-brand-item" src="../assets/images/logo-light.svg" alt="logo">
+                    <img class="light-mode-item navbar-brand-item" src="@/assets/images/logo.svg" alt="logo">
+                    <img class="dark-mode-item navbar-brand-item" src="@/assets/images/logo-light.svg" alt="logo">
                 </a>
             </div>
 

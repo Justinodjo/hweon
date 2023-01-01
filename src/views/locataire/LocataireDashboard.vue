@@ -6,6 +6,13 @@
         <!-- =======================Content START -->
         <section class="header-main pt-8">
             <div class="container">
+                <!-- Bouton visible seulement sur mobile -->
+                <div class="d-lg-none mb-3 text-end">
+                    <button class="btn btn-outline-primary" type="button" data-bs-toggle="offcanvas"
+                        data-bs-target="#offcanvasSidebar" aria-controls="offcanvasSidebar">
+                        <i class="bi bi-list"></i> Menu
+                    </button>
+                </div>
                 <div class="row">
 
                     <!-- Sidebar Component -->

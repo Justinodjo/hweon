@@ -103,7 +103,7 @@
                     <div class="card-body">
                         <DropzoneUpload :form="form" :uploadConfig="uploadConfig" :preview="preview" :maxFiles="10"
                             :maxFileSize="'5MB'" @file-uploaded="handleFileUploaded" :initialFiles="fichiers"
-                            :activeStep="currentStep" />
+                            :activeStep="activeStep" :currentStep="currentStep" />
                         <small class="text-muted">Vous pouvez télécharger jusqu'à 10 images supplémentaires.</small>
                     </div>
                 </div>

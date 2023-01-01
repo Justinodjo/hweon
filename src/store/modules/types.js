@@ -3,16 +3,21 @@ import request from "@/http/request";
 const state = () => ({
   all: [],
   one: {},
+  typeContrat: [],
 });
 
 const getters = {
   all: (state) => state.all,
   one: (state) => state.one,
+  typeContrat: (state) => state.typeContrat,
 };
 
 const mutations = {
   SET_ALL: (state, obj) => {
     state.all = obj;
+  },
+  SET_TYPE_CONTRAT: (state, obj) => {
+    state.typeContrat = obj;
   },
   SET_ONE: (state, obj) => {
     state.one = obj;
@@ -83,11 +88,11 @@ const actions = {
     return data;
   },
 
-  async getTypeContrat(cxt, payload) {
-    let { data } = await request.get("enums/type-contrat");
-    cxt.commit("SET_ALL", data);
-    return data;
-  },
+  // async getTypeContrat(cxt, payload) {
+  //   let { data } = await request.get("enums/type-contrat");
+  //   cxt.commit("SET_ALL", data);
+  //   return data;
+  // },
 
   async getTypeConsentement(cxt, payload) {
     let { data } = await request.get("enums/type-consentement");
@@ -268,10 +273,76 @@ const actions = {
     cxt.commit("SET_ALL", data);
     return data;
   },
-   async getUniteVolume(cxt, payload) {
+  async getUniteVolume(cxt, payload) {
     let { data } = await request.get("enums/unite-volume");
     cxt.commit("SET_ALL", data);
     return data;
+  },
+  async getTypeContrat({ commit, state }) {
+    // 🔹 Étape 1 : éviter de recharger si déjà en cache
+    if (state.all && state.all.length > 0) {
+      return state.all;
+    }
+
+    try {
+      const { data } = await request.get("enums/type-contrat");
+      console.log("voici ma data", data);
+      const items = Array.isArray(data) ? data : [];
+      console.log("voici mon items", items);
+      // 🔹 Tables de correspondance
+      const LABELS = {
+        MEUBLEE: "Meublée",
+        NON_MEUBLEE: "Non Meublée",
+        SAISONNIERE: "Saisonnière",
+        COMMERCIALE: "Commerciale",
+        PROFESSIONNELLE: "Professionnelle",
+        ETUDIANT: "Étudiant",
+        OPTION_ACHAT: "Option d’Achat",
+        ACCESSION: "Accession",
+      };
+
+      const ICONS = {
+        MEUBLEE: "🏠",
+        NON_MEUBLEE: "🏢",
+        SAISONNIERE: "🌴",
+        COMMERCIALE: "🏪",
+        PROFESSIONNELLE: "💼",
+        ETUDIANT: "🎓",
+        OPTION_ACHAT: "🛒",
+        ACCESSION: "🏡",
+      };
+
+      const DESCS = {
+        MEUBLEE: "Location avec meubles inclus.",
+        NON_MEUBLEE: "Location vide (non meublée).",
+        SAISONNIERE: "Location de courte durée.",
+        COMMERCIALE: "Usage commercial.",
+        PROFESSIONNELLE: "Bureau ou local professionnel.",
+        ETUDIANT: "Logement adapté aux étudiants.",
+        OPTION_ACHAT: "Possibilité d’achat ultérieure.",
+        ACCESSION: "Accession progressive à la propriété.",
+      };
+
+      // 🔹 Mapping des données
+      const mapped = items.map((key) => {
+        const k = String(key).toUpperCase();
+        return {
+          id: k,
+          value: k,
+          label: LABELS[k] || k,
+          icon: ICONS[k] || "🏷️",
+          description: DESCS[k] || "",
+        };
+      });
+
+      commit("SET_TYPE_CONTRAT", mapped);
+      console.log("voici mon mapped", mapped);
+      return mapped;
+    } catch (err) {
+      console.error("❌ Erreur getTypeContrat :", err);
+      commit("SET_TYPE_CONTRAT", []);
+      return [];
+    }
   },
 };
 

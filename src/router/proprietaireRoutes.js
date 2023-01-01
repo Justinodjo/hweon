@@ -10,7 +10,7 @@ const proprietaireRoutes = [
     meta: {
       requiresAuth: true,
       role: "PROPRIETAIRE_ROLES",
-      hideHeaderFooter: false,
+      hideHeaderFooter: true,
       hideNotifications: true,
     },
     redirect: "/proprietaire/proprietaire_dashboard",
@@ -60,7 +60,7 @@ const proprietaireRoutes = [
             },
           },
           {
-            path: "/details_biens_list",
+            path: "/details_biens_list/:id",
             name: "details_biens_list",
             component: () =>
               import(
@@ -68,7 +68,46 @@ const proprietaireRoutes = [
               ),
             meta: {
               requiresAuth: true,
-              hideAddAnnonce: true,
+              hideAddAnnonce: false,
+              role: "PROPRIETAIRE_ROLES",
+            },
+          },
+          {
+            path: "/details_baux_list",
+            name: "details_baux_list",
+            component: () =>
+              import(
+                "@/views/proprietaire/conteneurs/annonces/DetailsBaux.vue"
+              ),
+            meta: {
+              requiresAuth: true,
+              hideAddAnnonce: false,
+              role: "PROPRIETAIRE_ROLES",
+            },
+          },
+          {
+            path: "/informations_locataires_list",
+            name: "informations_locataires_list",
+            component: () =>
+              import(
+                "@/views/proprietaire/conteneurs/annonces/InformationsLocataires.vue"
+              ),
+            meta: {
+              requiresAuth: true,
+              hideAddAnnonce: false,
+              role: "PROPRIETAIRE_ROLES",
+            },
+          },
+          {
+            path: "/historiques_locatif",
+            name: "historiques_locatif",
+            component: () =>
+              import(
+                "@/views/proprietaire/conteneurs/annonces/HistoriquesLocatif.vue"
+              ),
+            meta: {
+              requiresAuth: true,
+              hideAddAnnonce: false,
               role: "PROPRIETAIRE_ROLES",
             },
           },
@@ -78,6 +117,85 @@ const proprietaireRoutes = [
             component: () =>
               import(
                 "@/views/proprietaire/conteneurs/transactions/ViewTransactions.vue"
+              ),
+            meta: {
+              requiresAuth: true,
+              // hideAddAnnonce: true,
+              role: "PROPRIETAIRE_ROLES",
+            },
+          },
+          {
+            path: "/suivi_loyers",
+            name: "suivi_loyers",
+            component: () =>
+              import(
+                "@/views/proprietaire/conteneurs/annonces/SuiviLoyers.vue"
+              ),
+            meta: {
+              requiresAuth: true,
+              // hideAddAnnonce: true,
+              role: "PROPRIETAIRE_ROLES",
+            },
+          },
+          {
+            path: "/releve_de_compte",
+            name: "releve_de_compte",
+            component: () =>
+              import(
+                "@/views/proprietaire/conteneurs/annonces/ReleveDeCompte.vue"
+              ),
+            meta: {
+              requiresAuth: true,
+              // hideAddAnnonce: true,
+              role: "PROPRIETAIRE_ROLES",
+            },
+          },
+          {
+            path: "/declarations_fiscales",
+            name: "declarations_fiscales",
+            component: () =>
+              import(
+                "@/views/proprietaire/conteneurs/annonces/DeclarationsFiscales.vue"
+              ),
+            meta: {
+              requiresAuth: true,
+              // hideAddAnnonce: true,
+              role: "PROPRIETAIRE_ROLES",
+            },
+          },
+          {
+            path: "/demandes_interventions",
+            name: "demandes_interventions",
+            component: () =>
+              import(
+                "@/views/proprietaire/conteneurs/annonces/DemandesInterventions.vue"
+              ),
+            meta: {
+              requiresAuth: true,
+              // hideAddAnnonce: true,
+              role: "PROPRIETAIRE_ROLES",
+            },
+          },
+
+          {
+            path: "/suivi_travaux",
+            name: "suivi_travaux",
+            component: () =>
+              import(
+                "@/views/proprietaire/conteneurs/annonces/SuiviTravaux.vue"
+              ),
+            meta: {
+              requiresAuth: true,
+              // hideAddAnnonce: true,
+              role: "PROPRIETAIRE_ROLES",
+            },
+          },
+          {
+            path: "/historiques_maintenances",
+            name: "historiques_maintenances",
+            component: () =>
+              import(
+                "@/views/proprietaire/conteneurs/annonces/HistoriquesMaintenances.vue"
               ),
             meta: {
               requiresAuth: true,

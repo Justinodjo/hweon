@@ -44,6 +44,7 @@ const actions = {
   async getOne(cxt, id) {
     let { data } = await request.get("auth/getUsers/" + id);
     cxt.commit("SET_ONE", data);
+    console.log("data reçu à getOne :", data);
     return data;
   },
   async create(cxt, payload) {
@@ -58,6 +59,7 @@ const actions = {
   // },
   async update({ commit }, payload) {
     try {
+      console.log("Payload envoyé à updateUser :", payload);
       const response = await request.put(
         `auth/updateUser/${payload.id}`,
         payload
@@ -103,6 +105,22 @@ const actions = {
   //   cxt.commit("UPDATE_ONE", response.data);
   //   return response.data;
   // },
+  async assignRole(cxt, { email, roleName }) {
+    try {
+      const { data } = await request.post(
+        "auth/assign-role",
+        null, // pas de body, juste des query params
+        {
+          params: { email, roleName },
+          withCredentials: true,
+        }
+      );
+      return data;
+    } catch (error) {
+      console.error("Erreur lors de l’attribution du rôle :", error);
+      throw error;
+    }
+  },
 
   async delete(cxt, id) {
     await request.delete("auth/deleteUser/" + id);

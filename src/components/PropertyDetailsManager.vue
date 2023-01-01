@@ -67,13 +67,59 @@
                             </div>
 
                             <div class="col-md-2">
-                                <label class="form-label">Prix (FCFA)</label>
+                                <label class="form-label">Prix (FCFA)*</label>
                                 <input type="number" class="form-control" :value="detail.prix"
                                     @input="updateDetail(index, 'prix', parseFloat($event.target.value) || null)"
-                                    min="0" placeholder="Optionnel">
+                                    min="0" placeholder="Prix location">
                             </div>
                         </div>
+                        <div class="row g-3 mb-3">
+                            <!-- DPE -->
+                            <div class="col-md-4">
+                                <label class="form-label">
+                                    <i class="bi bi-lightning me-2"></i>
+                                    DPE (A à G)
+                                </label>
+                                <select class="form-select" :value="detail.typeDPE"
+                                    @change="updateDetail(index, 'typeDPE', $event.target.value)">
+                                    <option value="">Non renseigné</option>
+                                    <option v-for="typeDPE in typesDPE" :key="typeDPE.key" :value="typeDPE.key">
+                                        {{ typeDPE.label }}
+                                    </option>
+                                </select>
+                                <small class="form-text text-muted">
+                                    Diagnostic de Performance Énergétique
+                                </small>
+                            </div>
 
+                            <!-- Charges mensuelles -->
+                            <div class="col-md-4">
+                                <label class="form-label">
+                                    <i class="bi bi-cash-coin me-2"></i>
+                                    Charges mensuelles (XOF)
+                                </label>
+                                <input type="number" class="form-control" :value="detail.chargesMensuelles"
+                                    @input="updateDetail(index, 'chargesMensuelles', $event.target.value)" min="0"
+                                    step="10" placeholder="0">
+                                <small class="form-text text-muted">
+                                    Montant mensuel estimé
+                                </small>
+                            </div>
+
+                            <!-- Taxe foncière -->
+                            <div class="col-md-4">
+                                <label class="form-label">
+                                    <i class="bi bi-receipt me-2"></i>
+                                    Taxe foncière annuelle (XOF)
+                                </label>
+                                <input type="number" class="form-control" :value="detail.taxeFonciereAnnuelle"
+                                    @input="updateDetail(index, 'taxeFonciereAnnuelle', $event.target.value)" min="0"
+                                    step="50" placeholder="0">
+                                <small class="form-text text-muted">
+                                    Montant annuel de la taxe foncière
+                                </small>
+                            </div>
+                        </div>
                         <!-- Upload images -->
                         <div v-if="!isAgricole">
                             <FilePondWrapper :form="form" :uploadConfig="uploadConfig" :preview="preview"
@@ -100,9 +146,26 @@
                                 Pièce disponible/fonctionnelle
                             </label>
                         </div>
-
+                        <!-- Observations -->
+                        <div class="mt-4">
+                            <label class="form-label">
+                                <i class="bi bi-chat-left-text me-2"></i>
+                                Observations particulières
+                            </label>
+                            <textarea class="form-control" :value="detail.observations"
+                                @input="updateDetail(index, 'observations', $event.target.value)" rows="4"
+                                placeholder="Remarques, travaux à prévoir, particularités du bien..."></textarea>
+                            <small class="form-text text-muted">
+                                Informations supplémentaires importantes pour l'acheteur/locataire
+                            </small>
+                            <div class="mt-2">
+                                <span class="text-muted small">
+                                    {{ detail.observations ? detail.observations.length : 0 }}/500 caractères
+                                </span>
+                            </div>
+                        </div>
                         <!-- Sous-détails -->
-                        <div v-if="detail.sousDetailsBiensImmobiliers && detail.sousDetailsBiensImmobiliers.length > 0">
+                        <div v-if="detail.sousDetailsBiensImmobiliers">
                             <h6>Sous-détails</h6>
                             <div v-for="(sousDetail, sousIndex) in detail.sousDetailsBiensImmobiliers"
                                 :key="`sousDetail-${sousIndex}`" class="row g-3 mb-3">
@@ -128,6 +191,8 @@
                                         </option>
                                     </select>
                                 </div>
+
+
                                 <div class="col-md-2">
                                     <button type="button" class="btn btn-danger btn-sm mt-3"
                                         @click="removeSousDetail(index, sousIndex)">Supprimer</button>
@@ -180,7 +245,7 @@ import { API_URLS } from "@/config/api";
 export default {
     name: 'PropertyDetailsManager',
     components: { FilePondWrapper, DropzoneUpload, AdditionalInfo },
-    props: ['form', 'preview', 'uploadConfig', 'detailsBiensImmobiliers', 'typesDetailsBiens', 'etatsGeneral', 'typesBien', 'typesDPE', 'currentStep', 'activeStep'],
+    props: ['form', 'preview', 'uploadConfig', 'detailsBiensImmobiliers', 'typesDetailsBiens', 'etatsGeneral', 'typesBien', 'typesDPE', 'currentStep', 'activeStep', 'observations'],
     emits: ['update:details', 'update:form', 'uploadResponse', 'update:preview'],
     computed: {
         commonRoomTypes() {
@@ -216,6 +281,15 @@ export default {
             );
             return type?.nomTypeBiensImmo || null;
         },
+
+    },
+    watch: {
+        'detail.observations'(newVal) {
+            // Limiter à 500 caractères
+            if (newVal && newVal.length > 500) {
+                this.updateDetail(index, 'observations', newVal.substring(0, 500))
+            }
+        }
     },
     methods: {
         addDetail() { this.$emit('update:details', [...this.detailsBiensImmobiliers, createNewDetail()]) },

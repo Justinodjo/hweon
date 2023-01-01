@@ -1,21 +1,22 @@
 import Cookies from "js-cookie";
 
-const TokenKey = "d7542a8f";
-const RolesKey = "d7542a8f_roles";
-const UserInfoKey = "d7542a8f_userInfo";
-const EmailKey = "d7542a8f_email";
-const UserNameKey = "d7542a8f_userName";
-const SecondNameKey = "d7542a8f_secondName";
-const RefreshTokenKey = "d7542a8f_refreshToken";
-const FichiersKey = "d7542a8f_fichiers";
-const PermissionsKey = "d7542a8f_permissions";
+const TokenKey = "token";
+const RolesKey = "roles";
+const UserInfoKey = "userInfo";
+const EmailKey = "email";
+const UserNameKey = "userName";
+const SecondNameKey = "secondName";
+const RefreshTokenKey = "refreshToken";
+const FichierKey = "fichier";
+const PermissionsKey = "permissions";
+const ConsentKey = "cookieConsent";
 export function getToken() {
   return Cookies.get(TokenKey);
 }
 
 export function setToken(token) {
   return Cookies.set(TokenKey, token, {
-    secure: true,
+    secure: false,
     sameSite: "Strict",
     expires: 1,
   });
@@ -30,7 +31,7 @@ export function getRoles() {
 }
 
 export function setRoles(roles) {
-  return Cookies.set(RolesKey, roles, {
+  return Cookies.set(RolesKey, JSON.stringify(roles), {
     secure: true,
     sameSite: "Strict",
     expires: 1,
@@ -46,7 +47,7 @@ export function getPermissions() {
 }
 
 export function setPermissions(permissions) {
-  return Cookies.set(PermissionsKey, permissions, {
+  return Cookies.set(PermissionsKey, JSON.stringify(permissions), {
     secure: true,
     sameSite: "Strict",
     expires: 1,
@@ -71,17 +72,17 @@ export function removeUserInfo() {
   return Cookies.remove(UserInfoKey);
 }
 export function setFichier(fichier) {
-  return Cookies.set(FichiersKey, fichier, {
+  return Cookies.set(FichierKey, fichier, {
     secure: true,
     sameSite: "Strict",
     expires: 1,
   });
 }
 export function getFichier() {
-  return Cookies.get(FichiersKey);
+  return Cookies.get(FichierKey);
 }
 export function removeFichier() {
-  return Cookies.remove(FichiersKey);
+  return Cookies.remove(FichierKey);
 }
 
 export function removeEmail() {
@@ -146,4 +147,19 @@ export function setRefreshToken(refreshToken) {
 
 export function removeRefreshToken() {
   return Cookies.remove(RefreshTokenKey);
+}
+export function getConsent() {
+  return Cookies.get(ConsentKey);
+}
+
+export function setConsent(status) {
+  return Cookies.set(ConsentKey, status, {
+    secure: true,
+    sameSite: "Strict",
+    expires: 365,
+  });
+}
+
+export function removeConsent() {
+  return Cookies.remove(ConsentKey);
 }

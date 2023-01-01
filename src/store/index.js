@@ -22,6 +22,12 @@ import permissions from "./modules/permissions.js";
 import notifications from "./modules/notifications.js";
 import fichiers from "./modules/fichiers.js";
 import contrats from "./modules/contrats.js";
+import interventions from "./modules/interventions.js";
+import paiements from "./modules/paiement.js";
+import favoris from "./modules/favoris.js";
+import offres from "./modules/offres";
+import passwordReset from "./modules/passwordReset";
+import suggestions from "./modules/suggestions";
 export default createStore({
   modules: {
     auth,
@@ -42,11 +48,17 @@ export default createStore({
     consentements,
     contrats,
     sousService,
+    interventions,
     produits,
     reservation,
     detailsBiensImmobiliers,
     notifications,
     fichiers,
+    paiements,
+    suggestions,
+    favoris,
+    offres,
+    passwordReset,
   },
   // plugins: [
   //   createPersistedState({

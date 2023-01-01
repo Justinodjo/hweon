@@ -7,7 +7,7 @@
                 <UserDashboard />
             </div>
         </section>
-        <router-view />
+        <router-view :key="$route.path" />
         <!--=======================Content END -->
 
     </main>
@@ -20,6 +20,7 @@ import { useLoading } from "vue-loading-overlay";
 import { ElMessage, ElMessageBox } from "element-plus";
 import UserDashboard from '@/components/ui/proprietaire/UserDashboard.vue'
 import ContratDetailsModal from "@/components/modal/ContratDetailsModal.vue";
+
 const store = useStore()
 const loading = useLoading();
 

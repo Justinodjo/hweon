@@ -3,12 +3,23 @@
     <div class="mb-3">
         <h5 class="mb-4">Équipements</h5>
 
-        <!-- Upload d'images -->
-        <div class="card mb-4" v-if="isAgricole">
-            <div class="card-header">
-                <h6>Si vous avez des batiments sur la propriété, vous pouvez changer la categorie du bien</h6>
+        <!-- ✅ Message pour les biens agricoles -->
+        <div v-if="isAgricole" class="card mb-4 border-warning">
+            <div class="card-header bg-warning bg-opacity-10">
+                <h6 class="mb-0">
+                    <i class="bi bi-info-circle me-2"></i>
+                    Bien agricole sélectionné
+                </h6>
             </div>
-
+            <div class="card-body">
+                <p class="mb-3">
+                    Les équipements détaillés ne sont pas nécessaires pour les biens agricoles.
+                </p>
+                <p class="mb-0">
+                    <strong>Si votre propriété comprend des bâtiments</strong> (maison, hangar, grange),
+                    vous pouvez revenir à l'étape 1 pour changer la catégorie du bien.
+                </p>
+            </div>
         </div>
 
         <!-- Équipements et commodités -->
@@ -110,7 +121,12 @@ export default {
 
     methods: {
         updateEquipements(equipements) {
-            this.$emit('update:form', { ...this.form, equipements });
+            console.log('StepTwo.updateEquipements reçu:', equipements);
+            // garantir un objet non null
+            const safe = equipements || {
+                securites: [], services: [], activites: [], modesPaiement: [], languesPersonnel: [], typeCuisine: [], typesClimatisation: [], typeGarage: [], typeVue: []
+            };
+            this.$emit('update:form', { ...this.form, equipements: safe });
         },
 
         updateAutresEquipements(value) {

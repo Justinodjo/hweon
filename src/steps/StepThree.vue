@@ -8,11 +8,17 @@
             :detailsBiensImmobiliers="form.detailsBiensImmobiliers" :isResidentiel="isResidentiel"
             @update:form="$emit('update:form', $event)" :preview="preview" />
 
+        <!-- ✅ Message pour les biens agricoles -->
+        <div v-if="isAgricole" class="alert alert-info">
+            <i class="bi bi-info-circle me-2"></i>
+            Pour les biens agricoles, les détails des pièces ne sont pas nécessaires.
+            Passez directement à l'étape suivante.
+        </div>
         <!-- Pièces principales -->
-        <PropertyDetailsManager v-show="!isAgricole" :detailsBiensImmobiliers="form.detailsBiensImmobiliers"
+        <PropertyDetailsManager v-if="!isAgricole" :detailsBiensImmobiliers="form.detailsBiensImmobiliers"
             :etatsGeneral="etatsGeneral" :typesDetailsBiens="typesDetailsBiens" @update:details="updateDetails"
             :isAgricole="isAgricole" :isResidentiel="isResidentiel" :preview="preview" :activeStep="activeStep"
-            :form="form" :uploadResponse="uploadResponse" :uploadConfig="uploadConfig" :typesDPE="typesDPE" />
+            :form="form" :uploadResponse="handleUploadResponse" :uploadConfig="uploadConfig" :typesDPE="typesDPE" />
 
         <!-- Navigation -->
         <!-- <StepNavigation :canGoBack="true" :canGoNext="isStepThreeValid" @prevStep="$emit('prevStep')"
@@ -85,6 +91,7 @@ export default {
 
     emits: [
         'update:form',
+        'uploadResponse',
         'prevStep',
         'nextStep'
     ],
@@ -114,6 +121,9 @@ export default {
                 detailsBiensImmobiliers: details
             });
         },
+        handleUploadResponse(response) {
+            this.$emit('uploadResponse', response);
+        }
     }
 }
 </script>

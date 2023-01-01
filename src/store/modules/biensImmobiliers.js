@@ -12,6 +12,8 @@ const getters = {
   one: (state) => state.one,
   fichier: (state) => state.fichier,
   uploadedFile: (state) => state.uploadedFile,
+  paginationMeta: (state) => state.paginationMeta,
+  totalBiens: (state) => state.totalBiens,
 };
 
 const mutations = {
@@ -26,6 +28,9 @@ const mutations = {
   },
   SET_UPLOADED_FILE: (state, obj) => {
     state.uploadedFile = obj;
+  },
+  SET_TOTAL_BIENS: (state, totalBiens) => {
+    state.totalBiens = totalBiens;
   },
   UPDATE_ONE: (state, obj) => {
     const index = state.all.findIndex((item) => item.id === obj.id);
@@ -59,6 +64,17 @@ const actions = {
     });
     cxt.commit("SET_ALL", data.content);
     cxt.commit("SET_PAGINATION_META", data);
+    // Récupérer le nombre total de biens
+    const totalBiens = data.totalElements; // Nombre total de biens
+    console.log("Nombre total de biens:", totalBiens);
+
+    // Calculer le nombre total de pages
+    const totalPages = Math.ceil(totalBiens / size);
+    console.log("Nombre total de pages:", totalPages);
+
+    // Si tu veux stocker ce nombre dans le state ou effectuer un autre calcul, tu peux aussi ajouter ici :
+    cxt.commit("SET_TOTAL_BIENS", totalBiens); // Exemple de commit pour sauvegarder le total
+
     return data;
   },
 
@@ -79,6 +95,20 @@ const actions = {
         "Erreur lors de la récupération des biens immobiliers:",
         error
       );
+    }
+  },
+  async getDisponibles(cxt, params = {}) {
+    try {
+      const { data } = await request.get("biens/disponibles", { params });
+      // backend renvoie une List<BiensImmobiliers>
+      cxt.commit("SET_ALL", data);
+      return data;
+    } catch (error) {
+      console.error(
+        "Erreur lors de la récupération des biens disponibles:",
+        error
+      );
+      throw error;
     }
   },
   async getOne(cxt, id) {
@@ -105,7 +135,7 @@ const actions = {
     return data;
   },
   async update(cxt, payload) {
-    let { data } = await request.put("biens/update/" + payload);
+    let { data } = await request.put("biens/update/" + payload.id, payload);
     cxt.commit("UPDATE_ONE", data);
     return data;
   },
@@ -149,7 +179,7 @@ const actions = {
 
       const fileUrl = URL.createObjectURL(response.data);
       commit("SET_UPLOADED_FILE", fileUrl);
-
+      URL.revokeObjectURL(fileUrl);
       return fileUrl;
     } catch (error) {
       console.error("Erreur lors du téléchargement du fichier:", error);

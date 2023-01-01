@@ -1,147 +1,6 @@
 <template>
     <!-- **************** MAIN CONTENT START **************** -->
     <main>
-
-        <!-- =======================
-Search START -->
-        <section class="py-9 py-sm-10">
-            <div class="container">
-                <!-- Offcanvas button for search -->
-                <button class="btn btn-primary d-sm-none w-100 mb-0" type="button" data-bs-toggle="offcanvas"
-                    data-bs-target="#offcanvasEditsearch" aria-controls="offcanvasEditsearch"><i
-                        class="bi bi-pencil-square me-2"></i>Edit Search</button>
-
-                <!-- Search with offcanvas START -->
-                <div class="offcanvas-sm offcanvas-top" tabindex="-1" id="offcanvasEditsearch"
-                    aria-labelledby="offcanvasEditsearchLabel">
-                    <div class="offcanvas-header">
-                        <h5 class="offcanvas-title" id="offcanvasEditsearchLabel">Edit search</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="offcanvas"
-                            data-bs-target="#offcanvasEditsearch" aria-label="Close"></button>
-                    </div>
-                    <div class="offcanvas-body p-2">
-                        <div class="bg-light p-4 rounded w-100">
-                            <form class="row g-4">
-                                <!-- Location -->
-                                <div class="col-md-6 col-lg-4">
-                                    <div class="form-size-lg form-fs-md">
-                                        <!-- Select input -->
-                                        <label class="form-label">Location</label>
-                                        <select class="form-select js-choice" data-search-enabled="true">
-                                            <option value="">Select location</option>
-                                            <option selected>San Jacinto, USA</option>
-                                            <option>North Dakota, Canada</option>
-                                            <option>West Virginia, Paris</option>
-                                        </select>
-                                    </div>
-                                </div>
-
-                                <!-- Check in -->
-                                <div class="col-md-6 col-lg-3">
-                                    <!-- Date input -->
-                                    <div class="form-fs-md">
-                                        <label class="form-label">Check in - out</label>
-                                        <input type="text" class="form-control form-control-lg flatpickr"
-                                            data-mode="range" placeholder="Select date" value="19 Sep to 28 Sep">
-                                    </div>
-                                </div>
-
-                                <!-- Guest -->
-                                <div class="col-md-6 col-lg-3">
-                                    <div class="form-fs-md">
-                                        <!-- Dropdown input -->
-                                        <div class="w-100">
-                                            <label class="form-label">Guests & rooms</label>
-                                            <div class="dropdown guest-selector me-2">
-                                                <input type="text"
-                                                    class="form-guest-selector form-control form-control-lg selection-result"
-                                                    value="2 Guests 1 Room" id="dropdownguest"
-                                                    data-bs-auto-close="outside" data-bs-toggle="dropdown">
-
-                                                <!-- dropdown items -->
-                                                <ul class="dropdown-menu guest-selector-dropdown"
-                                                    aria-labelledby="dropdownguest">
-                                                    <!-- Adult -->
-                                                    <li class="d-flex justify-content-between">
-                                                        <div>
-                                                            <h6 class="mb-0">Adults</h6>
-                                                            <small>Ages 13 or above</small>
-                                                        </div>
-
-                                                        <div class="hstack gap-1 align-items-center">
-                                                            <button type="button"
-                                                                class="btn btn-link adult-remove p-0 mb-0"><i
-                                                                    class="bi bi-dash-circle fs-5 fa-fw"></i></button>
-                                                            <h6 class="guest-selector-count mb-0 adults">2</h6>
-                                                            <button type="button"
-                                                                class="btn btn-link adult-add p-0 mb-0"><i
-                                                                    class="bi bi-plus-circle fs-5 fa-fw"></i></button>
-                                                        </div>
-                                                    </li>
-
-                                                    <!-- Divider -->
-                                                    <li class="dropdown-divider"></li>
-
-                                                    <!-- Child -->
-                                                    <li class="d-flex justify-content-between">
-                                                        <div>
-                                                            <h6 class="mb-0">Child</h6>
-                                                            <small>Ages 13 below</small>
-                                                        </div>
-
-                                                        <div class="hstack gap-1 align-items-center">
-                                                            <button type="button"
-                                                                class="btn btn-link child-remove p-0 mb-0"><i
-                                                                    class="bi bi-dash-circle fs-5 fa-fw"></i></button>
-                                                            <h6 class="guest-selector-count mb-0 child">0</h6>
-                                                            <button type="button"
-                                                                class="btn btn-link child-add p-0 mb-0"><i
-                                                                    class="bi bi-plus-circle fs-5 fa-fw"></i></button>
-                                                        </div>
-                                                    </li>
-
-                                                    <!-- Divider -->
-                                                    <li class="dropdown-divider"></li>
-
-                                                    <!-- Rooms -->
-                                                    <li class="d-flex justify-content-between">
-                                                        <div>
-                                                            <h6 class="mb-0">Rooms</h6>
-                                                            <small>Max room 8</small>
-                                                        </div>
-
-                                                        <div class="hstack gap-1 align-items-center">
-                                                            <button type="button"
-                                                                class="btn btn-link room-remove p-0 mb-0"><i
-                                                                    class="bi bi-dash-circle fs-5 fa-fw"></i></button>
-                                                            <h6 class="guest-selector-count mb-0 rooms">1</h6>
-                                                            <button type="button"
-                                                                class="btn btn-link room-add p-0 mb-0"><i
-                                                                    class="bi bi-plus-circle fs-5 fa-fw"></i></button>
-                                                        </div>
-                                                    </li>
-                                                </ul>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <!-- Button -->
-                                <div class="col-md-6 col-lg-2 mt-md-auto">
-                                    <a class="btn btn-lg btn-primary w-100 mb-0" href="hotel-detail.html#"><i
-                                            class="bi bi-search fa-fw"></i>Search</a>
-                                </div>
-
-                            </form>
-                        </div>
-                    </div>
-                </div>
-                <!-- Search with offcanvas END -->
-            </div>
-        </section>
-        <!-- =======================
-Search END -->
-
         <!-- =======================
 Main Title START -->
         <section class="py-0 pt-sm-0">
@@ -190,22 +49,24 @@ Main Title START -->
                                 </li>
                                 <!-- Share icon -->
                                 <li class="list-inline-item dropdown">
-                                    <!-- Share button -->
-                                    <a href="hotel-detail.html#" class="btn btn-sm btn-light px-2" role="button"
-                                        id="dropdownShare" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <a href="#" class="btn btn-sm btn-light px-2" role="button" id="dropdownShare"
+                                        data-bs-toggle="dropdown" aria-expanded="false">
                                         <i class="fa-solid fa-fw fa-share-alt"></i>
                                     </a>
-                                    <!-- dropdown button -->
                                     <ul class="dropdown-menu dropdown-menu-end min-w-auto shadow rounded"
                                         aria-labelledby="dropdownShare">
-                                        <li><a class="dropdown-item" href="hotel-detail.html#"><i
-                                                    class="fab fa-twitter-square me-2"></i>Twitter</a></li>
-                                        <li><a class="dropdown-item" href="hotel-detail.html#"><i
-                                                    class="fab fa-facebook-square me-2"></i>Facebook</a></li>
-                                        <li><a class="dropdown-item" href="hotel-detail.html#"><i
-                                                    class="fab fa-linkedin me-2"></i>LinkedIn</a></li>
-                                        <li><a class="dropdown-item" href="hotel-detail.html#"><i
-                                                    class="fa-solid fa-copy me-2"></i>Copy link</a></li>
+                                        <li><a class="dropdown-item" @click="shareOn('twitter')" href="#">
+                                                <i class="fab fa-twitter-square me-2"></i>Twitter</a>
+                                        </li>
+                                        <li><a class="dropdown-item" @click="shareOn('facebook')" href="#">
+                                                <i class="fab fa-facebook-square me-2"></i>Facebook</a>
+                                        </li>
+                                        <li><a class="dropdown-item" @click="shareOn('linkedin')" href="#">
+                                                <i class="fab fa-linkedin me-2"></i>LinkedIn</a>
+                                        </li>
+                                        <li><a class="dropdown-item" @click="copyLink" href="#">
+                                                <i class="fa-solid fa-copy me-2"></i>Copier le lien</a>
+                                        </li>
                                     </ul>
                                 </li>
                             </ul>
@@ -215,15 +76,29 @@ Main Title START -->
                 <!-- Title and button END -->
 
                 <!-- Alert box START -->
-                <div class="alert alert-danger alert-dismissible d-flex justify-content-between align-items-center fade show mb-4 rounded-3 pe-2"
+                <div v-if="biensImmobiliers?.alerteContractuelle || showContractAlert"
+                    class="alert alert-danger alert-dismissible d-flex justify-content-between align-items-center fade show mb-4 rounded-3 pe-2"
                     role="alert">
                     <div class="d-flex">
-                        <span class="alert-heading h5 mb-0 me-2"><i class="bi bi-exclamation-octagon-fill"></i></span>
-                        <span><strong class="alert-heading me-2">Covid Policy:</strong>You may require to present an
-                            RT-PCR negative test report at the hotel</span>
+                        <span class="alert-heading h5 mb-0 me-2">
+                            <i class="bi bi-exclamation-octagon-fill"></i>
+                        </span>
+                        <span>
+                            <strong class="alert-heading me-2">
+                                {{ biensImmobiliers?.alerteContractuelle?.titre ||
+                                    'Politique Hweon' }}:
+                            </strong>
+                            {{
+                                biensImmobiliers?.alerteContractuelle?.message ||
+                                "Pour toutes annonces veuillez toujours demander " +
+                                "les documents nécessaires pour un achat, vente ou location"
+                            }}
+                        </span>
                     </div>
-                    <button type="button" class="btn btn-link text-primary-hover pb-0 text-end" data-bs-dismiss="alert"
-                        aria-label="Close"><i class="bi bi-x-lg"></i></button>
+                    <button type="button" class="btn btn-link text-primary-hover pb-0 text-end"
+                        @click="showContractAlert = false" aria-label="Close">
+                        <i class="bi bi-x-lg"></i>
+                    </button>
                 </div>
                 <!-- Alert box END -->
             </div>
@@ -270,8 +145,8 @@ Image gallery START -->
 
                             <!-- Image -->
                             <div class="col-md-6"
-                                v-for="(detail, index) in biensImmobiliers?.detailsBiensImmobiliers || []"
-                                :key="'detail-' + index" v-if="detail?.fichier">
+                                v-for="(detail, index) in biensImmobiliers.detailsBiensImmobiliers || []"
+                                :key="'detail-' + index" v-if="biensImmobiliers.detailsBiensImmobiliers?.fichier">
                                 <a data-glightbox data-gallery="gallery" :href="getImageUrlSafe(detail.fichier)">
                                     <div class="card card-grid-sm card-element-hover card-overlay-hover overflow-hidden"
                                         :style="{ backgroundImage: `url(${getImageUrlSafe(detail.fichier)})`, backgroundPosition: 'center left', backgroundSize: 'cover' }">
@@ -287,7 +162,7 @@ Image gallery START -->
                             <!-- Images -->
                             <div class="col-md-6" v-if="biensImmobiliers?.detailsBiensImmobiliers?.length">
                                 <div class="card card-grid-sm overflow-hidden" :style="{
-                                    backgroundImage: `url(${getImageUrl(biensImmobiliers.detailsBiensImmobiliers[0]?.fichier?.id)})`,
+                                    backgroundImage: `url(${getImageUrl(biensImmobiliers?.detailsBiensImmobiliers[0]?.fichier?.id)})`,
                                     backgroundPosition: 'center left',
                                     backgroundSize: 'cover'
                                 }">
@@ -295,7 +170,7 @@ Image gallery START -->
                                     <div class="bg-overlay bg-dark opacity-7"></div>
 
                                     <!-- Popup Images -->
-                                    <a v-for="(detail, index) in biensImmobiliers.detailsBiensImmobiliers"
+                                    <a v-for="(detail, index) in biensImmobiliers?.detailsBiensImmobiliers"
                                         :key="'popup-' + index" data-glightbox data-gallery="gallery"
                                         :href="getImageUrl(detail?.fichier?.id)"
                                         :class="index === 0 ? 'stretched-link z-index-9' : ''"></a>
@@ -328,38 +203,66 @@ About hotel START -->
                     <div class="d-sm-flex justify-content-sm-between align-items-center mb-3">
 
                         <div>
-                            <span>Price Start at</span>
-                            <h4 class="card-title mb-0">{{ this.biensImmobiliers?.prix }}</h4>
+                            <span>Prix à partir de</span>
+                            <h4 class="card-title mb-0">
+                                {{ formatCurrency(biensImmobiliers?.prixMin || biensImmobiliers?.prix) }}
+                            </h4>
                         </div>
                         <div>
-                            <h6 class="fw-normal mb-0">1 room per night</h6>
-                            <small>+ $285 taxes & fees</small>
+                            <h6 class="fw-normal mb-0">
+                                {{ biensImmobiliers?.detailsBiensImmobiliers?.length || 0 }} Appartements</h6>
+                            <small>{{ formatDate(biensImmobiliers?.createdAt) }}</small>
                         </div>
                     </div>
 
                     <!-- Rating -->
                     <ul class="list-inline mb-2">
-                        <li class="list-inline-item me-1 h6 fw-light mb-0"><i class="bi bi-arrow-right me-2"></i>4.5
+                        <li class="list-inline-item me-1 h6 fw-light mb-0">
+                            <i class="bi bi-arrow-right me-2"></i>{{ biensImmobiliers?.noteGlobale || 0 }}
                         </li>
-                        <li class="list-inline-item me-0 small"><i class="fa-solid fa-star text-warning"></i></li>
-                        <li class="list-inline-item me-0 small"><i class="fa-solid fa-star text-warning"></i></li>
-                        <li class="list-inline-item me-0 small"><i class="fa-solid fa-star text-warning"></i></li>
-                        <li class="list-inline-item me-0 small"><i class="fa-solid fa-star text-warning"></i></li>
-                        <li class="list-inline-item me-0 small"><i class="fa-solid fa-star-half-alt text-warning"></i>
+                        <li v-for="n in 5" :key="n" class="list-inline-item me-0 small">
+                            <i :class="[
+                                'fa-solid',
+                                n <= Math.floor(biensImmobiliers?.noteGlobale || 0) ? 'fa-star text-warning' :
+                                    n - 0.5 === (biensImmobiliers?.noteGlobale || 0) ? 'fa-star-half-alt text-warning' :
+                                        'fa-star text-muted'
+                            ]"></i>
+                        </li>
+                        <li class="list-inline-item ms-2 small text-muted">
+                            ({{ biensImmobiliers?.nombreAvis || 0 }} avis)
                         </li>
                     </ul>
 
-                    <p class="h6 fw-light mb-4"><i class="bi bi-arrow-right me-2"></i>Free breakfast
-                        available</p>
+                    <!-- Avantages dynamiques -->
+                    <div v-if="biensImmobiliers?.avantagesPrincipaux?.length">
+                        <p v-for="(avantage, index) in biensImmobiliers.avantagesPrincipaux.slice(0, 2)" :key="index"
+                            class="h6 fw-light mb-2">
+                            <i class="bi bi-arrow-right me-2"></i>{{ avantage }}
+                        </p>
+                    </div>
 
-                    <!-- Button -->
-                    <div class="d-grid">
-                        <a href="hotel-detail.html#room-options" class="btn btn-lg btn-primary-soft mb-0">View 10 Rooms
-                            Options</a>
+                    <!-- 🆕 BOUTON POUR SÉLECTIONNER LE BIEN PRINCIPAL -->
+                    <div class="d-grid mt-3">
+                        <button type="button" class="btn btn-lg mb-2"
+                            :class="isBienSelected ? 'btn-success' : 'btn-primary'" @click="toggleBienSelection">
+                            <i :class="['bi', isBienSelected ? 'bi-check-circle-fill' : 'bi-building']"
+                                class="me-2"></i>
+                            {{ isBienSelected ? 'Bien sélectionné' : 'Sélectionner ce bien immobilier' }}
+                        </button>
+                    </div>
+
+                    <!-- Bouton Appartements -->
+                    <div class="d-grid mt-2">
+                        <input type="checkbox" class="btn-check" id="btn-check-soft">
+                        <label class="btn btn-primary-soft btn-primary-check mb-0" for="btn-check-soft"
+                            data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-controls="collapseExample">
+                            <i class="bi fa-fe bi-sliders me-2"></i>
+                            {{ biensImmobiliers?.detailsBiensImmobiliers?.length || 0 }} Appartements disponibles
+                        </label>
                     </div>
                 </div>
                 <!-- Book now END -->
-                <div class="row g-4 g-xl-5">
+                <div class="row g-4 g-xl-5 mt-4 collapse" id="collapseExample">
                     <!-- Content START -->
                     <div class="col-xl-7 order-1">
                         <div class="vstack gap-5">
@@ -379,21 +282,10 @@ About hotel START -->
 
                                     <!-- Highlights Icons -->
                                     <div class="hstack gap-3 mb-3">
-                                        <div class="icon-lg bg-light h5 rounded-2" data-bs-toggle="tooltip"
-                                            data-bs-placement="top" title="Free wifi">
-                                            <i class="fa-solid fa-wifi"></i>
-                                        </div>
-                                        <div class="icon-lg bg-light h5 rounded-2" data-bs-toggle="tooltip"
-                                            data-bs-placement="top" title="Swimming Pool">
-                                            <i class="fa-solid fa-swimming-pool"></i>
-                                        </div>
-                                        <div class="icon-lg bg-light h5 rounded-2" data-bs-toggle="tooltip"
-                                            data-bs-placement="top" title="Central AC">
-                                            <i class="fa-solid fa-snowflake"></i>
-                                        </div>
-                                        <div class="icon-lg bg-light h5 rounded-2" data-bs-toggle="tooltip"
-                                            data-bs-placement="top" title="Free Service">
-                                            <i class="fa-solid fa-concierge-bell"></i>
+                                        <div v-for="(highlight, index) in getHighlights()" :key="index"
+                                            class="icon-lg bg-light h5 rounded-2" data-bs-toggle="tooltip"
+                                            data-bs-placement="top" :title="highlight.label">
+                                            <i :class="highlight.icon"></i>
                                         </div>
                                     </div>
 
@@ -411,73 +303,93 @@ About hotel START -->
 
                                     <!-- List -->
                                     <h3 class="fw-light mb-2"><strong>Avantages</strong></h3>
+                                    <div v-if="biensImmobiliers?.avantagesApplication?.length">
+                                        <div v-for="(categorie, catIndex) in biensImmobiliers.avantagesApplication"
+                                            :key="'cat-' + catIndex" class="mb-3">
+                                            <strong>{{ categorie.titre }}</strong>
+                                            <ul class="list-group list-group-borderless mb-0">
+                                                <li v-for="(avantage, avIndex) in categorie.items"
+                                                    :key="'av-' + avIndex"
+                                                    class="list-group-item h6 fw-light d-flex mb-0">
+                                                    <i class="bi bi-patch-check-fill text-success me-2"></i>
+                                                    {{ avantage }}
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    <!-- Fallback si pas de données dynamiques -->
+                                    <div v-else>
+                                        <strong>
+                                            Gain de temps considérable</strong>
+                                        <ul class="list-group list-group-borderless mb-0">
+                                            <li class="list-group-item h6 fw-light d-flex mb-0"><i
+                                                    class="bi bi-patch-check-fill text-success me-2"></i>Automatisez vos
+                                                quittances, relances, révisions de loyers...</li>
+                                            <li class="list-group-item h6 fw-light d-flex mb-0"><i
+                                                    class="bi bi-patch-check-fill text-success me-2"></i>Dites adieu aux
+                                                tableurs complexes et aux papiers perdus.</li>
+                                            <li class="list-group-item h6 fw-light d-flex mb-0"><i
+                                                    class="bi bi-patch-check-fill text-success me-2"></i>📌 En un clic :
+                                                vos
+                                                documents sont générés et vos données centralisées.</li>
+                                        </ul>
 
-                                    <strong>
-                                        Gain de temps considérable</strong>
-                                    <ul class="list-group list-group-borderless mb-0">
-                                        <li class="list-group-item h6 fw-light d-flex mb-0"><i
-                                                class="bi bi-patch-check-fill text-success me-2"></i>Automatisez vos
-                                            quittances, relances, révisions de loyers...</li>
-                                        <li class="list-group-item h6 fw-light d-flex mb-0"><i
-                                                class="bi bi-patch-check-fill text-success me-2"></i>Dites adieu aux
-                                            tableurs complexes et aux papiers perdus.</li>
-                                        <li class="list-group-item h6 fw-light d-flex mb-0"><i
-                                                class="bi bi-patch-check-fill text-success me-2"></i>📌 En un clic : vos
-                                            documents sont générés et vos données centralisées.</li>
-                                    </ul>
+                                        <!-- List -->
 
-                                    <!-- List -->
-
-                                    <strong>
-                                        Suivi facilité de ses biens</strong>
-                                    <ul class="list-group list-group-borderless mb-0">
-                                        <li class="list-group-item h6 fw-light d-flex mb-0"><i
-                                                class="bi bi-patch-check-fill text-success me-2"></i>Visualisez vos
-                                            loyers, retards, rendements, taux d’occupation.</li>
-                                        <li class="list-group-item h6 fw-light d-flex mb-0"><i
-                                                class="bi bi-patch-check-fill text-success me-2"></i>Analysez la
-                                            performance de chaque bien.</li>
-                                        <li class="list-group-item h6 fw-light d-flex mb-0"><i
-                                                class="bi bi-patch-check-fill text-success me-2"></i>📊 Vous savez
-                                            instantanément ce qui rapporte et ce qui coûte..</li>
-                                    </ul>
+                                        <strong>
+                                            Suivi facilité de ses biens</strong>
+                                        <ul class="list-group list-group-borderless mb-0">
+                                            <li class="list-group-item h6 fw-light d-flex mb-0"><i
+                                                    class="bi bi-patch-check-fill text-success me-2"></i>Visualisez vos
+                                                loyers, retards, rendements, taux d’occupation.</li>
+                                            <li class="list-group-item h6 fw-light d-flex mb-0"><i
+                                                    class="bi bi-patch-check-fill text-success me-2"></i>Analysez la
+                                                performance de chaque bien.</li>
+                                            <li class="list-group-item h6 fw-light d-flex mb-0"><i
+                                                    class="bi bi-patch-check-fill text-success me-2"></i>📊 Vous savez
+                                                instantanément ce qui rapporte et ce qui coûte..</li>
+                                        </ul>
 
 
-                                    <strong>
-                                        Zéro oubli administratif</strong>
-                                    <ul class="list-group list-group-borderless mb-0">
-                                        <li class="list-group-item h6 fw-light d-flex align-items-start mb-0">
-                                            <i class="bi bi-patch-check-fill text-success me-2 mt-1"></i>
-                                            <div>
-                                                <strong>Alertes pour :</strong>
-                                                <ul class="list-unstyled ms-4 mt-1">
-                                                    <li class="d-flex mb-1">
-                                                        <i class="bi bi-patch-check-fill text-success me-2"></i> la fin
-                                                        des baux
-                                                    </li>
-                                                    <li class="d-flex mb-1">
-                                                        <i class="bi bi-patch-check-fill text-success me-2"></i> les
-                                                        révisions de loyers
-                                                    </li>
-                                                    <li class="d-flex mb-1">
-                                                        <i class="bi bi-patch-check-fill text-success me-2"></i> les
-                                                        diagnostics à renouveler (DPE, électricité)
-                                                    </li>
-                                                    <li class="d-flex mb-1">
-                                                        <i class="bi bi-patch-check-fill text-success me-2"></i> l’envoi
-                                                        automatique des quittances, messages et documents
-                                                    </li>
-                                                    <li class="d-flex">
-                                                        <i class="bi bi-patch-check-fill text-success me-2"></i> les
-                                                        assurances ou taxes à payer
-                                                    </li>
-                                                </ul>
-                                            </div>
-                                        </li>
-                                        <li class="list-group-item h6 fw-light d-flex mb-0"><i
-                                                class="bi bi-patch-check-fill text-success me-2"></i>🔔 Vous restez
-                                            toujours en conformité et en avance.</li>
-                                    </ul>
+                                        <strong>
+                                            Zéro oubli administratif</strong>
+                                        <ul class="list-group list-group-borderless mb-0">
+                                            <li class="list-group-item h6 fw-light d-flex align-items-start mb-0">
+                                                <i class="bi bi-patch-check-fill text-success me-2 mt-1"></i>
+                                                <div>
+                                                    <strong>Alertes pour :</strong>
+                                                    <ul class="list-unstyled ms-4 mt-1">
+                                                        <li class="d-flex mb-1">
+                                                            <i class="bi bi-patch-check-fill text-success me-2"></i> la
+                                                            fin
+                                                            des baux
+                                                        </li>
+                                                        <li class="d-flex mb-1">
+                                                            <i class="bi bi-patch-check-fill text-success me-2"></i> les
+                                                            révisions de loyers
+                                                        </li>
+                                                        <li class="d-flex mb-1">
+                                                            <i class="bi bi-patch-check-fill text-success me-2"></i> les
+                                                            diagnostics à renouveler (DPE, électricité)
+                                                        </li>
+                                                        <li class="d-flex mb-1">
+                                                            <i class="bi bi-patch-check-fill text-success me-2"></i>
+                                                            l’envoi
+                                                            automatique des quittances, messages et documents
+                                                        </li>
+                                                        <li class="d-flex">
+                                                            <i class="bi bi-patch-check-fill text-success me-2"></i> les
+                                                            assurances ou taxes à payer
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            </li>
+                                            <li class="list-group-item h6 fw-light d-flex mb-0"><i
+                                                    class="bi bi-patch-check-fill text-success me-2"></i>🔔 Vous restez
+                                                toujours en conformité et en avance.</li>
+                                        </ul>
+                                    </div>
+
                                 </div>
                                 <!-- Card body END -->
                             </div>
@@ -566,15 +478,19 @@ About hotel START -->
                                 <!-- Card header -->
                                 <div class="card-header border-bottom bg-transparent px-0 pt-0">
                                     <div class="d-sm-flex justify-content-sm-between align-items-center">
-                                        <h3 class="mb-2 mb-sm-0">Room Options</h3>
+                                        <h3 class="mb-2 mb-sm-0">Appartements</h3>
 
+                                        <!-- DROPDOWN DE TRI DYNAMIQUE -->
                                         <div class="col-sm-4">
                                             <form class="form-control-bg-light">
-                                                <select class="form-select form-select-sm js-choice border-0">
-                                                    <option value="">Select Option</option>
-                                                    <option>Recently search</option>
-                                                    <option>Most popular</option>
-                                                    <option>Top rated</option>
+                                                <select v-model="sortOption" @change="sortRooms"
+                                                    class="form-select form-select-sm border-0">
+                                                    <option value="">Trier par</option>
+                                                    <option value="recent">Récemment ajouté</option>
+                                                    <option value="popular">Les plus populaires</option>
+                                                    <option value="price_asc">Prix croissant</option>
+                                                    <option value="price_desc">Prix décroissant</option>
+                                                    <option value="rating">Mieux notés</option>
                                                 </select>
                                             </form>
                                         </div>
@@ -588,8 +504,9 @@ About hotel START -->
                                         <!-- Room item START -->
                                         <div
                                             v-if="biensImmobiliers && biensImmobiliers?.detailsBiensImmobiliers?.length">
-                                            <room-slider v-for="room in biensImmobiliers?.detailsBiensImmobiliers"
-                                                :key="room.id" :room="room" @room-selected="toggleRoomSelection" />
+                                            <room-slider v-for="room in biensImmobiliers.detailsBiensImmobiliers"
+                                                :key="room.id" :room="room" @room-selected="toggleRoomSelection"
+                                                :biensId="Number($route.params.id)" />
                                         </div>
                                         <!-- Room item END -->
                                     </div>
@@ -607,7 +524,7 @@ About hotel START -->
                             <div class="card bg-transparent">
                                 <!-- Card header -->
                                 <div class="card-header border-bottom bg-transparent px-0 pt-0">
-                                    <h3 class="mb-0">Hotel Policies</h3>
+                                    <h3 class="mb-0">Politique Générale</h3>
                                 </div>
 
                                 <!-- Card body START -->
@@ -615,56 +532,83 @@ About hotel START -->
                                     <!-- List -->
                                     <ul class="list-group list-group-borderless mb-2">
                                         <li class="list-group-item d-flex">
-                                            <i class="bi bi-check-circle-fill me-2"></i>This is a family farmhouse,
-                                            hence we request you to not indulge.
+                                            <i class="bi bi-check-circle-fill me-2"></i> <strong>Responsabilités et
+                                                Engagements
+                                                de toutes les Parties</strong>
                                         </li>
                                         <li class="list-group-item d-flex">
-                                            <i class="bi bi-check-circle-fill me-2"></i>Drinking and smoking within
-                                            controlled limits are permitted at the farmhouse but please do not create a
-                                            mess or ruckus at the house.
+                                            <i class="bi bi-check-circle-fill me-2"></i>Respect des Engagements : Chaque
+                                            partie (acheteur, vendeur, locataire, administrateur, gestionnaire) s'engage
+                                            à respecter les termes du contrat signé et à agir avec transparence,
+                                            professionnalisme et respect envers les autres parties.
                                         </li>
                                         <li class="list-group-item d-flex">
-                                            <i class="bi bi-check-circle-fill me-2"></i>Drugs and intoxicating illegal
-                                            products are banned and not to be brought to the house or consumed.
+                                            <i class="bi bi-check-circle-fill me-2"></i>Communication Claire : Toutes
+                                            les parties doivent maintenir une communication ouverte et respectueuse,
+                                            informant immédiatement les autres parties de tout changement ou problème
+                                            majeur pouvant affecter le bon déroulement des transactions ou de la gestion
+                                            des biens.
                                         </li>
                                         <li class="list-group-item d-flex">
-                                            <i class="bi bi-x-circle-fill me-2"></i>For any update, the customer shall
-                                            pay applicable cancellation/modification charges.
+                                            <i class="bi bi-check-circle-fill me-2"></i>Protection des Informations
+                                            Personnelles : Toutes les parties, y compris les gestionnaires, doivent
+                                            garantir la confidentialité des informations personnelles et financières des
+                                            clients (acheteurs, locataires, etc.) conformément à la législation en
+                                            vigueur sur la protection des données personnelles.
+                                        </li>
+                                        <li class="list-group-item d-flex">
+                                            <i class="bi bi-x-circle-fill me-2"></i>Accès aux Dossiers : Seules les
+                                            parties autorisées doivent avoir accès aux documents liés à la gestion des
+                                            biens, y compris les contrats, les paiements, et les informations
+                                            personnelles. Toute consultation ou modification doit être documentée.
                                         </li>
                                     </ul>
 
                                     <!-- List -->
+                                    <!-- Check-in/out DYNAMIQUES -->
                                     <ul class="list-group list-group-borderless mb-2">
                                         <li class="list-group-item h6 fw-light d-flex mb-0">
-                                            <i class="bi bi-arrow-right me-2"></i>Check-in: 1:00 pm - 9:00 pm
+                                            <i class="bi bi-arrow-right me-2"></i>
+                                            Check-in: {{ biensImmobiliers?.heureCheckIn || '14:00' }}
                                         </li>
                                         <li class="list-group-item h6 fw-light d-flex mb-0">
-                                            <i class="bi bi-arrow-right me-2"></i>Check out: 11:00 am
+                                            <i class="bi bi-arrow-right me-2"></i>
+                                            Check-out: {{ biensImmobiliers?.heureCheckOut || '11:00' }}
+                                        </li>
+                                        <li v-if="biensImmobiliers?.autoCheckIn"
+                                            class="list-group-item h6 fw-light d-flex mb-0">
+                                            <i class="bi bi-arrow-right me-2"></i>
+                                            {{ biensImmobiliers.autoCheckInDescription || 'Self-check-in disponible' }}
                                         </li>
                                         <li class="list-group-item h6 fw-light d-flex mb-0">
-                                            <i class="bi bi-arrow-right me-2"></i>Self-check-in with building staff
+                                            <i :class="['bi', biensImmobiliers?.animauxAcceptes ? 'bi-check-circle-fill text-success' : 'bi-x-circle-fill text-danger']"
+                                                class="me-2"></i>
+                                            {{ biensImmobiliers?.animauxAcceptes ? 'Animaux acceptés' : 'Pas d\'animaux'
+                                            }}
                                         </li>
                                         <li class="list-group-item h6 fw-light d-flex mb-0">
-                                            <i class="bi bi-arrow-right me-2"></i>No pets
+                                            <i :class="['bi', biensImmobiliers?.evenementsAutorises ? 'bi-check-circle-fill text-success' : 'bi-x-circle-fill text-danger']"
+                                                class="me-2"></i>
+                                            {{ biensImmobiliers?.evenementsAutorises ? 'Événements autorisés' :
+                                                'Pas d\'événements' }}
                                         </li>
                                         <li class="list-group-item h6 fw-light d-flex mb-0">
-                                            <i class="bi bi-arrow-right me-2"></i>No parties or events
-                                        </li>
-                                        <li class="list-group-item h6 fw-light d-flex mb-0">
-                                            <i class="bi bi-arrow-right me-2"></i>Smoking is allowed
+                                            <i :class="['bi', biensImmobiliers?.fumeurAutorise ? 'bi-check-circle-fill text-success' : 'bi-x-circle-fill text-danger']"
+                                                class="me-2">
+                                            </i> {{ biensImmobiliers?.fumeurAutorise ? 'Fumeur autorisé' :
+                                                'Non-fumeur uniquement' }}
                                         </li>
                                     </ul>
 
-                                    <!-- Important note -->
-                                    <div class="bg-danger bg-opacity-10 rounded-2 p-3 mb-3">
-                                        <p class="mb-0 text-danger">During the COVID-19 pandemic, all hosts and guests
-                                            must review and follow Booking social distancing and other COVID-19-related
-                                            guidelines.</p>
-                                    </div>
-                                    <div class="bg-danger bg-opacity-10 rounded-2 p-3">
-                                        <p class="mb-0 text-danger">Smoke alarm not reported — The host hasn't reported
-                                            a smoke alarm on the property. We suggest bringing a portable detector for
-                                            your trip.</p>
+                                    <!-- Alertes COVID/SÉCURITÉ DYNAMIQUES -->
+                                    <div v-if="biensImmobiliers?.alertes?.length" class="mt-3">
+                                        <div v-for="(alerte, index) in biensImmobiliers.alertes" :key="'alert-' + index"
+                                            :class="['rounded-2 p-3 mb-3', getAlertClass(alerte.type)]">
+                                            <p class="mb-0" :class="getAlertTextClass(alerte.type)">
+                                                <i :class="['bi', getAlertIcon(alerte.type), 'me-2']"></i>
+                                                {{ alerte.message }}
+                                            </p>
+                                        </div>
                                     </div>
                                 </div>
                                 <!-- Card body END -->
@@ -680,22 +624,31 @@ About hotel START -->
 
 
                             <!-- Best deal START -->
-                            <div class="mt-4 d-none d-xl-block">
-                                <h4>Today's Best Deal</h4>
+                            <!-- Best deal START - DYNAMIQUE -->
+                            <div v-if="biensImmobiliers?.offreSpeciale" class="mt-4">
+                                <h4>{{ biensImmobiliers.offreSpeciale.titre || "Offre du jour" }}</h4>
 
                                 <div class="card shadow rounded-3 overflow-hidden">
                                     <div class="row g-0 align-items-center">
-                                        <!-- Image -->
-                                        <div class="col-sm-6 col-md-12 col-lg-6">
-                                            <img src="../assets/images/offer/04.jpg" class="card-img rounded-0" alt="">
+                                        <div class="col-sm-6 col-md-12 col-lg-6"
+                                            v-if="biensImmobiliers.offreSpeciale.image">
+                                            <img :src="getImageUrl(biensImmobiliers.offreSpeciale.image.id)"
+                                                class="card-img rounded-0" :alt="biensImmobiliers.offreSpeciale.titre">
                                         </div>
 
-                                        <!-- Title and content -->
                                         <div class="col-sm-6 col-md-12 col-lg-6">
                                             <div class="card-body p-3">
-                                                <h6 class="card-title"><a href="offer-detail.html"
-                                                        class="stretched-link">Travel Plan</a></h6>
-                                                <p class="mb-0">Get up to $10,000 for lifetime limits</p>
+                                                <h6 class="card-title">
+                                                    <a :href="biensImmobiliers.offreSpeciale.lien || '#'"
+                                                        class="stretched-link">
+                                                        {{ biensImmobiliers.offreSpeciale.titre }}
+                                                    </a>
+                                                </h6>
+                                                <p class="mb-0">{{ biensImmobiliers.offreSpeciale.description }}</p>
+                                                <span v-if="biensImmobiliers.offreSpeciale.reduction"
+                                                    class="badge bg-success mt-2">
+                                                    -{{ biensImmobiliers.offreSpeciale.reduction }}%
+                                                </span>
                                             </div>
                                         </div>
                                     </div>
@@ -710,6 +663,9 @@ About hotel START -->
         </section>
         <!-- =======================
 About hotel END -->
+        <FloatingCart />
+
+
 
     </main>
     <!-- **************** MAIN CONTENT END **************** -->
@@ -721,6 +677,8 @@ import { tns } from 'tiny-slider';
 // import { mapActions, mapGetters } from "vuex";
 import { ref, onMounted, watch, nextTick } from 'vue'
 import { ElMessage, ElMessageBox } from "element-plus";
+import FloatingCart from "@/components/card/FloatingCart.vue";
+
 import { API_URLS } from "@/config/api";
 import { useStore } from 'vuex'
 import { useLoading } from "vue-loading-overlay";
@@ -894,9 +852,13 @@ export default {
             services: [],
             tabs: [],
             currentTab: null,
+            showContractAlert: false,
             biensId: this.$route.params.id,
             biensImmobiliers: null,
+            selectedRooms: [],
             isLiked: false,
+            isBienSelected: false,
+            totalPrice: 0,
             form: {
                 nom: "",
                 email: "",
@@ -904,6 +866,8 @@ export default {
                 message: "",
             },
             errorMessage: null,
+            sortOption: '',
+            sortedRooms: []
         };
     },
     mounted() {
@@ -917,6 +881,20 @@ export default {
         });
 
         this.loadBiensImmobiliersOne();
+        // Surveiller les changements du bien dans le store pour garder l'affichage à jour
+        this.unwatchBien = this.$store.watch(
+            (state) => state.biensImmobiliers.one,
+            (newVal) => {
+                if (newVal && Number(this.biensId) === Number(newVal.id)) {
+                    this.biensImmobiliers = { ...newVal };
+                    // garantir que detailsBiensImmobiliers est toujours un tableau
+                    const d = this.biensImmobiliers.detailsBiensImmobiliers;
+                    if (!Array.isArray(d)) {
+                        this.biensImmobiliers.detailsBiensImmobiliers = d ? [d] : [];
+                    }
+                }
+            }
+        );
         GLightbox({
             selector: '.glightbox',
             loop: true,
@@ -940,6 +918,8 @@ export default {
 
         const liked = localStorage.getItem(`liked_bien_${this.biensImmobiliers?.id}`);
         if (liked === 'true') this.isLiked = true;
+        // 🆕 Vérifier si le bien est déjà sélectionné dans le panier
+        this.checkBienSelection();
     },
     computed: {
         shortDescription() {
@@ -959,9 +939,80 @@ export default {
     },
     components: {
         'room-slider': roomSlider,
-        'Avis': Avis
+        'Avis': Avis,
+        FloatingCart,
+    },
+    beforeUnmount() {
+        if (this.unwatchBien) this.unwatchBien();
     },
     methods: {
+        checkBienSelection() {
+            const selectedBiens = this.$store.state.contrats?.selectedBiens || [];
+            this.isBienSelected = selectedBiens.some(b => b.id === Number(this.biensId));
+        },
+        toggleBienSelection() {
+            if (!this.isAuthenticated) {
+                ElMessage.warning("Vous devez être connecté pour sélectionner un bien.");
+                return;
+            }
+
+            if (this.isBienSelected) {
+                // Retirer du panier
+                this.$store.dispatch("contrats/removeFromCart", {
+                    id: Number(this.biensId),
+                    type: "bien"
+                });
+                this.isBienSelected = false;
+                ElMessage.success("Bien retiré de votre sélection");
+            } else {
+                // Ajouter au panier
+                this.$store.dispatch("contrats/addToCart", {
+                    item: this.biensImmobiliers,
+                    type: "bien"
+                });
+                this.isBienSelected = true;
+                ElMessage.success("Bien ajouté à votre sélection");
+            }
+        },
+        shareOn(platform) {
+            const url = window.location.href;
+            const title = this.biensImmobiliers?.nom || 'Bien immobilier';
+            let shareUrl = '';
+
+            switch (platform) {
+                case 'twitter':
+                    shareUrl = `https://twitter.com/intent/tweet?url=${encodeURIComponent(url)}&text=${encodeURIComponent(title)}`;
+                    break;
+                case 'facebook':
+                    shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`;
+                    break;
+                case 'linkedin':
+                    shareUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}`;
+                    break;
+            }
+
+            if (shareUrl) {
+                window.open(shareUrl, '_blank', 'width=600,height=400');
+            }
+        },
+        async copyLink() {
+            try {
+                await navigator.clipboard.writeText(window.location.href);
+                ElMessage.success("Lien copié dans le presse-papier !");
+            } catch (err) {
+                ElMessage.error("Impossible de copier le lien");
+            }
+        },
+        isSelectableRoom(room) {
+            if (!room) return false;
+            if (typeof room.status === "boolean") return room.status === true;
+            if (room.disponible === false || room.available === false || room.isAvailable === false) return false;
+            if (typeof room.status === "string") {
+                const s = room.status.toLowerCase();
+                if (s.includes("en_cours") || s.includes("encours") || s.includes("occupe") || s.includes("occup")) return false;
+            }
+            return true;
+        },
         async handleTabClick(tab) {
             this.currentTab = tab.id;
             await this.loadSousService(tab.id);
@@ -969,6 +1020,31 @@ export default {
         openModal() {
             const modal = new bootstrap.Modal(document.getElementById('mapmodal'));
             modal.show();
+        },
+        getHighlights() {
+            const highlights = [];
+            const equipements = this.biensImmobiliers?.equipements;
+
+            if (equipements?.wifi) {
+                highlights.push({ icon: 'fa-solid fa-wifi', label: 'WiFi gratuit' });
+            }
+            if (equipements?.piscine) {
+                highlights.push({ icon: 'fa-solid fa-swimming-pool', label: 'Piscine' });
+            }
+            if (equipements?.climatisation) {
+                highlights.push({ icon: 'fa-solid fa-snowflake', label: 'Climatisation' });
+            }
+            if (equipements?.service24h) {
+                highlights.push({ icon: 'fa-solid fa-concierge-bell', label: 'Service 24h/24' });
+            }
+            if (equipements?.parking) {
+                highlights.push({ icon: 'fa-solid fa-square-parking', label: 'Parking' });
+            }
+            if (equipements?.restaurant) {
+                highlights.push({ icon: 'fa-solid fa-utensils', label: 'Restaurant' });
+            }
+
+            return highlights;
         },
         async incrementLike(id) {
             // 1. Vérifier si connecté
@@ -1021,6 +1097,15 @@ export default {
             }
         },
         toggleRoomSelection(room) {
+            // sécurité côté parent : si la méthode enfant existe on prévient aussi, sinon on fait une vérification locale
+            if (typeof this.isSelectableRoom !== 'function' || !this.isSelectableRoom(room)) {
+                ElMessage.warning("Impossible de sélectionner : logement occupé ou lié à un contrat actif.");
+                return;
+            }
+            this.showContractAlert = true;
+            if (!Array.isArray(this.selectedRooms)) {
+                this.selectedRooms = []
+            }
             const index = this.selectedRooms.findIndex(r => r.id === room.id);
             if (index !== -1) {
                 // Déjà sélectionné, on retire
@@ -1029,8 +1114,18 @@ export default {
             } else {
                 // Nouvelle sélection
                 this.selectedRooms.push(room);
-                this.totalPrice += (room.prix || 0) * (room.nombre || 1);
+                this.totalPrice += (room.prix || 0) * (room.id || 1);
             }
+        },
+        isSelectableRoom(room) {
+            if (!room) return false;
+            if (typeof room.status === "boolean") return room.status === true;
+            if (room.disponible === false || room.available === false || room.isAvailable === false) return false;
+            if (typeof room.status === "string") {
+                const s = room.status.toLowerCase();
+                if (s.includes("en_cours") || s.includes("encours") || s.includes("occupe") || s.includes("occup")) return false;
+            }
+            return true;
         },
         initTinySlider() {
             const sliderContainer = document.querySelector('.tiny-slider-inner');
@@ -1166,7 +1261,7 @@ export default {
         },
 
         // Exemple de méthode pour convertir un prix de bien et le stocker
-        async updateConvertedPrice(bien, fromCurrency = 'EUR', toCurrency = 'USD') {
+        async updateConvertedPrice(bien, fromCurrency = 'XOF', toCurrency = 'EUR') {
             const converted = await this.convertCurrency(bien.prix, fromCurrency, toCurrency);
             if (converted) {
                 bien.convertedPrice = converted;  // tu peux stocker dans une propriété du bien
@@ -1179,7 +1274,7 @@ export default {
         },
         // Si tu veux convertir tous les biens affichés d’un coup :
         async convertAllPrices(toCurrency) {
-            const fromCurrency = 'EUR'; // ou dynamique selon ton besoin
+            const fromCurrency = 'XOF'; // ou dynamique selon ton besoin
             for (const bien of this.biensImmobiliers) {
                 await this.updateConvertedPrice(bien, fromCurrency, toCurrency);
             }
@@ -1198,6 +1293,70 @@ export default {
             return `${API_URLS.API_BASE}/fichier/download/${idfile}`;
 
         },
+        getAlertClass(type) {
+            const classes = {
+                danger: 'bg-danger bg-opacity-10',
+                warning: 'bg-warning bg-opacity-10',
+                info: 'bg-info bg-opacity-10',
+                success: 'bg-success bg-opacity-10'
+            };
+            return classes[type] || 'bg-secondary bg-opacity-10';
+        },
+
+        getAlertTextClass(type) {
+            const classes = {
+                danger: 'text-danger',
+                warning: 'text-warning',
+                info: 'text-info',
+                success: 'text-success'
+            };
+            return classes[type] || 'text-dark';
+        },
+
+        getAlertIcon(type) {
+            const icons = {
+                danger: 'bi-exclamation-triangle-fill',
+                warning: 'bi-exclamation-circle-fill',
+                info: 'bi-info-circle-fill',
+                success: 'bi-check-circle-fill'
+            };
+            return icons[type] || 'bi-info-circle';
+        },
+        formatDate(dateString) {
+            if (!dateString) return '';
+            const date = new Date(dateString);
+            return new Intl.DateTimeFormat('fr-FR', {
+                day: '2-digit',
+                month: 'long',
+                year: 'numeric'
+            }).format(date);
+        },
+        sortRooms() {
+            if (!this.biensImmobiliers?.detailsBiensImmobiliers) return;
+
+            const rooms = [...this.biensImmobiliers.detailsBiensImmobiliers];
+
+            switch (this.sortOption) {
+                case 'recent':
+                    rooms.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+                    break;
+                case 'popular':
+                    rooms.sort((a, b) => (b.vues || 0) - (a.vues || 0));
+                    break;
+                case 'price_asc':
+                    rooms.sort((a, b) => (a.prix || 0) - (b.prix || 0));
+                    break;
+                case 'price_desc':
+                    rooms.sort((a, b) => (b.prix || 0) - (a.prix || 0));
+                    break;
+                case 'rating':
+                    rooms.sort((a, b) => (b.note || 0) - (a.note || 0));
+                    break;
+            }
+
+            this.biensImmobiliers.detailsBiensImmobiliers = rooms;
+        }
+
     },
 };
 </script>
@@ -1253,5 +1412,10 @@ export default {
 
 .like-count {
     transition: all 0.3s ease;
+}
+
+.z-3 {
+    z-index: 1145;
+    /* supérieur à Bootstrap modals */
 }
 </style>

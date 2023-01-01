@@ -7,14 +7,16 @@
                 <!-- Widget -->
                 <div class="col-md-4">
                     <div class="text-center text-md-start mb-3 mb-md-0">
-                        <a href="index.html"> <img class="h-30px" src="../../assets/images/logo.png" alt="logo"> </a>
+                        <a href="index.html"> <img class="h-50px" src="../../assets/images/hweon_logo_transparent.png"
+                                alt="logo"> </a>
                     </div>
                 </div>
 
                 <!-- Widget -->
                 <div class="col-md-4">
-                    <div class="text-body-secondary text-primary-hover">©2025 Hweon - Ton espace, ta liberté. Build by
-                        <a href="https://www.odjo.tech/" class="text-body-secondary">ODJO</a>.
+                    <div class="text-body-secondary text-primary-hover">©2025 <a href="https://www.odjo.tech/"
+                            class="text-body-secondary">ODJO</a> - Ton espace, ta liberté avec Hweon
+                        .
                     </div>
                 </div>
 

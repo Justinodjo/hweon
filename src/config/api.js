@@ -1,6 +1,7 @@
 // src/config/api.js
-const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:8080"; // Utiliser l'URL de l'API de votre backend
-// import.meta.env.VITE_API_URL || "http://localhost:8080"; // Utiliser l'URL de l'API de votre backend
+const API_BASE_URL =
+  // import.meta.env.VITE_API_URL || "https://dev.mainsdorplus.com:8082"; // Utiliser l'URL de l'API de votre backend
+  import.meta.env.VITE_API_URL || "http://localhost:8082"; // Utiliser l'URL de l'API de votre backend
 export const API_URLS = {
   API_BASE: `${API_BASE_URL}`,
   REFRESH_TOKEN: `${API_BASE_URL}/auth/refresh-token`,

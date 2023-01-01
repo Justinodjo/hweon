@@ -21,7 +21,7 @@ export default {
     name: "FilePondWrapper",
     components: { FilePond },
     props: { uploadConfig: Object, preview: Object, activeStep: Number, index: Number, form: Object, },
-    emits: ["uploadResponse"],
+    emits: ["uploadResponse", "update:form"],
     computed: {
         coverUrl() { return this.preview.coverUrl || ""; }
     },
@@ -57,6 +57,7 @@ export default {
             console.log("FilePond - Response:", file);
             console.log("FilePond - ServerId:", file.serverId);
             const parsed = parseServerResponse(file);
+            console.log("PARSED RESPONSE:", parsed);
             if (!parsed) return;
 
             // Vérifier que le backend a renvoyé un id
@@ -99,8 +100,6 @@ export default {
             this.preview.coverUrl = previewUrl;
             // Mettre à jour l'aperçu global
             this.preview.coverUrl = fileWithType.file.url;
-
-            this.$notify({ type: 'success', text: 'Image uploadée avec succès !' });
         },
         getFilesForFilePond() {
             console.log("getFilesForFilePond - form:", !!this.form);

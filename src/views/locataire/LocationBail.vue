@@ -14,7 +14,7 @@
                         <tr>
                             <th>ID</th>
                             <th>Statut</th>
-                            <th>Locataire</th>
+                            <th>Propriétaire</th>
                             <th>Début</th>
                             <th>Fin</th>
                             <th>Loyer</th>
@@ -76,9 +76,9 @@
                             </li>
                             <li class="list-group-item">
                                 <strong>Biens :</strong>
-                                <span v-for="bien in selectedContrat.biensImmobiliers" :key="bien.id"
+                                <span v-for="bien in selectedContrat.detailsBiensImmobiliers" :key="bien.id"
                                     class="badge bg-secondary me-1">
-                                    🏠 {{ bien.nom }}
+                                    🏠 {{ bien.nomdetails }}
                                 </span>
                             </li>
                         </ul>
@@ -98,23 +98,12 @@
 </template>
 
 <script setup>
-import { ref } from "vue"
+import { ref, onMounted } from "vue";
+import { useStore } from "vuex";
 
-const contrats = ref([
-    {
-        id: 1,
-        status: "ACTIF",
-        loyerMensuel: 800,
-        prixTotal: 9600,
-        dateDebut: "2025-01-01",
-        dateFin: "2025-12-31",
-        fraisAnnulation: null,
-        typeContrat: "MEUBLEE",
-        commission: 500,
-        userInfo: { nom: "Jean Dupont" },
-        biensImmobiliers: [{ id: 1, nom: "Appartement Centre-ville" }]
-    }
-])
+const store = useStore();
+
+const contrats = ref([])
 
 const selectedContrat = ref(null)
 
@@ -139,7 +128,22 @@ function statusClass(status) {
     }
 }
 
-function fetchContrats() {
-    console.log("API → GET /contrats")
+async function fetchContrats() {
+    try {
+        // Remplace "getContratsUtilisateur" par l'action réelle de ton store
+        const userId = store.getters['auth/userInfo'];
+        if (!userId) return;
+
+        const data = await store.dispatch('contrats/getContratsUtilisateur', userId);
+
+        // Si la réponse est un objet, convertir en tableau
+        contrats.value = Array.isArray(data) ? data : Object.values(data).flat();
+        console.log("Contrats récupérés :", contrats.value);
+    } catch (error) {
+        console.error("Erreur lors de la récupération des contrats :", error);
+    }
 }
+onMounted(() => {
+    fetchContrats();
+});
 </script>

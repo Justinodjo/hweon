@@ -19,7 +19,7 @@
                                 <p><strong>Email:</strong> {{ selectedBienImmobilier.superficie || 'N/A' }}</p>
                                 <p><strong>Date de réservation:</strong> {{ selectedBienImmobilier.dateReservation ||
                                     'N/A'
-                                }}</p>
+                                    }}</p>
                                 <div><strong>Type réservation:</strong>
                                     <table class="table align-middle p-4 mb-0 table-hover table-shrink">
                                         <thead class="table-light">
@@ -32,11 +32,11 @@
                                         <tbody>
                                             <tr v-for="reser in selectedBienImmobilier.typeServices" :key="reser.id">
                                                 <td>{{ reser.id || 'N/A'
-                                                }}</td>
+                                                    }}</td>
                                                 <td>{{ reser.nom || 'N/A'
-                                                }}</td>
+                                                    }}</td>
                                                 <td>{{ reser.prix || 'N/A'
-                                                }}</td>
+                                                    }}</td>
                                             </tr>
                                         </tbody>
                                     </table>
@@ -58,7 +58,7 @@
                     <!-- Avatar and info START -->
                     <div class="d-sm-flex align-items-center">
                         <div class="avatar avatar-xl mb-2 mb-sm-0">
-                            <img class="avatar-img rounded-circle" src="../../assets/images/avatar/01.jpg" alt="">
+                            <img class="avatar-img rounded-circle" src="@/assets/images/avatar/01.jpg" alt="">
                         </div>
                         <h4 class="mb-2 mb-sm-0 ms-sm-3"><span class="fw-light">Hello</span> Gestionnaire</h4>
 
@@ -286,12 +286,12 @@
                                                 <td>
                                                     <div :class="['badge', getStatusClass(item.status)]">{{ item.status
                                                         == true ? "Disponible" : "Non-disponible"
-                                                    }}</div>
+                                                        }}</div>
                                                 </td>
                                                 <td>
                                                     <div class="mb-0">{{
                                                         item.prix
-                                                    }}</div>
+                                                        }}</div>
                                                 </td>
                                                 <td>
                                                     <button @click="handleViewClick(item)"

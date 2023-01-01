@@ -1,445 +1,496 @@
 <template>
-    <!-- =======================
-Content START -->
-    <section class="pt-0">
-        <div class="container vstack gap-4">
-            <!-- Title START -->
-            <div class="row">
-                <div class="col-12">
-                    <h1 class="fs-4 mb-0"><i class="bi bi-graph-up-arrow fa-fw me-1"></i>Earnings</h1>
-                </div>
+    <div class="container py-4">
+        <!-- Exemple 1: Utilisation des actions existantes -->
+        <div class="card mb-4">
+            <!-- <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">
+                    <i class="bi bi-credit-card me-2"></i>
+                    Initier un Paiement (Votre méthode existante)
+                </h5>
             </div>
-            <!-- Title END -->
-
-            <!-- Counter START -->
-            <div class="row g-4">
-
-                <!-- Earning item -->
-                <div class="col-md-6 col-lg-3">
-                    <div class="card card-body border p-4 h-100">
-                        <h6 class="mb-0">Sales this month</h6>
-                        <h3 class="mb-2 mt-2">$12,825</h3>
-                        <a href="agent-earnings.html#" class="mt-auto">View transaction</a>
-                    </div>
-                </div>
-
-                <!-- Grid item -->
-                <div class="col-md-6 col-lg-3">
-                    <div class="card card-body border p-4 h-100">
-                        <h6>To be paid
-                            <a tabindex="0" class="h6 mb-0" role="button" data-bs-toggle="popover"
-                                data-bs-trigger="focus" data-bs-placement="top"
-                                data-bs-content="After US royalty withholding tax">
-                                <i class="bi bi-info-circle-fill small"></i>
-                            </a>
-                        </h6>
-                        <h3>$15,356</h3>
-                        <p class="mb-0 mt-auto">Expected payout on 05/10/2022</p>
-                    </div>
-                </div>
-
-                <!-- Grid item -->
-                <div class="col-lg-6">
-                    <div class="card bg-primary p-4">
-                        <div class="d-flex justify-content-between align-items-start text-white">
-                            <img class="w-40px" src="@/assets/images/element/visa.svg" alt="">
-                            <!-- Card action START -->
-                            <div class="dropdown">
-                                <a class="text-white" href="agent-earnings.html#" id="creditcardDropdown" role="button"
-                                    data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">
-                                    <!-- Dropdown Icon -->
-                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
-                                        xmlns="http://www.w3.org/2000/svg">
-                                        <circle fill="currentColor" cx="12.5" cy="3.5" r="2.5"></circle>
-                                        <circle fill="currentColor" opacity="0.5" cx="12.5" cy="11.5" r="2.5"></circle>
-                                        <circle fill="currentColor" opacity="0.3" cx="12.5" cy="19.5" r="2.5"></circle>
-                                    </svg>
-                                </a>
-                                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="creditcardDropdown">
-                                    <li><a class="dropdown-item" href="agent-earnings.html#"><i
-                                                class="bi bi-credit-card-2-front-fill me-2 fw-icon"></i>Edit card</a>
-                                    </li>
-                                    <li><a class="dropdown-item" href="agent-earnings.html#"><i
-                                                class="bi bi-credit-card me-2 fw-icon"></i>Add new card</a></li>
-                                    <li><a class="dropdown-item" href="agent-earnings.html#"><i
-                                                class="bi bi-arrow-bar-down me-2 fw-icon"></i>Withdrawal money</a></li>
-                                    <li><a class="dropdown-item" href="agent-earnings.html#"><i
-                                                class="bi bi-calculator me-2 fw-icon"></i>Currency converter</a></li>
-                                </ul>
-                            </div>
-                            <!-- Card action END -->
+            <div class="card-body">
+                <form @submit.prevent="initierPaiement">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Contrat ID</label>
+                            <input v-model.number="formPaiement.contratId" type="number" class="form-control" required>
                         </div>
-                        <div class="mt-4 text-white">
-                            <span>Total Balance</span>
-                            <h3 class="text-white mb-0">$32,000</h3>
+
+                        <div class="col-md-6">
+                            <label class="form-label">Montant</label>
+                            <input v-model.number="formPaiement.montant" type="number" class="form-control" required>
                         </div>
-                        <h5 class="text-white mt-4">**** **** **** 1569</h5>
-                        <div class="d-flex justify-content-between text-white">
-                            <span>Valid thru: 12/26</span>
-                            <span>CVV: ***</span>
+
+                        <div class="col-md-6">
+                            <label class="form-label">Email</label>
+                            <input v-model="formPaiement.email" type="email" class="form-control" required>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label">Nom</label>
+                            <input v-model="formPaiement.nom" type="text" class="form-control" required>
+                        </div>
+
+                        <div class="col-12">
+                            <button type="submit" class="btn btn-primary" :disabled="loading">
+                                <span v-if="loading" class="spinner-border spinner-border-sm me-2"></span>
+                                <i v-else class="bi bi-send me-2"></i>
+                                Payer maintenant
+                            </button>
                         </div>
                     </div>
+                </form>
+                <div v-if="statut" class="alert mt-3" :class="{
+                    'alert-warning': statut === 'en_attente',
+                    'alert-success': statut === 'reussi',
+                    'alert-danger': statut === 'echec'
+                }">
+                    <strong>Statut:</strong> {{ statut }}
+                    <br>
+                    <strong>Message:</strong> {{ message }}
                 </div>
-
-            </div>
-            <!-- Counter END -->
-
-            <!-- Chart START -->
-            <div class="row">
-                <div class="col-12">
-                    <div class="card card-body border overflow-hidden">
-                        <div class="row g-4">
-                            <!-- Content -->
-                            <div class="col-sm-6 col-md-4">
-                                <span class="badge text-bg-dark">Current Month</span>
-                                <h4 class="text-primary my-2">$35000</h4>
-                                <p class="mb-0"><span class="text-success me-1">0.20%<i
-                                            class="bi bi-arrow-up"></i></span>vs last month</p>
-                            </div>
-
-                            <!-- Content -->
-                            <div class="col-sm-6 col-md-4">
-                                <span class="badge text-bg-dark">Last Month</span>
-                                <h4 class="my-2">$28000</h4>
-                                <p class="mb-0"><span class="text-danger me-1">0.10%<i
-                                            class="bi bi-arrow-down"></i></span>Then last month</p>
-                            </div>
-                        </div>
-
-                        <!-- Apex chart -->
-                        <div id="apexChartTrafficStats"></div>
-                    </div>
-                </div>
-            </div>
-            <!-- Chart START -->
-
-            <!-- Invoice history START -->
-            <div class="row">
-                <div class="col-12">
-                    <div class="card border rounded-3">
-                        <!-- Card header START -->
-                        <div class="card-header border-bottom">
-                            <h5 class="card-header-title">Invoice history</h5>
-                        </div>
-                        <!-- Card header END -->
-
-                        <!-- Card body START -->
-                        <div class="card-body">
-                            <!-- Search and select START -->
-                            <div class="row g-3 align-items-center justify-content-between mb-3">
-                                <!-- Search -->
-                                <div class="col-md-8">
-                                    <form class="rounded position-relative">
-                                        <input class="form-control pe-5" type="search" placeholder="Search"
-                                            aria-label="Search">
-                                        <button
-                                            class="btn border-0 px-3 py-0 position-absolute top-50 end-0 translate-middle-y"
-                                            type="submit"><i class="fas fa-search fs-6"></i></button>
-                                    </form>
-                                </div>
-
-                                <!-- Select option -->
-                                <div class="col-md-3">
-                                    <!-- Short by filter -->
-                                    <form>
-                                        <select class="form-select js-choice" aria-label=".form-select-sm">
-                                            <option value="">Sort by</option>
-                                            <option>Free</option>
-                                            <option>Newest</option>
-                                            <option>Oldest</option>
-                                        </select>
-                                    </form>
-                                </div>
-                            </div>
-                            <!-- Search and select END -->
-
-                            <!-- Hotel room list START -->
-                            <div class="table-responsive border-0">
-                                <table class="table align-middle p-4 mb-0 table-hover table-shrink">
-                                    <!-- Table head -->
-                                    <thead class="table-light">
-                                        <tr>
-                                            <th scope="col" class="border-0 rounded-start">Invoice ID</th>
-                                            <th scope="col" class="border-0">Date</th>
-                                            <th scope="col" class="border-0">Amount</th>
-                                            <th scope="col" class="border-0">Status</th>
-                                            <th scope="col" class="border-0 rounded-end">Action</th>
-                                        </tr>
-                                    </thead>
-
-                                    <!-- Table body START -->
-                                    <tbody class="border-top-0">
-                                        <!-- Table item -->
-                                        <tr>
-                                            <td> #254684 </td>
-                                            <td> 29 Aug 2022 </td>
-                                            <td>$3,999
-                                                <!-- Dropdown icon -->
-                                                <a href="agent-earnings.html#" class="h6 mb-0" role="button"
-                                                    id="dropdownShare1" data-bs-toggle="dropdown" aria-expanded="false">
-                                                    <i class="bi bi-info-circle-fill"></i>
-                                                </a>
-                                                <!-- Dropdown items -->
-                                                <ul class="dropdown-menu dropdown-w-sm dropdown-menu-end min-w-auto shadow rounded"
-                                                    aria-labelledby="dropdownShare1">
-                                                    <li>
-                                                        <div class="d-flex justify-content-between">
-                                                            <span class="small">Commission</span>
-                                                            <span class="h6 mb-0 small">$86</span>
-                                                        </div>
-                                                        <hr class="my-1"> <!-- Divider -->
-                                                    </li>
-
-                                                    <li>
-                                                        <div class="d-flex justify-content-between">
-                                                            <span class="me-4 small">Us royalty withholding</span>
-                                                            <span class="text-danger small">-$0.00</span>
-                                                        </div>
-                                                        <hr class="my-1"> <!-- Divider -->
-                                                    </li>
-
-                                                    <li>
-                                                        <div class="d-flex justify-content-between">
-                                                            <span class="small">Earning</span>
-                                                            <span class="h6 mb-0 small">$86</span>
-                                                        </div>
-                                                    </li>
-                                                </ul>
-                                            </td>
-                                            <td>
-                                                <div class="badge bg-success bg-opacity-10 text-success">Paid</div>
-                                            </td>
-                                            <td> <a href="agent-earnings.html#" class="btn btn-light btn-round mb-0"
-                                                    data-bs-toggle="tooltip" data-bs-placement="top"
-                                                    data-bs-title="Download"><i class="bi bi-cloud-download"></i></a>
-                                            </td>
-                                        </tr>
-
-                                        <!-- Table item -->
-                                        <tr>
-                                            <td> #158468 </td>
-                                            <td> 02 Sep 2022 </td>
-                                            <td>$3,000
-                                                <!-- Dropdown icon -->
-                                                <a href="agent-earnings.html#" class="h6 mb-0" role="button"
-                                                    id="dropdownShare5" data-bs-toggle="dropdown" aria-expanded="false">
-                                                    <i class="bi bi-info-circle-fill"></i>
-                                                </a>
-                                                <!-- Dropdown items -->
-                                                <ul class="dropdown-menu dropdown-w-sm dropdown-menu-end min-w-auto shadow rounded"
-                                                    aria-labelledby="dropdownShare5">
-                                                    <li>
-                                                        <div class="d-flex justify-content-between">
-                                                            <span class="small">Commission</span>
-                                                            <span class="h6 mb-0 small">$86</span>
-                                                        </div>
-                                                        <hr class="my-1"> <!-- Divider -->
-                                                    </li>
-
-                                                    <li>
-                                                        <div class="d-flex justify-content-between">
-                                                            <span class="me-4 small">Us royalty withholding</span>
-                                                            <span class="text-danger small">-$0.00</span>
-                                                        </div>
-                                                        <hr class="my-1"> <!-- Divider -->
-                                                    </li>
-
-                                                    <li>
-                                                        <div class="d-flex justify-content-between">
-                                                            <span class="small">Earning</span>
-                                                            <span class="h6 mb-0 small">$86</span>
-                                                        </div>
-                                                    </li>
-                                                </ul>
-                                            </td>
-                                            <td>
-                                                <div class="badge bg-orange bg-opacity-10 text-orange">Pending</div>
-                                            </td>
-                                            <td> <a href="agent-earnings.html#" class="btn btn-light btn-round mb-0"
-                                                    data-bs-toggle="tooltip" data-bs-placement="top"
-                                                    data-bs-title="Download"><i class="bi bi-cloud-download"></i></a>
-                                            </td>
-                                        </tr>
-
-                                        <!-- Table item -->
-                                        <tr>
-                                            <td> #245778 </td>
-                                            <td> 05 Sep 2022 </td>
-                                            <td>$4,258
-                                                <!-- Dropdown icon -->
-                                                <a href="agent-earnings.html#" class="h6 mb-0" role="button"
-                                                    id="dropdownShare2" data-bs-toggle="dropdown" aria-expanded="false">
-                                                    <i class="bi bi-info-circle-fill"></i>
-                                                </a>
-                                                <!-- Dropdown items -->
-                                                <ul class="dropdown-menu dropdown-w-sm dropdown-menu-end min-w-auto shadow rounded"
-                                                    aria-labelledby="dropdownShare2">
-                                                    <li>
-                                                        <div class="d-flex justify-content-between">
-                                                            <span class="small">Commission</span>
-                                                            <span class="h6 mb-0 small">$86</span>
-                                                        </div>
-                                                        <hr class="my-1"> <!-- Divider -->
-                                                    </li>
-
-                                                    <li>
-                                                        <div class="d-flex justify-content-between">
-                                                            <span class="me-4 small">Us royalty withholding</span>
-                                                            <span class="text-danger small">-$0.00</span>
-                                                        </div>
-                                                        <hr class="my-1"> <!-- Divider -->
-                                                    </li>
-
-                                                    <li>
-                                                        <div class="d-flex justify-content-between">
-                                                            <span class="small">Earning</span>
-                                                            <span class="h6 mb-0 small">$86</span>
-                                                        </div>
-                                                    </li>
-                                                </ul>
-                                            </td>
-                                            <td>
-                                                <div class="badge bg-success bg-opacity-10 text-success">Paid</div>
-                                            </td>
-                                            <td> <a href="agent-earnings.html#" class="btn btn-light btn-round mb-0"
-                                                    data-bs-toggle="tooltip" data-bs-placement="top"
-                                                    data-bs-title="Download"><i class="bi bi-cloud-download"></i></a>
-                                            </td>
-                                        </tr>
-
-                                        <!-- Table item -->
-                                        <tr>
-                                            <td> #245778 </td>
-                                            <td> 07 Sep 2022 </td>
-                                            <td>$1,225
-                                                <!-- Dropdown icon -->
-                                                <a href="agent-earnings.html#" class="h6 mb-0" role="button"
-                                                    id="dropdownShare3" data-bs-toggle="dropdown" aria-expanded="false">
-                                                    <i class="bi bi-info-circle-fill"></i>
-                                                </a>
-                                                <!-- Dropdown items -->
-                                                <ul class="dropdown-menu dropdown-w-sm dropdown-menu-end min-w-auto shadow rounded"
-                                                    aria-labelledby="dropdownShare3">
-                                                    <li>
-                                                        <div class="d-flex justify-content-between">
-                                                            <span class="small">Commission</span>
-                                                            <span class="h6 mb-0 small">$86</span>
-                                                        </div>
-                                                        <hr class="my-1"> <!-- Divider -->
-                                                    </li>
-
-                                                    <li>
-                                                        <div class="d-flex justify-content-between">
-                                                            <span class="me-4 small">Us royalty withholding</span>
-                                                            <span class="text-danger small">-$0.00</span>
-                                                        </div>
-                                                        <hr class="my-1"> <!-- Divider -->
-                                                    </li>
-
-                                                    <li>
-                                                        <div class="d-flex justify-content-between">
-                                                            <span class="small">Earning</span>
-                                                            <span class="h6 mb-0 small">$86</span>
-                                                        </div>
-                                                    </li>
-                                                </ul>
-                                            </td>
-                                            <td>
-                                                <div class="badge bg-danger bg-opacity-10 text-danger">Cancelled</div>
-                                            </td>
-                                            <td> <a href="agent-earnings.html#" class="btn btn-light btn-round mb-0"
-                                                    data-bs-toggle="tooltip" data-bs-placement="top"
-                                                    data-bs-title="Download"><i class="bi bi-cloud-download"></i></a>
-                                            </td>
-                                        </tr>
-
-                                        <!-- Table item -->
-                                        <tr>
-                                            <td> #254896 </td>
-                                            <td> 10 Sep 2022 </td>
-                                            <td>$2,588
-                                                <!-- Dropdown icon -->
-                                                <a href="agent-earnings.html#" class="h6 mb-0" role="button"
-                                                    id="dropdownShare4" data-bs-toggle="dropdown" aria-expanded="false">
-                                                    <i class="bi bi-info-circle-fill"></i>
-                                                </a>
-                                                <!-- Dropdown items -->
-                                                <ul class="dropdown-menu dropdown-w-sm dropdown-menu-end min-w-auto shadow rounded"
-                                                    aria-labelledby="dropdownShare4">
-                                                    <li>
-                                                        <div class="d-flex justify-content-between">
-                                                            <span class="small">Commission</span>
-                                                            <span class="h6 mb-0 small">$86</span>
-                                                        </div>
-                                                        <hr class="my-1"> <!-- Divider -->
-                                                    </li>
-
-                                                    <li>
-                                                        <div class="d-flex justify-content-between">
-                                                            <span class="me-4 small">Us royalty withholding</span>
-                                                            <span class="text-danger small">-$0.00</span>
-                                                        </div>
-                                                        <hr class="my-1"> <!-- Divider -->
-                                                    </li>
-
-                                                    <li>
-                                                        <div class="d-flex justify-content-between">
-                                                            <span class="small">Earning</span>
-                                                            <span class="h6 mb-0 small">$86</span>
-                                                        </div>
-                                                    </li>
-                                                </ul>
-                                            </td>
-                                            <td>
-                                                <div class="badge bg-success bg-opacity-10 text-success">Paid</div>
-                                            </td>
-                                            <td> <a href="agent-earnings.html#" class="btn btn-light btn-round mb-0"
-                                                    data-bs-toggle="tooltip" data-bs-placement="top"
-                                                    data-bs-title="Download"><i class="bi bi-cloud-download"></i></a>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                    <!-- Table body END -->
-                                </table>
-                            </div>
-                            <!-- Hotel room list END -->
-                        </div>
-                        <!-- Card body END -->
-
-                        <!-- Card footer START -->
-                        <div class="card-footer pt-0">
-                            <!-- Pagination and content -->
-                            <div class="d-sm-flex justify-content-sm-between align-items-sm-center">
-                                <!-- Content -->
-                                <p class="mb-sm-0 text-center text-sm-start">Showing 1 to 8 of 20 entries</p>
-                                <!-- Pagination -->
-                                <nav class="mb-sm-0 d-flex justify-content-center" aria-label="navigation">
-                                    <ul class="pagination pagination-sm pagination-primary-soft mb-0">
-                                        <li class="page-item disabled">
-                                            <a class="page-link" href="agent-earnings.html#" tabindex="-1">Prev</a>
-                                        </li>
-                                        <li class="page-item"><a class="page-link" href="agent-earnings.html#">1</a>
-                                        </li>
-                                        <li class="page-item active"><a class="page-link"
-                                                href="agent-earnings.html#">2</a></li>
-                                        <li class="page-item disabled"><a class="page-link"
-                                                href="agent-earnings.html#">..</a></li>
-                                        <li class="page-item"><a class="page-link" href="agent-earnings.html#">15</a>
-                                        </li>
-                                        <li class="page-item">
-                                            <a class="page-link" href="agent-earnings.html#">Next</a>
-                                        </li>
-                                    </ul>
-                                </nav>
-                            </div>
-                        </div>
-                        <!-- Card footer END -->
-                    </div>
-                </div>
-            </div>
-            <!-- Invoice history END -->
+            </div> -->
         </div>
-    </section>
-    <!-- =======================
-Content END -->
+
+        <!-- Exemple 2: Liste des paiements avec les nouvelles actions -->
+        <div class="card mb-4">
+            <div class="card-header bg-success text-white">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">
+                        <i class="bi bi-list-check me-2"></i>
+                        Liste des Paiements
+                    </h5>
+                    <button @click="chargerPaiements" class="btn btn-sm btn-light">
+                        <i class="bi bi-arrow-clockwise me-1"></i>
+                        Actualiser
+                    </button>
+                </div>
+            </div>
+            <div class="card-body">
+                <!-- Filtres rapides -->
+                <div class="btn-group mb-3" role="group">
+                    <button @click="chargerParStatut('PAYE')" class="btn btn-outline-success btn-sm">
+                        Payés ({{ paiementsPayes.length }})
+                    </button>
+                    <button @click="chargerParStatut('EN_ATTENTE')" class="btn btn-outline-warning btn-sm">
+                        En attente ({{ paiementsEnAttente.length }})
+                    </button>
+                    <button @click="chargerParStatut('EN_RETARD')" class="btn btn-outline-danger btn-sm">
+                        En retard ({{ paiementsEnRetard.length }})
+                    </button>
+                    <button @click="chargerPaiements" class="btn btn-outline-primary btn-sm">
+                        Tous
+                    </button>
+                </div>
+
+                <!-- Statistiques -->
+                <div class="row g-3 mb-4">
+                    <div class="col-md-4">
+                        <div class="card border-success">
+                            <div class="card-body text-center">
+                                <h6 class="text-muted">Total payé</h6>
+                                <h4 class="text-success mb-0">{{ formatCurrency(totalPaye) }}</h4>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="card border-warning">
+                            <div class="card-body text-center">
+                                <h6 class="text-muted">En attente</h6>
+                                <h4 class="text-warning mb-0">{{ formatCurrency(totalEnAttente) }}</h4>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="card border-primary">
+                            <div class="card-body text-center">
+                                <h6 class="text-muted">Total paiements</h6>
+                                <h4 class="text-primary mb-0">{{ paiements.length }}</h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Loading -->
+                <div v-if="loading" class="text-center py-5">
+                    <div class="spinner-border text-primary"></div>
+                    <p class="mt-2 text-muted">Chargement...</p>
+                </div>
+
+                <!-- Liste -->
+                <div v-else-if="paiements.length > 0" class="table-responsive">
+                    <table class="table table-hover">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Référence</th>
+                                <th>Montant</th>
+                                <th>Statut</th>
+                                <th>Date</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-for="paiement in paiements" :key="paiement.id">
+                                <td>{{ paiement.reference || `#${paiement.id}` }}</td>
+                                <td>{{ formatCurrency(paiement.montant) }}</td>
+                                <td>
+                                    <span class="badge" :class="getStatusClass(paiement.statut)">
+                                        {{ getStatusLabel(paiement.statut) }}
+                                    </span>
+                                </td>
+                                <td>{{ formatDate(paiement.datePaiement || paiement.dateEcheance) }}</td>
+                                <td>
+                                    <div class="btn-group btn-group-sm">
+                                        <button @click="voirDetails(paiement.id)" class="btn btn-outline-primary"
+                                            title="Voir détails">
+                                            <i class="bi bi-eye"></i>
+                                        </button>
+
+                                        <button v-if="paiement.statut !== 'PAYE'" @click="marquerCommePaye(paiement.id)"
+                                            class="btn btn-outline-success" title="Marquer payé">
+                                            <i class="bi bi-check-circle"></i>
+                                        </button>
+
+                                        <button
+                                            v-if="paiement.statut === 'EN_ATTENTE' || paiement.statut === 'EN_RETARD'"
+                                            @click="envoyerRappel(paiement.id)" class="btn btn-outline-warning"
+                                            title="Envoyer rappel">
+                                            <i class="bi bi-bell"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Vide -->
+                <div v-else class="text-center py-5 text-muted">
+                    <i class="bi bi-inbox fs-1 d-block mb-3"></i>
+                    <p>Aucun paiement trouvé</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Exemple 3: Actions groupées -->
+        <div class="card">
+            <div class="card-header bg-info text-white">
+                <h5 class="mb-0">
+                    <i class="bi bi-lightning me-2"></i>
+                    Actions Groupées
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <button @click="exporterExcel" class="btn btn-success w-100">
+                            <i class="bi bi-file-excel me-2"></i>
+                            Exporter en Excel
+                        </button>
+                    </div>
+
+                    <div class="col-md-6">
+                        <button @click="verifierRetards" class="btn btn-warning w-100">
+                            <i class="bi bi-exclamation-triangle me-2"></i>
+                            Vérifier les retards
+                        </button>
+                    </div>
+
+                    <div class="col-md-6">
+                        <button @click="chargerStatistiques" class="btn btn-primary w-100">
+                            <i class="bi bi-graph-up me-2"></i>
+                            Charger statistiques
+                        </button>
+                    </div>
+
+                    <div class="col-md-6">
+                        <button @click="reinitialiser" class="btn btn-secondary w-100">
+                            <i class="bi bi-arrow-counterclockwise me-2"></i>
+                            Réinitialiser
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Affichage des statistiques -->
+                <div v-if="statistiques" class="mt-4 p-3 bg-light rounded">
+                    <h6 class="mb-3">Statistiques du système:</h6>
+                    <div class="row g-2">
+                        <div class="col-md-3">
+                            <small class="text-muted">Total paiements</small>
+                            <p class="mb-0 fw-bold">{{ statistiques.totalPaiements }}</p>
+                        </div>
+                        <div class="col-md-3">
+                            <small class="text-muted">Montant total</small>
+                            <p class="mb-0 fw-bold">{{ formatCurrency(statistiques.totalMontant) }}</p>
+                        </div>
+                        <div class="col-md-3">
+                            <small class="text-muted">Payés</small>
+                            <p class="mb-0 fw-bold text-success">{{ statistiques.payes }}</p>
+                        </div>
+                        <div class="col-md-3">
+                            <small class="text-muted">En attente</small>
+                            <p class="mb-0 fw-bold text-warning">{{ statistiques.enAttente }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal détails (optionnel) -->
+        <PaiementDetailModal v-if="showModal" :show="showModal" :paiementId="selectedPaiementId"
+            @close="showModal = false" />
+    </div>
 </template>
+
+<script>
+import { ElMessage, ElMessageBox } from "element-plus";
+import { mapState, mapGetters, mapActions } from 'vuex';
+import PaiementDetailModal from '@/components/modal/PaiementDetailModal.vue';
+
+export default {
+    name: 'ExempleUtilisationPaiements',
+
+    components: {
+        PaiementDetailModal
+    },
+
+    data() {
+        return {
+            formPaiement: {
+                contratId: null,
+                montant: null,
+                email: '',
+                nom: ''
+            },
+            showModal: false,
+            selectedPaiementId: null,
+        };
+    },
+
+    computed: {
+        // 🔥 Mapping des états du store
+        ...mapState('paiements', [
+            'urlPaiement',
+            'statut',
+            'message',
+            'paiements',
+            'paiement',
+            'statistiques',
+            'loading',
+            'error'
+        ]),
+
+        // 🔥 Mapping des getters
+        ...mapGetters('paiements', [
+            'paiementsPayes',
+            'paiementsEnAttente',
+            'paiementsEnRetard',
+            'totalPaye',
+            'totalEnAttente'
+        ]),
+    },
+
+    async mounted() {
+        await this.chargerPaiements();
+    },
+
+    methods: {
+        // 🔥 Mapping des actions
+        ...mapActions('paiements', [
+            'getAll',
+            'getOne',
+            'initierPaiement',
+            'traiterCallback',
+            'getStatistiques',
+            'getByStatut',
+            'marquerPaye',
+            'envoyerRappel',
+            'exportToExcel',
+            'verifierPaiementsEnRetard',
+            'resetState'
+        ]),
+
+        // ============================================
+        // MÉTHODES D'ACTION
+        // ============================================
+
+        async initierPaiement() {
+            try {
+                await this.$store.dispatch('paiements/initierPaiement', this.formPaiement);
+
+                // Le store redirige automatiquement vers FedaPay
+                // Pas besoin de code supplémentaire ici
+
+            } catch (error) {
+                ElMessage.error('Erreur lors de l\'initiation du paiement');
+            }
+        },
+
+        async chargerPaiements() {
+            try {
+                await this.getAll();
+                ElMessage.success('Paiements chargés avec succès');
+            } catch (error) {
+                ElMessage.error('Erreur lors du chargement des paiements');
+            }
+        },
+
+        async chargerParStatut(statut) {
+            try {
+                await this.getByStatut(statut);
+                ElMessage.info(`Paiements filtrés: ${statut}`);
+            } catch (error) {
+                ElMessage.error('Erreur lors du filtrage');
+            }
+        },
+
+        async voirDetails(id) {
+            this.selectedPaiementId = id;
+            this.showModal = true;
+        },
+
+        async marquerCommePaye(id) {
+            try {
+                await ElMessageBox.confirm(
+                    'Voulez-vous marquer ce paiement comme payé ?',
+                    'Confirmation',
+                    {
+                        confirmButtonText: 'Oui',
+                        cancelButtonText: 'Annuler',
+                        type: 'warning',
+                    }
+                );
+
+                await this.marquerPaye({
+                    id,
+                    modePaiement: 'ESPECES',
+                    datePaiement: new Date().toISOString().split('T')[0],
+                    montantPaye: null,
+                    numeroTransaction: null
+                });
+
+                ElMessage.success('Paiement marqué comme payé');
+                await this.chargerPaiements();
+
+            } catch (error) {
+                if (error !== 'cancel') {
+                    ElMessage.error('Erreur lors de la mise à jour');
+                }
+            }
+        },
+
+        async envoyerRappel(id) {
+            try {
+                await this.$store.dispatch('paiements/envoyerRappel', id);
+                ElMessage.success('Rappel envoyé avec succès');
+            } catch (error) {
+                ElMessage.error('Erreur lors de l\'envoi du rappel');
+            }
+        },
+
+        async exporterExcel() {
+            try {
+                await this.exportToExcel();
+                ElMessage.success('Export Excel réussi');
+            } catch (error) {
+                ElMessage.error('Erreur lors de l\'export');
+            }
+        },
+
+        async verifierRetards() {
+            try {
+                await this.verifierPaiementsEnRetard();
+                ElMessage.success('Vérification des retards effectuée');
+                await this.chargerPaiements();
+            } catch (error) {
+                ElMessage.error('Erreur lors de la vérification');
+            }
+        },
+
+        async chargerStatistiques() {
+            try {
+                await this.getStatistiques();
+                ElMessage.success('Statistiques chargées');
+            } catch (error) {
+                ElMessage.error('Erreur lors du chargement des statistiques');
+            }
+        },
+
+        reinitialiser() {
+            this.resetState();
+            this.formPaiement = {
+                contratId: null,
+                montant: null,
+                email: '',
+                nom: ''
+            };
+            ElMessage.info('États réinitialisés');
+        },
+
+        // ============================================
+        // UTILITAIRES
+        // ============================================
+
+        formatCurrency(value) {
+            if (value == null || value === '') return '—';
+            const numValue = Number(value);
+            if (isNaN(numValue)) return '—';
+
+            return new Intl.NumberFormat('fr-FR', {
+                style: 'currency',
+                currency: 'XOF',
+                minimumFractionDigits: 0,
+            }).format(numValue);
+        },
+
+        formatDate(date) {
+            if (!date) return '—';
+            return new Date(date).toLocaleDateString('fr-FR', {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric'
+            });
+        },
+
+        getStatusClass(statut) {
+            const classes = {
+                'PAYE': 'bg-success',
+                'EN_ATTENTE': 'bg-warning',
+                'EN_RETARD': 'bg-danger',
+                'ANNULE': 'bg-secondary',
+            };
+            return classes[statut] || 'bg-secondary';
+        },
+
+        getStatusLabel(statut) {
+            const labels = {
+                'PAYE': 'Payé',
+                'EN_ATTENTE': 'En attente',
+                'EN_RETARD': 'En retard',
+                'ANNULE': 'Annulé',
+            };
+            return labels[statut] || statut;
+        },
+    },
+};
+</script>
+
+<style scoped>
+.card {
+    transition: all 0.3s ease;
+}
+
+.card:hover {
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.btn-group-sm .btn {
+    padding: 0.25rem 0.5rem;
+}
+
+.table-hover tbody tr:hover {
+    background-color: rgba(0, 123, 255, 0.05);
+}
+</style>

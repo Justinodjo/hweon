@@ -13,7 +13,7 @@
                                 <!-- Vector Image -->
                                 <div class="col-lg-6 d-flex align-items-center order-2 order-lg-1">
                                     <div class="p-3 p-lg-5">
-                                        <img src="@/assets/images/element/signin.jpeg" alt="">
+                                        <img src="@/assets/images/element/signin.svg" alt="">
                                     </div>
                                     <!-- Divider -->
                                     <div class="vr opacity-1 d-none d-lg-block"></div>
@@ -24,11 +24,12 @@
                                     <div class="p-4 p-sm-7">
                                         <!-- Logo -->
                                         <router-link to="/home">
-                                            <img class="h-60px mb-4" src="@/assets/images/logo.png" alt="logo">
+                                            <img class="h-60px mb-4" src="@/assets/images/hweon_logo_transparent.png"
+                                                alt="logo">
                                         </router-link>
                                         <!-- Title -->
                                         <h1 class="mb-2 h3">Bienvenue</h1>
-                                        <p class="mb-0">Nouveau ici?<router-link to="directory/signup"> Inscrit
+                                        <p class="mb-0">Nouveau ici?<router-link to="/directory/signup"> Inscrit
                                                 toi</router-link>
                                         </p>
                                         <!-- Form START -->
@@ -63,7 +64,7 @@
                                                     <label class="form-check-label" for="rememberCheck">Se souvenir de
                                                         moi ?</label>
                                                 </div>
-                                                <router-link href="forgot-password.html" to="/forgot">Mot de passe
+                                                <router-link :to="{ name: 'forgot' }">Mot de passe
                                                     oublié?</router-link>
                                             </div>
                                             <!-- Button -->
@@ -72,26 +73,27 @@
                                             </div>
 
                                             <!-- Divider -->
-                                            <!-- <div class="position-relative my-4">
+                                            <div class="position-relative my-4">
                                                 <hr>
                                                 <p
                                                     class="small bg-mode position-absolute top-50 start-50 translate-middle px-2">
                                                     Ou se connecter avec</p>
-                                            </div> -->
+                                            </div>
 
                                             <!-- Google and facebook button -->
-                                            <!-- <div class="vstack gap-3">
-                                                <a href="sign-in.html#" class="btn btn-light mb-0"><i
+                                            <div class="vstack gap-3">
+                                                <a href="#" class="btn btn-light mb-0"
+                                                    @click.prevent="loginWithGoogle"><i
                                                         class="fab fa-fw fa-google text-google-icon me-2"></i>Se
                                                     connecter avec Google</a>
-                                                <a href="sign-in.html#" class="btn btn-light mb-0"><i
+                                                <!-- <a href="sign-in.html#" class="btn btn-light mb-0"><i
                                                         class="fab fa-fw fa-facebook-f text-facebook me-2"></i>Se
-                                                    connecter avec Facebook</a>
-                                            </div> -->
+                                                    connecter avec Facebook</a> -->
+                                            </div>
 
                                             <!-- Copyright -->
                                             <div class="text-primary-hover text-body mt-3 text-center"> Copyrights ©2025
-                                                Mains d'or plus. Créé par <a href="https://www.odjo.tech/"
+                                                Hweon. Créé par <a href="https://www.odjo.tech/"
                                                     class="text-body">ODJO</a>. </div>
                                         </form>
                                         <!-- Form END -->
@@ -116,10 +118,12 @@
 <script>
 
 import { mapActions, mapGetters } from "vuex";
-import { setToken, setEmail, setUserName, setUserInfo, setSecondName } from "@/helpers/auth";
+import { setToken, setEmail, setUserName, setUserInfo, setSecondName, setFichier, getFichier } from "@/helpers/auth";
+import getRedirectByRole from "@/helpers/getRedirectByRole";
 import { useLoading } from "vue-loading-overlay";
 import { ElMessage } from "element-plus";
 import router from "@/router/index.js";
+import { API_URLS } from "@/config/api";
 
 const loading = useLoading();
 
@@ -136,7 +140,12 @@ export default {
         };
     },
     computed: {
-        ...mapGetters("auth", ["userName", "userInfo", "secondName", "email"]),
+        userName() { return this.$store.getters["auth/userName"]; },
+        userInfo() { return this.$store.getters["auth/userInfo"]; },
+        secondName() { return this.$store.getters["auth/secondName"]; },
+        email() { return this.$store.getters["auth/email"]; },
+        userRoles() { return this.$store.getters["auth/userRoles"]; },
+        userFichier() { return this.$store.getters["auth/userFichier"]; },
     },
     methods: {
         ...mapActions("auth", ["login"]),
@@ -168,34 +177,19 @@ export default {
                 setUserName(this.userName, expirationTime);
                 setSecondName(this.secondName, expirationTime);
                 setUserInfo(this.userInfo, expirationTime);
+                setFichier(this.userFichier || "", expirationTime);
 
                 // Récupérer les rôles de l'utilisateur
                 const userRoles = this.$store.getters["auth/userRoles"];
                 console.log("User Roles:", userRoles);  // Debugging des rôles
 
                 // Définir la redirection par défaut
-                let redirectPath = this.$route.query.redirect || "/home"; // Redirection par défaut
-                // Logique de redirection basée sur les rôles
-                const roleRedirects = {
-                    "ADMIN_ROLES": "admin",
-                    "MANAGER_ROLES": "/manager/manager_dashboard",
-                    "CLIENTS_ROLES": "/home",
-                    "SUPER_ADMIN_ROLES": "/master/master_dashboard",
-                    "LOCATAIRE_ROLES": "/Locataire/locataire_dashboard",
-                    "PROPRIETAIRE_ROLES": "/proprietaire/proprietaire_dashboard",
-                    "NOTARY_ROLES": "notary_dashboard",
-                };
 
-                // Trouver le rôle de l'utilisateur et définir la redirection
-                for (const role of userRoles) {
-                    if (roleRedirects[role]) {
-                        redirectPath = roleRedirects[role];
-                        break;
-                    }
-                }
+                const redirectPath = getRedirectByRole(userRoles) || this.$route.query.redirect || "/home";
+
 
                 // Effectuer la redirection après la connexion réussie
-                this.$router.push(redirectPath);
+                this.$router.replace(redirectPath);
             } catch (error) {
                 console.error("Login error:", error);
                 this.errorMessage =
@@ -208,6 +202,58 @@ export default {
                 this.isSubmitting = false;
             }
         },
+        // loginWithGoogle() {
+        //     window.location.href = `${API_URLS.API_BASE}/oauth2/authorization/google`;
+        // },
+        loginWithGoogle() {
+            window.location.href = "https://dev.mainsdorplus.com/oauth2/authorization/google";
+        },
+        async handleOAuth2Success() {
+            const query = new URLSearchParams(window.location.search);
+            const oauthToken = query.get("token");
+            const authorities = query.get("roles")?.split(",") || [];
+            // 🔹 Stocke le token immédiatement (avant tout appel)
+            localStorage.setItem("token", oauthToken);
+            setToken(oauthToken, "7d");
+
+            if (!oauthToken) return;
+
+            const roles = authorities
+                .filter(r => r.startsWith("ROLE_"))
+                .map(r => r.replace("ROLE_", "") + "_ROLES");
+
+            const permissions = authorities.filter(r => !r.startsWith("ROLE_"));
+            try {
+                await this.$store.dispatch("auth/oauthLogin", {
+                    token: oauthToken,
+                    roles,
+                    permissions
+                });
+
+                if (response.isNew) {
+                    // Nouvel utilisateur → page sélection rôle
+                    this.$router.replace(`/select-role?email=${response.email}`);
+                    return;
+                }
+                // 2️⃣ Récupère les informations de l’utilisateur connecté depuis /auth/me
+                const userData = await this.$store.dispatch("auth/getCurrentUser");
+                // Mettre à jour cookies/localStorage si nécessaire
+                setUserInfo(userData.id, "7d");
+                setUserName(userData.userName, "7d");
+                setSecondName(userData.secondName, "7d");
+                setRoles(userData.roles, "7d");
+                setEmail(userData.email, "7d");
+                setFichier(userData.fichier ? userData.fichier : "", "7d");
+
+                // 3️⃣ Redirection basée sur les rôles
+                const redirectPath = getRedirectByRole(this.userRoles) || "/home";
+
+                this.$router.replace(redirectPath); // replace pour éviter historique et boucle
+            } catch (error) {
+                console.error("OAuth2 login error:", error);
+                ElMessage.error("Erreur lors de la connexion via Google.");
+            }
+        },
 
         togglePasswordVisibility() {
             this.passwordVisible = !this.passwordVisible;
@@ -215,13 +261,17 @@ export default {
     },
     mounted() {
         // Vérifier si "Remember Me" a été activé précédemment
-        const savedEmail = localStorage.getItem("email");
-        const savedPassword = localStorage.getItem("password");
-
-        if (savedEmail && savedPassword) {
-            this.usernameOrEmail = savedEmail;
-            this.password = savedPassword;
-            this.rememberMe = true;
+        // Gestion de callback OAuth2
+        const query = new URLSearchParams(window.location.search);
+        const oauthToken = query.get("token");
+        if (oauthToken) {
+            // Vérifier qu'on n'a pas déjà traité ce token
+            const processedToken = localStorage.getItem("oauthToken");
+            if (processedToken !== oauthToken) {
+                this.handleOAuth2Success({ token: oauthToken }).then(() => {
+                    localStorage.setItem("oauthToken", oauthToken); // marquer comme traité
+                });
+            }
         }
     },
 };

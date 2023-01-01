@@ -116,7 +116,7 @@ export default {
                         });
                         self.$emit("update:fichiers", self.uploadedFilesList);
 
-                        ElMessage({ showClose: true, message: "Fichier uploadé avec succès !", type: "success" });
+                        // ElMessage({ showClose: true, message: "Fichier uploadé avec succès !", type: "success" });
                     });
 
                     this.on("error", (file, errorMessage) => {

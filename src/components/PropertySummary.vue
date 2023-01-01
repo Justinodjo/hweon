@@ -85,7 +85,7 @@
             </div>
 
             <!-- Équipements sélectionnés -->
-            <div v-if="hasEquipments" class="mt-4">
+            <div v-if="hasEquipments && !isAgricole" class="mt-4">
                 <h6 class="section-title">
                     <i class="bi bi-tools me-2"></i>
                     Équipements sélectionnés
@@ -180,7 +180,7 @@
                             <div class="stat-label">Pièces</div>
                         </div>
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-3" v-if="!isAgricole">
                         <div class="stat-card">
                             <div class="stat-number">{{ getEquipmentCount() }}</div>
                             <div class="stat-label">Équipements</div>
@@ -206,6 +206,10 @@ export default {
             default: () => []
         },
         hasValidCoordinates: {
+            type: Boolean,
+            default: false
+        },
+        isAgricole: {   // <----- AJOUT OBLIGATOIRE
             type: Boolean,
             default: false
         }

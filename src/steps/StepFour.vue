@@ -70,7 +70,8 @@
             Veuillez cocher toutes les cases de validation pour continuer.
         </div>
         <!-- Récapitulatif du bien -->
-        <PropertySummary :form="form" :typesBien="typesBien" :hasValidCoordinates="hasValidCoordinates" />
+        <PropertySummary :form="form" :typesBien="typesBien" :isAgricole="isAgricole"
+            :hasValidCoordinates="hasValidCoordinates" />
 
         <!-- Validation finale et soumission -->
         <div class="card mb-4">
@@ -228,7 +229,17 @@ export default {
 
         isFullyValidated() {
             return Object.values(this.validationChecks).every(check => check === true)
-        }
+        },
+        isAgricole() { return this.getTypeBien?.toLowerCase() === 'agricole' },
+        isResidentiel() { return this.getTypeBien?.toLowerCase() === 'residentiel' },
+        getTypeBien() {
+            if (!this.typesBien || !this.form) return null;
+            const type = this.typesBien.find(
+                t => Number(t.id) === Number(this.form.typeBiensImmobiliereId)
+            );
+            return type?.nomTypeBiensImmo || null;
+        },
+
     },
 
     methods: {

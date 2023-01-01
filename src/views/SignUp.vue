@@ -120,13 +120,12 @@
             </el-dialog>
 
             <el-dialog v-model="showPrivacyModal" title="Politique de Confidentialité" width="60%">
-                x <div style="max-height: 60vh; overflow-y: auto;">
+                <div style="max-height: 60vh; overflow-y: auto;">
                     <p>🛡️ <strong>Politique de Confidentialité</strong></p>
                     <p><em>Dernière mise à jour : 1er août 2025</em></p>
 
                     <p>
-                        La présente Politique de Confidentialité décrit comment <strong>[Nom de votre plateforme, ex.
-                            e-immo]</strong>
+                        La présente Politique de Confidentialité décrit comment <strong>Hweon</strong>
                         collecte, utilise et protège les données personnelles des utilisateurs lors de l’utilisation de
                         nos services.
                     </p>
@@ -276,7 +275,8 @@
                                     <div class="p-4 p-sm-6 w-100">
                                         <!-- Logo -->
                                         <router-link to="/home">
-                                            <img class="h-50px mb-4" src="@/assets/images/logo.png" alt="logo">
+                                            <img class="h-50px mb-4" src="@/assets/images//hweon_logo_transparent.png"
+                                                alt="logo">
                                         </router-link>
                                         <!-- Title -->
                                         <h1 class="mb-2 h3">Crée ton compte</h1>
@@ -294,6 +294,7 @@
                                                         <option disabled value="">Vous êtes un</option>
                                                         <option value="LOCATAIRE_ROLES">Locataire</option>
                                                         <option value="PROPRIETAIRE_ROLES">Propriétaire</option>
+                                                        <option value="MANAGER_ROLES">Gestionnaire</option>
                                                         <option value="SUPPLIER_ROLES">Fournisseur</option>
                                                         <option value="NOTARY_ROLES">Notaire</option>
                                                     </select>
@@ -306,7 +307,7 @@
 
                                                 <!-- Copyright -->
                                                 <div class="text-primary-hover text-body mt-3 text-center">
-                                                    Copyrights ©2025 e-immo. Créé par
+                                                    Copyrights ©2025 hweon. Créé par
                                                     <a href="https://www.odjo.tech/" class="text-body">ODJO</a>.
                                                 </div>
                                             </form>
@@ -342,9 +343,11 @@
                                                 </div>
                                                 <!-- adresse -->
                                                 <div class="mb-3">
-                                                    <label class="form-label">Téléphone</label>
-                                                    <input type="text" v-model="userData.userInfo.numero"
-                                                        class="form-control">
+                                                    <!-- <label class="form-label">Téléphone</label> -->
+                                                    <InternationalPhoneInput v-model="userData.userInfo.numero"
+                                                        @validate="handlePhoneValidation" />
+                                                    <!-- <input type="text" v-model="userData.userInfo.numero"
+                                                        class="form-control"> -->
                                                 </div>
                                                 <!-- Button -->
                                                 <div class="d-flex justify-content-between">
@@ -356,7 +359,7 @@
 
                                                 <!-- Copyright -->
                                                 <div class="text-primary-hover text-body mt-3 text-center">
-                                                    Copyrights ©2025 e-immo. Créé par
+                                                    Copyrights ©2025 hweon. Créé par
                                                     <a href="https://www.odjo.tech/" class="text-body">ODJO</a>.
                                                 </div>
                                             </form>
@@ -376,27 +379,31 @@
                                                 <!-- Password -->
                                                 <div class="mb-3 position-relative">
                                                     <label class="form-label">Mot de passe</label>
-                                                    <input class="form-control" type="password"
+                                                    <input class="form-control fakepassword"
+                                                        :type="passwordVisible ? 'text' : 'password'"
                                                         autocomplete="current-password"
                                                         v-model="userData.userInfo.password" id="psw-input">
                                                     <span
                                                         class="position-absolute top-50 end-0 translate-middle-y p-0 mt-3">
-                                                        <i
-                                                            class="fakepasswordicon fas fa-eye-slash cursor-pointer p-2"></i>
+                                                        <i class="fakepasswordicon fas  cursor-pointer p-2"
+                                                            :class="passwordVisible ? 'fa-eye' : 'fa-eye-slash'"
+                                                            @click="togglePasswordVisibility"></i>
                                                     </span>
                                                 </div>
 
                                                 <!-- Password -->
                                                 <div class="mb-3 position-relative">
                                                     <label class="form-label">Confirmez votre mot de passe</label>
-                                                    <input class="form-control" type="password"
+                                                    <input class="form-control fakepassword"
+                                                        :type="passwordConfirmVisible ? 'text' : 'password'"
                                                         autocomplete="current-password"
                                                         v-model="userData.userInfo.passwordConfirm"
                                                         id="psw-confirm-input">
                                                     <span
                                                         class="position-absolute top-50 end-0 translate-middle-y p-0 mt-3">
-                                                        <i
-                                                            class="fakepasswordicon fas fa-eye-slash cursor-pointer p-2"></i>
+                                                        <i class="fakepasswordicon fas cursor-pointer p-2"
+                                                            :class="passwordConfirmVisible ? 'fa-eye' : 'fa-eye-slash'"
+                                                            @click="togglePasswordConfirmVisibility"></i>
                                                     </span>
                                                 </div>
 
@@ -429,7 +436,7 @@
 
                                                 <!-- Copyright -->
                                                 <div class="text-primary-hover text-body mt-3 text-center">
-                                                    Copyrights ©2025 e-immo. Créé par
+                                                    Copyrights ©2025 hweon. Créé par
                                                     <a href="https://www.odjo.tech/" class="text-body">ODJO</a>.
                                                 </div>
                                             </form>
@@ -459,7 +466,9 @@ import { ref, reactive, onMounted, toRaw } from "vue";
 import { ElMessage, ElMessageBox } from "element-plus";
 import { useStore } from 'vuex'
 import { useLoading } from "vue-loading-overlay";
-import { setToken, setEmail, setUserName, setUserInfo, setSecondName, setRoles, getToken } from "@/helpers/auth";
+import { setToken, setEmail, setUserName, setUserInfo, setSecondName, setRoles, getToken, setFichier } from "@/helpers/auth";
+import getRedirectByRole from "@/helpers/getRedirectByRole";
+import InternationalPhoneInput from '@/components/card/InternationalPhoneInput.vue'
 // import vueFilePond from "vue-filepond";
 // import "filepond/dist/filepond.min.css";
 import router from "@/router/index.js";
@@ -486,14 +495,19 @@ const userData = ref({
         password: '',
         passwordConfirm: '',
         numero: '',
-        roles: [],
+        roles: '',
     },
     consentement: false,
     // fichier: null,
 })
+const passwordVisible = ref(false)
+const passwordConfirmVisible = ref(false);
 const fichier = ref([])
 const step = ref(1)
 const userIP = ref('127.0.0.1'); // Valeur par défaut
+const phoneValid = ref(false)
+
+
 onMounted(() => {
     // const dropzone = new Dropzone("#dropzone", {
     //     url: "/fichier/add",
@@ -528,11 +542,15 @@ const fetchIP = async () => {
         console.error("Erreur de récupération IP :", error);
     }
 };
-
+const togglePasswordVisibility = () => {
+    passwordVisible.value = !passwordVisible.value;
+};
+const togglePasswordConfirmVisibility = () => {
+    passwordConfirmVisible.value = !passwordConfirmVisible.value;
+};
 const handleSubmit = async () => {
     const loader = loading.show();
     console.log("handleSubmit démarré, étape:", step.value);
-
     // Validation de l'étape 3 (confirmation des mots de passe et consentement)
     try {
 
@@ -605,7 +623,7 @@ const handleSubmit = async () => {
             throw new Error("Impossible de récupérer l'ID utilisateur.");
         }
 
-        if (response.id) {
+        if (response && response.id) {
             // Création du consentement RGPD
             console.log("l'utilisateur avec response:", response);
             await store.dispatch("consentements/create", {
@@ -618,36 +636,32 @@ const handleSubmit = async () => {
                     id: response.id // clé pour lier à UserInfo côté back
                 }
             });
+            // Sauvegarder les données dans les cookies ou localStorage
+            setEmail(userData.value.userInfo.email, "7d");
+            setUserName(userData.value.userInfo.name, "7d");
+            setSecondName(userData.value.userInfo.secondName, "7d");
+            // setDateNaissance(userData.value.userInfo.dateNaissance, "7d");
+            setUserInfo(userData.value.userInfo, "7d");
+            setFichier(userData.value.fichier, "7d");
+
+            const selectedRole = Array.isArray(userData.value.userInfo.roles)
+                ? userData.value.userInfo.roles[0]
+                : userData.value.userInfo.roles;
+
+            setRoles(selectedRole, "7d");
+
+
+            const redirectPath = getRedirectByRole([userData.value.userInfo.roles]);
+            router.push(redirectPath);
 
         }
+
 
         ElMessage({
             showClose: true,
             message: 'Inscription réussie !',
             type: "success",
         });
-
-        // Redirection en fonction des rôles
-        const roleRedirects = {
-            ADMIN_ROLES: "/dashboard",
-            MANAGER_ROLES: "/manager_dashboard",
-            LOCATAIRE_ROLES: "/locataire_dashboard",
-            SUPPLIER_ROLES: "/supplier_dashboard",
-            NOTARY_ROLES: "/notary_dashboard",
-            SUPER_ADMIN_ROLES: "/master_dashboard",
-            PROPRIETAIRE_ROLES: "/proprietaire/proprietaire_dashboard",
-        };
-
-        const selectedRole = userData.value.userInfo.roles;
-        const redirectPath = roleRedirects[selectedRole] || "/";
-        // Sauvegarder les données dans les cookies ou localStorage
-        // setToken(token, "7d");
-        // setEmail(this.email, "7d");
-        // setUserName(this.userName, "7d");
-        // setSecondName(this.secondName, "7d");
-        // setUserInfo(this.userInfo, "7d");
-        // setRoles(this.selectedRole, "7d");
-        router.push(redirectPath);
 
         // Reset du formulaire
         userData.value = {
@@ -660,11 +674,7 @@ const handleSubmit = async () => {
                 password: '',
                 passwordConfirm: '',
                 numero: '',
-                roles: [
-                    {
-                        nomRoles: '',
-                    }
-                ],
+                roles: '',
             },
             consentement: false,
         };
@@ -677,8 +687,18 @@ const handleSubmit = async () => {
         let errorMessage = "Erreur lors de la création du compte";
 
         if (error.response) {
-            // Erreur de réponse du serveur
-            errorMessage = error.response.data?.message || `Erreur ${error.response.status}`;
+            // Si le backend renvoie du JSON
+            if (error.response.data?.message) {
+                errorMessage = error.response.data.message;
+            }
+            // Si le backend renvoie du HTML
+            else if (typeof error.response.data === "string" && error.response.data.includes("<html")) {
+                // Extraire le message d'exception dans le <p> contenant "Exception details"
+                const match = error.response.data.match(/Exception details:\s*(.*?)<\/p>/);
+                if (match && match[1]) {
+                    errorMessage = match[1].trim();
+                }
+            }
         } else if (error.request) {
             // Erreur de réseau
             errorMessage = "Erreur de connexion au serveur";
@@ -692,30 +712,23 @@ const handleSubmit = async () => {
         loader.hide();
     }
 };
-
+// Ajouter une validation du numéro de téléphone
+const validatePhoneNumber = (phone) => {
+    // Regex pour numéros internationaux (adaptez selon vos besoins)
+    const phoneRegex = /^[\+]?[\d\s\-\(\)]{8,20}$/;
+    return phoneRegex.test(phone);
+};
 
 const validateStep = () => {
     if (step.value === 1) {
         return userData.value.userInfo.roles !== "";
     }
-    // Ajouter une validation du numéro de téléphone
-    const validatePhoneNumber = (phone) => {
-        // Regex pour numéros internationaux (adaptez selon vos besoins)
-        const phoneRegex = /^[\+]?[\d\s\-\(\)]{8,20}$/;
-        return phoneRegex.test(phone);
-    };
-
 
     if (step.value === 2) {
-        const requiredFields = [
-            userData.value.userInfo.name.trim(),
-            userData.value.userInfo.secondName.trim(),
-            userData.value.userInfo.dateNaissance,
-            userData.value.userInfo.adresse.trim(),
-            userData.value.userInfo.numero.trim()
-        ];
-
-        return requiredFields.every(field => field !== "");
+        if (!phoneValid.value) {
+            ElMessage.error("Numéro de téléphone invalide")
+            return false
+        }
     }
 
     return true;
@@ -756,13 +769,6 @@ const uploadConfig = {
 
             return response;
         },
-
-        onerror: (error) => {
-            console.error("Erreur d'upload:", error);
-        },
-
-
-
         onerror: (error) => {
             console.error("Erreur d'upload:", error);
             ElMessage({
@@ -781,6 +787,23 @@ const UploadResponse = (error, fileData) => {
         reponseUpload.value = reponse;
     }
 };
+const handlePhoneValidation = (validation) => {
+    if (!validation) return;
+
+    console.log("Validation propre :", validation);
+
+    phoneValid.value = !!validation.valid;
+
+    if (validation.valid) {
+        // Numéro complet avec indicatif
+        userData.value.userInfo.numero = validation.formatted;
+        console.log("Numéro international final :", userData.value.userInfo.numero);
+    } else {
+        userData.value.userInfo.numero = '';
+        console.log("Numéro invalide ou incomplet.");
+    }
+};
+
 
 </script>
 <style lang="css" scoped>

@@ -1,201 +1,545 @@
 <template>
     <main>
-        <!-- =======================
-Content START -->
         <section class="pt-0">
             <div class="container vstack gap-4">
                 <!-- Title START -->
                 <div class="row">
                     <div class="col-12">
-                        <h1 class="fs-4 mb-0"><i class="bi bi-journals fa-fw me-1"></i>Listings</h1>
+                        <h1 class="fs-4 mb-0">
+                            <i class="bi bi-journals fa-fw me-1"></i>Mes Annonces
+                        </h1>
                     </div>
                 </div>
                 <!-- Title END -->
 
-                <!-- Counter START -->
+                <!-- Counter START (DYNAMIQUE) -->
                 <div class="row g-4">
-
-                    <!-- Earning item -->
+                    <!-- Revenu total -->
                     <div class="col-md-6 col-xl-4">
                         <div class="card card-body border p-4 h-100">
-                            <h6>Earning
-                                <a tabindex="0" class="h6 mb-0" role="button" data-bs-toggle="popover"
-                                    data-bs-trigger="focus" data-bs-placement="top"
-                                    data-bs-content="After US royalty withholding tax" data-bs-original-title=""
-                                    title="">
-                                    <i class="bi bi-info-circle-fill small"></i>
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <div>
+                                    <h6 class="mb-0">
+                                        Revenus Totaux
+                                        <a tabindex="0" class="h6 mb-0 ms-1" role="button" data-bs-toggle="tooltip"
+                                            title="Total des revenus générés">
+                                            <i class="bi bi-info-circle-fill small"></i>
+                                        </a>
+                                    </h6>
+                                </div>
+                                <div class="icon-box bg-success bg-opacity-10 rounded-circle p-2">
+                                    <i class="bi bi-currency-exchange text-success fs-5"></i>
+                                </div>
+                            </div>
+
+                            <h2 class="text-success mb-2">{{ formatCurrency(stats.revenuTotal) }}</h2>
+
+                            <div class="d-flex align-items-center mb-2">
+                                <span :class="stats.evolutionRevenu >= 0 ? 'text-success' : 'text-danger'" class="me-2">
+                                    <i class="bi"
+                                        :class="stats.evolutionRevenu >= 0 ? 'bi-arrow-up' : 'bi-arrow-down'"></i>
+                                    {{ Math.abs(stats.evolutionRevenu) }}%
+                                </span>
+                                <span class="text-muted small">vs mois dernier</span>
+                            </div>
+
+                            <div class="mt-auto">
+                                <router-link :to="{ name: 'details_baux_list' }"
+                                    class="text-primary text-decoration-underline p-0 mb-0">
+                                    Voir le détail
+                                </router-link>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Biens loués -->
+                    <div class="col-md-6 col-xl-4">
+                        <div class="card card-body border p-4 h-100">
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <div>
+                                    <h6 class="mb-0">Biens Loués</h6>
+                                </div>
+                                <div class="icon-box bg-info bg-opacity-10 rounded-circle p-2">
+                                    <i class="bi bi-house-check text-info fs-5"></i>
+                                </div>
+                            </div>
+
+                            <h2 class="text-info mb-2">{{ stats.biensLoues }}</h2>
+
+                            <p class="mb-2">
+                                <span class="text-muted me-1">{{ stats.totalBiens }}</span>
+                                Biens au total
+                            </p>
+
+                            <!-- Barre de progression -->
+                            <div class="progress mb-2" style="height: 8px;">
+                                <div class="progress-bar bg-info" role="progressbar"
+                                    :style="{ width: tauxOccupation + '%' }" :aria-valuenow="tauxOccupation">
+                                </div>
+                            </div>
+                            <small class="text-muted">Taux d'occupation: {{ tauxOccupation }}%</small>
+
+                            <div class="mt-auto">
+                                <a href="#" @click.prevent="filterByStatus('LOUE')"
+                                    class="text-primary text-decoration-underline p-0 mb-0">
+                                    Voir les biens loués
                                 </a>
-                            </h6>
-                            <h2 class="text-success">$25,869</h2>
-                            <p class="mb-2"><span class="text-primary me-1">0.20%<i class="bi bi-arrow-up"></i></span>vs
-                                last month</p>
-                            <div class="mt-auto text-primary-hover"><a href="agent-listings.html#"
-                                    class="text-decoration-underline p-0 mb-0">View statement</a></div>
+                            </div>
                         </div>
                     </div>
 
-                    <!-- Booked Rooms item -->
+                    <!-- Biens disponibles -->
                     <div class="col-md-6 col-xl-4">
                         <div class="card card-body border p-4 h-100">
-                            <h6>Booked Rooms</h6>
-                            <h2 class="text-info">58</h2>
-                            <p class="mb-2"><span class="text-danger me-1">102</span>Total Rooms</p>
-                            <div class="mt-auto text-primary-hover"><a href="agent-listings.html#"
-                                    class="text-decoration-underline p-0 mb-0">View Bookings</a></div>
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <div>
+                                    <h6 class="mb-0">Biens Disponibles</h6>
+                                </div>
+                                <div class="icon-box bg-warning bg-opacity-10 rounded-circle p-2">
+                                    <i class="bi bi-house text-warning fs-5"></i>
+                                </div>
+                            </div>
+
+                            <h2 class="text-warning mb-2">{{ stats.biensDisponibles }}</h2>
+
+                            <p class="mb-2">
+                                <span class="badge bg-success">{{ stats.nouveauxCeMois }}</span>
+                                Nouveaux ce mois
+                            </p>
+
+                            <div class="mt-auto">
+                                <a href="#" @click.prevent="filterByStatus('DISPONIBLE')"
+                                    class="text-primary text-decoration-underline p-0 mb-0">
+                                    Voir les biens disponibles
+                                </a>
+                            </div>
                         </div>
                     </div>
-
-                    <!-- Available Rooms item -->
-                    <div class="col-md-6 col-xl-4">
-                        <div class="card card-body border p-4 h-100">
-                            <h6>Available Rooms</h6>
-                            <h2 class="text-warning">42</h2>
-                            <p class="mb-2"><span class="text-danger me-1">102</span>Total Rooms</p>
-                            <div class="mt-auto text-primary-hover"><a href="agent-listings.html#"
-                                    class="text-decoration-underline p-0 mb-0">View Rooms</a></div>
-                        </div>
-                    </div>
-
                 </div>
                 <!-- Counter END -->
+
+                <!-- Statistiques supplémentaires -->
+                <div class="row g-4">
+                    <div class="col-md-3">
+                        <div class="card border-start border-4 border-primary">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center">
+                                    <div class="flex-shrink-0">
+                                        <i class="bi bi-eye fs-2 text-primary"></i>
+                                    </div>
+                                    <div class="flex-grow-1 ms-3">
+                                        <h6 class="mb-0 text-muted">Vues totales</h6>
+                                        <h4 class="mb-0">{{ stats.vuesTotales }}</h4>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-3">
+                        <div class="card border-start border-4 border-success">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center">
+                                    <div class="flex-shrink-0">
+                                        <i class="bi bi-heart-fill fs-2 text-success"></i>
+                                    </div>
+                                    <div class="flex-grow-1 ms-3">
+                                        <h6 class="mb-0 text-muted">Favoris</h6>
+                                        <h4 class="mb-0">{{ stats.favorisTotal }}</h4>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-3">
+                        <div class="card border-start border-4 border-info">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center">
+                                    <div class="flex-shrink-0">
+                                        <i class="bi bi-chat-dots fs-2 text-info"></i>
+                                    </div>
+                                    <div class="flex-grow-1 ms-3">
+                                        <h6 class="mb-0 text-muted">Messages</h6>
+                                        <h4 class="mb-0">{{ stats.messagesNonLus }}</h4>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-3">
+                        <div class="card border-start border-4 border-warning">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center">
+                                    <div class="flex-shrink-0">
+                                        <i class="bi bi-star-fill fs-2 text-warning"></i>
+                                    </div>
+                                    <div class="flex-grow-1 ms-3">
+                                        <h6 class="mb-0 text-muted">Note moyenne</h6>
+                                        <h4 class="mb-0">{{ stats.noteMoyenne }}/5</h4>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
                 <!-- Listing table START -->
                 <div class="row">
                     <div class="col-12">
-
                         <div class="card border">
                             <!-- Card header -->
                             <div class="card-header border-bottom">
-                                <h5 class="card-header-title">Mes annonces <span
-                                        class="badge bg-primary bg-opacity-10 text-primary ms-2">{{
-                                            biensImmobiliers.length
-                                        }} Biens Immobiliers</span></h5>
-                                <!-- Filtre et tri -->
-                                <div class="mb-3 mt-3">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <h5 class="card-header-title mb-0">
+                                        Mes annonces
+                                        <span class="badge bg-primary bg-opacity-10 text-primary ms-2">
+                                            {{ filteredBiens.length }} / {{ stats.totalBiens }}
+                                        </span>
+                                    </h5>
+
+                                    <!-- Actions rapides -->
+                                    <div class="d-flex gap-2">
+                                        <button class="btn btn-sm btn-success" @click="showMandatModal = true">
+                                            <i class="bi bi-person-check me-1"></i> Mandater
+                                        </button>
+                                        <button class="btn btn-sm btn-primary" @click="openUserModal">
+                                            <i class="bi bi-plus-circle me-1"></i> Nouveau bien
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <!-- Filtres et recherche -->
+                                <div class="mt-3">
                                     <div class="row g-3">
+                                        <!-- Recherche globale -->
                                         <div class="col-md-4">
-                                            <input type="text" class="form-control" placeholder="Recherche..."
-                                                v-model="searchFilters.globalSearch" @input="searchBiens">
+                                            <div class="input-group">
+                                                <span class="input-group-text">
+                                                    <i class="bi bi-search"></i>
+                                                </span>
+                                                <input type="text" class="form-control"
+                                                    placeholder="Rechercher un bien..."
+                                                    v-model="searchFilters.globalSearch" @input="debouncedSearch">
+                                            </div>
                                         </div>
 
-                                        <div class="col-md-3 m-3">
-                                            <select class="form-select" v-model="currentTab" @change="onTypeChange">
-                                                <option value="">Tous Types</option>
+                                        <!-- Filtre par type -->
+                                        <div class="col-md-2">
+                                            <select class="form-select" v-model="searchFilters.type"
+                                                @change="applyFilters">
+                                                <option value="">Tous les types</option>
                                                 <option v-for="service in services" :key="service.id"
-                                                    :value="service.id">{{ capitalize(service.nomTypeBiensImmo) }}
+                                                    :value="service.id">
+                                                    {{ capitalize(service.nomTypeBiensImmo) }}
                                                 </option>
                                             </select>
                                         </div>
 
+                                        <!-- Filtre par statut -->
                                         <div class="col-md-2">
-                                            <input type="number" class="form-control" placeholder="Prix Min"
-                                                v-model.number="priceFilter.min" @input="filterByPrice">
-                                        </div>
-
-                                        <div class="col-md-2">
-                                            <input type="number" class="form-control" placeholder="Prix Max"
-                                                v-model.number="priceFilter.max" @input="filterByPrice">
-                                        </div>
-
-
-                                        <div class="d-flex col-md-2 left">
-                                            <!-- Sélecteur de tri -->
-                                            <select v-model="sortKey" @change="sortBiens"
-                                                class="form-select bi bi-funnel-fill">
-                                                <option value="">Trier par...</option>
-                                                <option value="prix">Prix</option>
-                                                <option value="nom">Nom</option>
-                                                <option value="dateCreation">Date</option>
+                                            <select class="form-select" v-model="searchFilters.statut"
+                                                @change="applyFilters">
+                                                <option value="">Tous les statuts</option>
+                                                <option value="DISPONIBLE">Disponible</option>
+                                                <option value="LOUE">Loué</option>
+                                                <option value="MAINTENANCE">En maintenance</option>
+                                                <option value="ARCHIVE">Archivé</option>
                                             </select>
-                                            <!-- <button class="btn btn-primary w-100" @click="sortBiens">
-                                                <i class="bi bi-funnel-fill"></i>
-                                            </button> -->
+                                        </div>
+
+                                        <!-- Prix min -->
+                                        <div class="col-md-2">
+                                            <input type="number" class="form-control" placeholder="Prix min"
+                                                v-model.number="searchFilters.prixMin" @input="applyFilters">
+                                        </div>
+
+                                        <!-- Prix max -->
+                                        <div class="col-md-2">
+                                            <input type="number" class="form-control" placeholder="Prix max"
+                                                v-model.number="searchFilters.prixMax" @input="applyFilters">
                                         </div>
                                     </div>
 
+                                    <!-- Deuxième ligne de filtres -->
+                                    <div class="row g-3 mt-2">
+                                        <!-- Tri -->
+                                        <div class="col-md-3">
+                                            <select v-model="sortKey" @change="sortBiens" class="form-select">
+                                                <option value="">Trier par...</option>
+                                                <option value="dateCreation">Date de création</option>
+                                                <option value="prix">Prix</option>
+                                                <option value="nom">Nom</option>
+                                                <option value="vues">Vues</option>
+                                                <option value="note">Note</option>
+                                            </select>
+                                        </div>
 
+                                        <!-- Ordre -->
+                                        <div class="col-md-2">
+                                            <select v-model="sortOrder" @change="sortBiens" class="form-select">
+                                                <option value="asc">Croissant</option>
+                                                <option value="desc">Décroissant</option>
+                                            </select>
+                                        </div>
+
+                                        <!-- Vue -->
+                                        <div class="col-md-2">
+                                            <div class="btn-group w-100" role="group">
+                                                <button type="button" class="btn"
+                                                    :class="viewMode === 'list' ? 'btn-primary' : 'btn-outline-primary'"
+                                                    @click="viewMode = 'list'">
+                                                    <i class="bi bi-list-ul"></i>
+                                                </button>
+                                                <button type="button" class="btn"
+                                                    :class="viewMode === 'grid' ? 'btn-primary' : 'btn-outline-primary'"
+                                                    @click="viewMode = 'grid'">
+                                                    <i class="bi bi-grid-3x3-gap"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                        <!-- Actions groupées -->
+                                        <div class="col-md-3">
+                                            <select v-model="bulkAction" class="form-select"
+                                                @change="executeBulkAction">
+                                                <option value="">Actions groupées...</option>
+                                                <option value="delete">Supprimer sélectionnés</option>
+                                                <option value="archive">Archiver sélectionnés</option>
+                                                <option value="publish">Publier sélectionnés</option>
+                                            </select>
+                                        </div>
+
+                                        <!-- Réinitialiser -->
+                                        <div class="col-md-2">
+                                            <button @click="resetFilters" class="btn btn-outline-secondary w-100">
+                                                <i class="bi bi-arrow-counterclockwise me-1"></i> Réinitialiser
+                                            </button>
+                                        </div>
+                                    </div>
                                 </div>
-
                             </div>
 
                             <!-- Card body START -->
                             <div class="card-body vstack gap-3">
-                                <!-- Listing item START -->
-                                <div v-if="validBiens.length === 0" class="text-center py-4">
-                                    <p class="text-muted">Aucun bien immobilier trouvé.</p>
+                                <!-- Message vide -->
+                                <div v-if="filteredBiens.length === 0" class="text-center py-5">
+                                    <i class="bi bi-inbox fs-1 text-muted d-block mb-3"></i>
+                                    <p class="text-muted mb-3">
+                                        {{ searchFilters.globalSearch ? 'Aucun bien ne correspond à votre recherche' :
+                                            'Vous n\'avez pas encore de biens' }}
+                                    </p>
+                                    <button v-if="!searchFilters.globalSearch" class="btn btn-primary"
+                                        @click="openUserModal">
+                                        <i class="bi bi-plus-circle me-2"></i>
+                                        Ajouter votre premier bien
+                                    </button>
                                 </div>
-                                <div class="card border p-2" v-for="(bien, index) in validBiens"
-                                    :key="bien.id || `bien-${index}`">
-                                    <div class="row g-4">
-                                        <!-- Card img -->
-                                        <div class="col-md-3 col-lg-2" v-if="bien.fichier && bien.fichier.id">
-                                            <img :src="getImageUrl(bien?.fichier.id)" class="card-img rounded-2"
-                                                alt="Card image" @error="handleImageError($event, bien)">
 
+                                <!-- Liste des biens -->
+                                <div v-else>
+                                    <!-- Sélection globale -->
+                                    <div class="d-flex align-items-center mb-3">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" v-model="selectAll"
+                                                @change="toggleSelectAll" id="selectAll">
+                                            <label class="form-check-label" for="selectAll">
+                                                Tout sélectionner
+                                            </label>
                                         </div>
+                                        <span class="ms-3 text-muted small" v-if="selectedBiens.length > 0">
+                                            {{ selectedBiens.length }} bien(s) sélectionné(s)
+                                        </span>
+                                    </div>
 
-                                        <!-- Card body -->
-                                        <div class="col-md-9 col-lg-10">
-                                            <div class="card-body position-relative d-flex flex-column p-0 h-100">
+                                    <!-- Listing item -->
+                                    <div class="card border p-2 listing-item"
+                                        :class="{ 'selected': isSelected(bien.id) }"
+                                        v-for="(bien, index) in paginatedBiens" :key="bien.id || `bien-${index}`">
 
-                                                <!-- Buttons -->
-                                                <div class="list-inline-item dropdown position-absolute top-0 end-0">
-                                                    <!-- Share button -->
-                                                    <a href="agent-listings.html#"
-                                                        class="btn btn-sm btn-round btn-light" role="button"
-                                                        :id="`dropdownAction${index}`" data-bs-toggle="dropdown"
-                                                        aria-expanded="false">
-                                                        <i class="bi bi-three-dots-vertical"></i>
-                                                    </a>
-                                                    <button @click="toggleFavorite(bien)" class="btn btn-sm"
-                                                        :class="{ 'btn-warning': bien.isFavorite, 'btn-outline-warning': !bien.isFavorite }">
-                                                        <i class="bi"
-                                                            :class="bien.isFavorite ? 'bi-star-fill' : 'bi-star'"></i>
-                                                    </button>
-                                                    <!-- dropdown button -->
-                                                    <ul class="dropdown-menu dropdown-menu-end min-w-auto shadow rounded"
-                                                        :aria-labelledby="'dropdownAction' + index">
-                                                        <li><a class="dropdown-item" href="agent-listings.html#"><i
-                                                                    class="bi bi-info-circle me-1"></i>Report</a></li>
-                                                        <li><a class="dropdown-item" href="agent-listings.html#"><i
-                                                                    class="bi bi-slash-circle me-1"></i>Disable</a></li>
-                                                    </ul>
-
+                                        <div class="row g-4">
+                                            <!-- Checkbox -->
+                                            <div class="col-auto d-flex align-items-center">
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="checkbox" :value="bien.id"
+                                                        v-model="selectedBiens" :id="`check-${bien.id}`">
                                                 </div>
+                                            </div>
 
-                                                <!-- Title -->
-                                                <h5 class="card-title mb-0 me-5"><router-link to="/details_biens_list"
-                                                        style="cursor:pointer;"> {{ bien.nom || 'Bien sans nom'
-                                                        }}</router-link></h5>
-                                                <small><i class="bi bi-geo-alt me-2"></i>{{ bien.adresse }}</small>
+                                            <!-- Image -->
+                                            <div class="col-md-3 col-lg-2">
+                                                <div class="position-relative">
+                                                    <img v-if="bien.fichier && bien.fichier.id"
+                                                        :src="getImageUrl(bien.fichier.id)" class="card-img rounded-2"
+                                                        alt="Image du bien" @error="handleImageError($event, bien)">
 
-                                                <!-- Price and Button -->
-                                                <div
-                                                    class="d-sm-flex justify-content-sm-between align-items-center mt-3 mt-md-auto">
-
-                                                    <!-- Button -->
-                                                    <div class="d-flex align-items-center">
-                                                        <h5 class="fw-bold mb-0 me-1">{{ formatCurrency(bien.prix) }}
-                                                        </h5>
-                                                        <span class="mb-0 me-2">/day</span>
+                                                    <div v-else
+                                                        class="card-img rounded-2 bg-light d-flex align-items-center justify-content-center"
+                                                        style="height: 120px;">
+                                                        <i class="bi bi-image text-muted" style="font-size: 2rem;"></i>
                                                     </div>
 
-                                                    <!-- Price -->
-                                                    <div class="hstack gap-2 mt-3 mt-sm-0">
-                                                        <a href="agent-listings.html#"
-                                                            class="btn btn-sm btn-primary mb-0"><i
-                                                                class="bi bi-pencil-square fa-fw me-1"></i>Edit</a>
-                                                        <a href="agent-listings.html#"
-                                                            class="btn btn-sm btn-danger mb-0"><i
-                                                                class="bi bi-trash3 fa-fw me-1"></i>Delete</a>
+                                                    <!-- Badge statut -->
+                                                    <span class="position-absolute top-0 start-0 m-2 badge"
+                                                        :class="getStatutBadgeClass(bien.statut)">
+                                                        {{ getStatutLabel(bien.statut) }}
+                                                    </span>
+                                                </div>
+                                            </div>
+
+                                            <!-- Contenu -->
+                                            <div class="col">
+                                                <div class="card-body position-relative d-flex flex-column p-0 h-100">
+                                                    <!-- Actions dropdown -->
+                                                    <div class="dropdown position-absolute top-0 end-0">
+                                                        <button class="btn btn-sm btn-round btn-light" type="button"
+                                                            :id="`dropdown-${bien.id}`" data-bs-toggle="dropdown">
+                                                            <i class="bi bi-three-dots-vertical"></i>
+                                                        </button>
+
+                                                        <ul class="dropdown-menu dropdown-menu-end"
+                                                            :aria-labelledby="`dropdown-${bien.id}`">
+                                                            <li>
+                                                                <router-link
+                                                                    :to="{ name: 'details_biens_list', params: { id: bien.id } }"
+                                                                    class="dropdown-item">
+                                                                    <i class="bi bi-eye me-2"></i>Voir
+                                                                </router-link>
+                                                            </li>
+                                                            <li>
+                                                                <a class="dropdown-item" href="#"
+                                                                    @click.prevent="openEditModal(bien)">
+                                                                    <i class="bi bi-pencil me-2"></i>Modifier
+                                                                </a>
+                                                            </li>
+                                                            <li>
+                                                                <a class="dropdown-item" href="#"
+                                                                    @click.prevent="duplicateBien(bien)">
+                                                                    <i class="bi bi-files me-2"></i>Dupliquer
+                                                                </a>
+                                                            </li>
+                                                            <li>
+                                                                <hr class="dropdown-divider">
+                                                            </li>
+                                                            <li>
+                                                                <a class="dropdown-item" href="#"
+                                                                    @click.prevent="archiveBien(bien.id)">
+                                                                    <i class="bi bi-archive me-2"></i>Archiver
+                                                                </a>
+                                                            </li>
+                                                            <li>
+                                                                <a class="dropdown-item text-danger" href="#"
+                                                                    @click.prevent="deleteBien(bien.id)">
+                                                                    <i class="bi bi-trash me-2"></i>Supprimer
+                                                                </a>
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+
+                                                    <!-- Titre et infos -->
+                                                    <div class="mb-2">
+                                                        <h5 class="card-title mb-1 me-5">
+                                                            <router-link
+                                                                :to="{ name: 'details_biens_list', params: { id: bien.id } }"
+                                                                class="text-dark text-decoration-none">
+                                                                {{ bien.nom || 'Bien sans nom' }}
+                                                            </router-link>
+                                                        </h5>
+                                                        <small class="text-muted">
+                                                            <i class="bi bi-geo-alt me-1"></i>{{ bien.adresse ||
+                                                                'Adresse non renseignée' }}
+                                                        </small>
+                                                    </div>
+
+                                                    <!-- Stats rapides -->
+                                                    <div class="d-flex gap-3 mb-2 flex-wrap">
+                                                        <small class="text-muted">
+                                                            <i class="bi bi-eye me-1"></i>{{ bien.vues || 0 }} vues
+                                                        </small>
+                                                        <small class="text-muted">
+                                                            <i class="bi bi-heart me-1"></i>{{ bien.favoris || 0 }}
+                                                            favoris
+                                                        </small>
+                                                        <small class="text-warning">
+                                                            <i class="bi bi-star-fill me-1"></i>{{ (bien.note ||
+                                                                0).toFixed(1) }}
+                                                        </small>
+                                                        <small class="text-muted">
+                                                            <i class="bi bi-calendar me-1"></i>{{
+                                                                formatDate(bien.dateCreation) }}
+                                                        </small>
+                                                    </div>
+
+                                                    <!-- Prix et actions -->
+                                                    <div
+                                                        class="d-sm-flex justify-content-sm-between align-items-center mt-auto">
+                                                        <div class="d-flex align-items-center">
+                                                            <h5 class="fw-bold mb-0 me-2 text-success">
+                                                                {{ formatCurrency(bien.prix) }}
+                                                            </h5>
+                                                            <span class="text-muted small">/{{ bien.typeUnite || 'mois'
+                                                            }}</span>
+                                                        </div>
+
+                                                        <div class="hstack gap-2 mt-3 mt-sm-0">
+                                                            <button class="btn btn-sm"
+                                                                :class="bien.isFavorite ? 'btn-warning' : 'btn-outline-warning'"
+                                                                @click="toggleFavorite(bien)" title="Favori">
+                                                                <i class="bi"
+                                                                    :class="bien.isFavorite ? 'bi-star-fill' : 'bi-star'"></i>
+                                                            </button>
+
+                                                            <button class="btn btn-sm btn-primary"
+                                                                @click="openEditModal(bien)">
+                                                                <i class="bi bi-pencil-square me-1"></i>Modifier
+                                                            </button>
+
+                                                            <button class="btn btn-sm btn-danger"
+                                                                @click="deleteBien(bien.id)">
+                                                                <i class="bi bi-trash3 me-1"></i>Supprimer
+                                                            </button>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                                <!-- Listing item END -->
 
+                                    <!-- Pagination -->
+                                    <nav v-if="totalPages > 1" class="mt-4" aria-label="Pagination">
+                                        <ul class="pagination justify-content-center">
+                                            <li class="page-item" :class="{ disabled: currentPage === 1 }">
+                                                <a class="page-link" href="#"
+                                                    @click.prevent="changePage(currentPage - 1)">
+                                                    <i class="bi bi-chevron-left"></i>
+                                                </a>
+                                            </li>
+
+                                            <li v-for="page in paginationRange" :key="page" class="page-item"
+                                                :class="{ active: page === currentPage, disabled: page === '...' }">
+                                                <a v-if="page !== '...'" class="page-link" href="#"
+                                                    @click.prevent="changePage(page)">
+                                                    {{ page }}
+                                                </a>
+                                                <span v-else class="page-link">...</span>
+                                            </li>
+
+                                            <li class="page-item" :class="{ disabled: currentPage === totalPages }">
+                                                <a class="page-link" href="#"
+                                                    @click.prevent="changePage(currentPage + 1)">
+                                                    <i class="bi bi-chevron-right"></i>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </nav>
+
+                                    <!-- Info pagination -->
+                                    <div class="text-center text-muted small">
+                                        Affichage de {{ startIndex }} à {{ endIndex }} sur {{ filteredBiens.length }}
+                                        bien(s)
+                                    </div>
+                                </div>
                             </div>
                             <!-- Card body END -->
                         </div>
@@ -204,496 +548,227 @@ Content START -->
                 <!-- Listing table END -->
             </div>
         </section>
-        <!-- =======================
-Content END -->
+
+        <!-- Modals -->
+        <ModalMandat :show="showMandatModal" :proprietaireId="userId" @close="showMandatModal = false" />
+
+        <!-- Modal Edition (reste identique) -->
+        <div v-if="showEditModal" class="modal fade show d-block" style="background: rgba(0,0,0,0.5);">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Modifier le bien</h5>
+                        <button type="button" class="btn-close" @click="showEditModal = false"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label class="form-label">Nom *</label>
+                            <input v-model="editBien.nom" class="form-control" required />
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Adresse *</label>
+                            <input v-model="editBien.adresse" class="form-control" required />
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Prix *</label>
+                                <input v-model.number="editBien.prix" class="form-control" type="number" required />
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Statut</label>
+                                <select v-model="editBien.statut" class="form-select">
+                                    <option value="DISPONIBLE">Disponible</option>
+                                    <option value="LOUE">Loué</option>
+                                    <option value="MAINTENANCE">Maintenance</option>
+                                    <option value="ARCHIVE">Archivé</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Description</label>
+                            <textarea v-model="editBien.description" class="form-control" rows="4"></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-secondary" @click="showEditModal = false">Annuler</button>
+                        <button class="btn btn-primary" @click="saveEditBien">
+                            <i class="bi bi-save me-1"></i>Enregistrer
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </main>
 </template>
+
 <script>
-import { tns } from 'tiny-slider';
-// import { mapActions, mapGetters } from "vuex";
-import { ref, onMounted, watch, nextTick } from 'vue'
 import { ElMessage, ElMessageBox } from "element-plus";
 import { API_URLS } from "@/config/api";
-import { useStore } from 'vuex'
-import { useLoading } from "vue-loading-overlay";
-import L from 'leaflet';
-import GLightbox from 'glightbox'
-import 'glightbox/dist/css/glightbox.min.css'
-import 'leaflet/dist/leaflet.css'
+import ModalMandat from "@/components/modal/ModalMandat.vue";
+import AddBiensStepOne from '@/components/modal/AddBiensStepOne.vue'
+import { useStore } from "vuex";
 export default {
+    components: {
+        ModalMandat,
+        AddBiensStepOne,
+    },
     setup() {
         const store = useStore();
-        const loading = useLoading();
-        const showGeoModal = ref(false)
-        const selectedLat = ref(null)
-        const selectedLng = ref(null)
-        let mapInstance = null;
-        function onClickGeo(bien) {
-            selectedLat.value = bien.latitude
-            selectedLng.value = bien.longitude
-            showGeoModal.value = true
-        }
-        const notationVisible = ref(false)
-        const noteTemp = ref(0)
-        const bienSelectionne = ref(null)
 
-        const loadNearbyPOI = async (lat, lng) => {
-            const delta = 0.01 // ≈ 1km de rayon
-
-            const query = `
-    [out:json];
-    (
-      node["amenity"="school"](${lat - delta},${lng - delta},${lat + delta},${lng + delta});
-      node["amenity"="restaurant"](${lat - delta},${lng - delta},${lat + delta},${lng + delta});
-      node["amenity"="hospital"](${lat - delta},${lng - delta},${lat + delta},${lng + delta});
-    );
-    out;
-  `;
-            const url = `https://overpass-api.de/api/interpreter?data=${encodeURIComponent(query)}`;
-
-            try {
-                const response = await fetch(url);
-                const data = await response.json();
-
-                data.elements.forEach(el => {
-                    L.marker([el.lat, el.lon])
-                        .addTo(mapInstance)
-                        .bindPopup(el.tags.name || el.tags.amenity);
-                });
-            } catch (error) {
-                console.error("Erreur chargement POIs : ", error);
-            }
+        const openUserModal = () => {
+            store.dispatch("modal/openModal", {
+                component: "AddBiensStepOne", // ton composant
+                props: { userId: 1 }        // props que tu veux passer
+            });
         };
 
-        watch(showGeoModal, async (visible) => {
-            if (visible) {
-                await nextTick(); // attendre que le DOM soit affiché
-
-                // Si carte déjà créée, la supprimer (important pour éviter les erreurs)
-                if (mapInstance) {
-                    mapInstance.remove();
-                    mapInstance = null;
-                }
-
-                mapInstance = L.map('map', {
-                    center: [selectedLat.value, selectedLng.value],
-                    zoom: 15,
-                    zoomControl: true,
-                    attributionControl: true,
-                });
-
-                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                    attribution: '&copy; OpenStreetMap contributors',
-                }).addTo(mapInstance);
-
-                // Marqueur pour le bien
-                L.marker([selectedLat.value, selectedLng.value])
-                    .addTo(mapInstance)
-                    .bindPopup('Localisation du bien')
-                    .openPopup();
-
-                // Charger POIs (restaurants, écoles, hôpitaux)
-                loadNearbyPOI(selectedLat.value, selectedLng.value);
-
-                // Très important : forcer le redimensionnement de la carte (cas du modal)
-                setTimeout(() => {
-                    mapInstance.invalidateSize();
-                }, 300);
-            }
-        });
-
-        const ouvrirNotation = (bien) => {
-            bienSelectionne.value = bien
-            noteTemp.value = bien.note || 0
-            notationVisible.value = true
-        }
-
-        const envoyerNote = async () => {
-            try {
-                // Exemple d'appel à l'API de notation
-                await store.dispatch('biens/noterBien', {
-                    id: bienSelectionne.value.id,
-                    note: noteTemp.value,
-                })
-
-                ElMessage.success("Merci pour votre note !")
-                notationVisible.value = false
-            } catch (e) {
-                ElMessage.error("Erreur lors de l'envoi de la note.")
-            }
-        }
-        return {
-            store,
-            loading,
-            showGeoModal,
-            selectedLat,
-            selectedLng,
-            onClickGeo,
-            ouvrirNotation,
-            envoyerNote,
-            notationVisible,
-            noteTemp,
-            bienSelectionne,
-        }
-    },
-    props: {
-
+        return { openUserModal };
     },
     data() {
         return {
-            items: [],
+            // Données
             services: [],
-            biensOriginaux: [], // <- les données non modifiées
-            biensImmobiliers: [],
+            biensOriginaux: [],
+            selectedBiens: [],
+            selectAll: false,
+
+            // Modals
+            showEditModal: false,
+            showMandatModal: false,
+            editBien: {},
+
+            // Pagination
             currentPage: 1,
-            perPage: 15,
-            totalPages: 0,
-            tabs: [],
-            currentTab: null,
-            sortKey: null,
-            selectedBien: null,
-            showDetailModal: false,
-            sortOrder: 'asc',
+            perPage: 10,
+
+            // Vue
+            viewMode: 'list',
+
+            // Filtres
             searchFilters: {
                 globalSearch: '',
-                commune: '',
                 type: '',
-                dateDebut: '',
-                dateFin: '',
-                occupants: 0,
-            },
-            priceFilter: {
-                min: null,
-                max: null,
+                statut: '',
+                prixMin: null,
+                prixMax: null,
             },
 
-            form: {
-                nom: "",
-                email: "",
-                telephone: "",
-                message: "",
+            // Tri
+            sortKey: 'dateCreation',
+            sortOrder: 'desc',
+
+            // Actions groupées
+            bulkAction: '',
+
+            // Statistiques
+            stats: {
+                revenuTotal: 0,
+                evolutionRevenu: 0,
+                biensLoues: 0,
+                biensDisponibles: 0,
+                totalBiens: 0,
+                nouveauxCeMois: 0,
+                vuesTotales: 0,
+                favorisTotal: 0,
+                messagesNonLus: 0,
+                noteMoyenne: 0,
             },
-            errorMessage: null,
+
+            // Debounce
+            searchDebounce: null,
         };
     },
-    mounted() {
 
-        this.$nextTick(() => {
-            // this.initTinySlider();
-        });
-        this.currentPage = 1;
-        this.loadService().then(() => {
-            if (this.services && this.services.length > 0) {
-                this.currentTab = this.services[0].id;
-            }
-            // Ajoute un log clair ici
-            console.log("📦 mounted → currentPage =", this.currentPage);
-            console.trace();
-            this.loadBiensImmobiliers();
-        });
-
-        // typeImmo.value = this.$store.dispatch('typeBiens/getOne', typeBiensImmobiliereId);
-    },
-    watch: {
-        currentTab() {
-            this.currentPage = 1;
-            this.searchBiens();
-        }
-    },
     computed: {
+        userId() {
+            return this.$store.getters["auth/userInfo"]?.id || null;
+        },
 
+        // Taux d'occupation
+        tauxOccupation() {
+            if (this.stats.totalBiens === 0) return 0;
+            return Math.round((this.stats.biensLoues / this.stats.totalBiens) * 100);
+        },
 
-        biensFiltresEtTries() {
+        // Filtrage des biens
+        filteredBiens() {
             let result = [...this.biensOriginaux];
 
-            // filtre par prix
-            result = result.filter(bien => {
-                const prix = bien.prix;
-                const minOk = this.priceFilter.min == null || prix >= this.priceFilter.min;
-                const maxOk = this.priceFilter.max == null || prix <= this.priceFilter.max;
-                return minOk && maxOk;
-            });
+            // Recherche globale
+            if (this.searchFilters.globalSearch) {
+                const query = this.searchFilters.globalSearch.toLowerCase();
+                result = result.filter(bien =>
+                    (bien.nom || '').toLowerCase().includes(query) ||
+                    (bien.adresse || '').toLowerCase().includes(query)
+                );
+            }
 
-            // tri
+            // Filtre par type
+            if (this.searchFilters.type) {
+                result = result.filter(bien =>
+                    bien.typeBiensImmobiliere?.id === this.searchFilters.type
+                );
+            }
+
+            // Filtre par statut
+            if (this.searchFilters.statut) {
+                result = result.filter(bien => bien.statut === this.searchFilters.statut);
+            }
+
+            // Filtre par prix
+            if (this.searchFilters.prixMin !== null) {
+                result = result.filter(bien => bien.prix >= this.searchFilters.prixMin);
+            }
+            if (this.searchFilters.prixMax !== null) {
+                result = result.filter(bien => bien.prix <= this.searchFilters.prixMax);
+            }
+
+            // Tri
             if (this.sortKey) {
                 result.sort((a, b) => {
                     let valA = a[this.sortKey];
                     let valB = b[this.sortKey];
+
+                    // Gestion des dates
                     if (this.sortKey === 'dateCreation') {
-                        valA = new Date(valA).getTime();
-                        valB = new Date(valB).getTime();
+                        valA = new Date(valA || 0).getTime();
+                        valB = new Date(valB || 0).getTime();
                     }
-                    return this.sortOrder === 'asc' ? valA - valB : valB - valA;
+
+                    // Gestion des valeurs nulles
+                    if (valA == null) valA = 0;
+                    if (valB == null) valB = 0;
+
+                    if (this.sortOrder === 'asc') {
+                        return valA > valB ? 1 : -1;
+                    } else {
+                        return valA < valB ? 1 : -1;
+                    }
                 });
             }
 
             return result;
         },
-        validBiens() {
-            const biens = Array.isArray(this.biensFiltresEtTries) ? this.biensFiltresEtTries : [];
-            return biens.filter(bien => bien && (bien.id || bien.id === 0));
-        }
-    },
-    methods: {
 
-        // NOUVELLE MÉTHODE: Gérer les erreurs d'image
-        handleImageError(event, bien) {
-            console.warn('Erreur de chargement d\'image pour le bien:', bien.id);
-            // Remplacer par une image par défaut ou cacher l'élément
-            event.target.style.display = 'none';
-
-            // Optionnel: créer un élément de remplacement
-            const placeholder = document.createElement('div');
-            placeholder.className = 'card-img rounded-2 bg-light d-flex align-items-center justify-content-center';
-            placeholder.style.height = '120px';
-            placeholder.innerHTML = '<i class="bi bi-image text-muted" style="font-size: 2rem;"></i>';
-            event.target.parentNode.appendChild(placeholder);
+        // Pagination
+        totalPages() {
+            return Math.ceil(this.filteredBiens.length / this.perPage);
         },
 
-        async sendMessage() {
-            const loader = loading.show();
-            try {
-                const payload = {
-                    nom: this.form.nom,
-                    email: this.form.email,
-                    telephone: this.form.telephone,
-                    message: this.form.message,
-                }
-                const response = await store.dispatch('typeBiens/send', payload)
-                ElMessage({
-                    showClose: true,
-                    message: 'Element ajouté avec success.',
-                    type: "success",
-                });
-            } catch (error) {
-                console.error('Erreur lors de la création de la catégorie:', error)
-            } finally {
-                loader.hide();
-                this.loadService();
-            }
-        },
-        // CORRECTION: formatCurrency avec vérification
-        formatCurrency(value) {
-            if (value == null || value === '') return '—';
-            const numValue = Number(value);
-            if (isNaN(numValue)) return '—';
-
-            return new Intl.NumberFormat('fr-FR', {
-                style: 'currency',
-                currency: 'XOF',
-                minimumFractionDigits: 0,
-            }).format(numValue);
+        paginatedBiens() {
+            const start = (this.currentPage - 1) * this.perPage;
+            const end = start + this.perPage;
+            return this.filteredBiens.slice(start, end);
         },
 
-        async convertCurrency(amount, fromCurrency, toCurrency) {
-            if (!amount) return null;
-            try {
-                const url = `https://v6.exchangerate-api.com/v6/aea6e2851889287522f072cb/latest/${fromCurrency}`;
-                const response = await request.get(url);
-
-                if (response.data.result !== "success") {
-                    throw new Error('Erreur API de conversion');
-                }
-
-                const rate = response.data.conversion_rates[toCurrency];
-                if (!rate) throw new Error(`Taux pour ${toCurrency} non trouvé`);
-
-                return (amount * rate).toFixed(2);
-            } catch (error) {
-                console.error('Erreur conversion devise:', error);
-                return null;
-            }
-        },
-        async searchBiens() {
-            const texte = this.searchFilters.globalSearch.trim();
-            const type = this.currentTab;
-            let status = null;
-
-            // Détection du mot "disponible" ou "non disponible"
-            if (/^disponible$/i.test(texte)) {
-                status = true;
-            } else if (/^non disponible$/i.test(texte)) {
-                status = false;
-            }
-            const loader = this.$loading.show();
-            try {
-                if (texte.length > 5 || type) {
-                    // Recherche avec texte (au moins 2 caractères) ou type (ou les deux)
-                    const data = await this.$store.dispatch('biensImmobiliers/searchBiens', { texte, type });
-                    this.biensImmobiliers = data;
-                    this.totalPages = 1;
-                    this.currentPage = 1;
-                } else if (!texte && !type) {
-                    // Aucun filtre, on recharge tout paginé
-                    this.currentPage = 1;
-                    await this.loadBiensImmobiliers();
-                }
-            } catch (error) {
-                this.errorMessage = "Erreur lors de la recherche.";
-                this.biensImmobiliers = [];
-            } finally {
-                loader.hide();
-            }
-        },
-        filterByPrice() {
-            this.biensImmobiliers = this.biensImmobiliers.filter(bien => {
-                const prix = bien.prix;
-                const minOk = this.priceFilter.min == null || prix >= this.priceFilter.min;
-                const maxOk = this.priceFilter.max == null || prix <= this.priceFilter.max;
-                return minOk && maxOk;
-            });
-        },
-        showPagination() {
-            return !this.searchFilters.globalSearch.trim();
-        },
-        // Exemple de méthode pour convertir un prix de bien et le stocker
-        async updateConvertedPrice(bien, fromCurrency = 'XOF', toCurrency = 'USD') {
-            const converted = await this.convertCurrency(bien.prix, fromCurrency, toCurrency);
-            if (converted) {
-                bien.convertedPrice = converted;  // tu peux stocker dans une propriété du bien
-            } else {
-                bien.convertedPrice = null;
-            }
-        },
-        openDetail(bien) {
-            this.selectedBien = bien;
-            this.showDetailModal = true;
-        },
-
-        sortBiens() {
-            if (!this.sortKey) return;
-
-            this.biensImmobiliers.sort((a, b) => {
-                let valA = a[this.sortKey];
-                let valB = b[this.sortKey];
-
-                // Si date, convertir en timestamp
-                if (this.sortKey === 'dateCreation') {
-                    valA = new Date(valA).getTime();
-                    valB = new Date(valB).getTime();
-                }
-
-                if (valA < valB) return this.sortOrder === 'asc' ? -1 : 1;
-                if (valA > valB) return this.sortOrder === 'asc' ? 1 : -1;
-                return 0;
-            });
-
-            // Inverse l'ordre pour la prochaine fois
-            this.sortOrder = this.sortOrder === 'asc' ? 'desc' : 'asc';
-        },
-
-        // CORRECTION: toggleFavorite avec vérification
-        toggleFavorite(bien) {
-            if (!bien || !bien.id) {
-                console.warn('toggleFavorite: bien invalide');
-                return;
-            }
-
-            bien.isFavorite = !bien.isFavorite;
-
-            this.$store.dispatch('biensImmobiliers/updateFavoriteStatus', {
-                id: bien.id,
-                isFavorite: bien.isFavorite
-            }).catch(err => {
-                console.error("Erreur mise à jour favori", err);
-                // Remettre l'état précédent en cas d'erreur
-                bien.isFavorite = !bien.isFavorite;
-            });
-        },
-
-        // Si tu veux convertir tous les biens affichés d’un coup :
-        async convertAllPrices(toCurrency) {
-            const fromCurrency = 'XOF'; // ou dynamique selon ton besoin
-            await Promise.all(
-                this.biensImmobiliers.map(bien =>
-                    this.updateConvertedPrice(bien, fromCurrency, toCurrency)
-                )
-            );
-        },
-        capitalize(value) {
-            if (!value) return ''
-            return value.charAt(0).toUpperCase() + value.slice(1).toLowerCase()
-        },
-        async loadService() {
-            try {
-                const response = await this.$store.dispatch('typeBiens/getAll');
-                this.services = response;
-            } catch (error) {
-                console.error('Erreur lors du chargement des services :', error);
-                this.errorMessage = "Désolé, un problème est survenu lors du chargement des services.";
-            }
-        },
-        onTypeChange() {
-            this.searchFilters.globalSearch = '';
-        },
-        // CORRECTION: loadBiensImmobiliers avec gestion d'erreur
-        async loadBiensImmobiliers() {
-            try {
-                const response = await this.$store.dispatch('biensImmobiliers/getBiensByUser', {
-                    page: this.currentPage - 1,
-                    size: this.perPage
-                });
-
-                // Vérifier et nettoyer la réponse
-                if (response && response.content && Array.isArray(response.content)) {
-                    this.biensOriginaux = response.content.filter(bien => bien && bien.id);
-                } else if (Array.isArray(response)) {
-                    this.biensOriginaux = response.filter(bien => bien && bien.id);
-                } else {
-                    console.warn('Réponse inattendue de l\'API:', response);
-                    this.biensOriginaux = [];
-                }
-
-                this.biensImmobiliers = [...this.biensOriginaux];
-
-                console.log('Biens chargés:', this.biensOriginaux.length);
-            } catch (error) {
-                console.error('Erreur lors du chargement des biens:', error);
-                this.biensOriginaux = [];
-                this.biensImmobiliers = [];
-                this.errorMessage = "Erreur lors du chargement des biens immobiliers.";
-            }
-        },
-        filterByPrice() {
-            this.biensImmobiliers = this.biensOriginaux.filter(bien => {
-                const prix = bien.prix;
-                const minOk = this.priceFilter.min == null || prix >= this.priceFilter.min;
-                const maxOk = this.priceFilter.max == null || prix <= this.priceFilter.max;
-                return minOk && maxOk;
-            });
-        },
-        getImageUrl(idfile) {
-            if (!idfile) {
-                console.warn('getImageUrl: ID de fichier manquant');
-                return ''; // ou une image par défaut
-            }
-            // return `https://93.115.20.172:8081/fichier/download/${idfile}`;
-            return `${API_URLS.API_BASE}/fichier/download/${idfile}`;
-
-        },
-        goToPage(page) {
-            if (typeof page === 'number' && page >= 1 && page <= this.totalPages) {
-                this.currentPage = page;
-                this.loadBiensImmobiliers();
-            }
-        },
-        nextPage() {
-            if (this.currentPage < this.totalPages) {
-                this.currentPage++;
-                this.loadBiensImmobiliers();
-
-            }
-        },
-        prevPage() {
-            if (this.currentPage > 1) {
-                this.currentPage--;
-                this.loadBiensImmobiliers();
-            }
-        },
-        getPaginationRange() {
+        paginationRange() {
             const total = this.totalPages;
             const current = this.currentPage;
-            const delta = 1; // nombre de pages autour de la page courante
+            const delta = 2;
             const range = [];
             const rangeWithDots = [];
             let l;
@@ -718,34 +793,482 @@ export default {
 
             return rangeWithDots;
         },
+
+        startIndex() {
+            return (this.currentPage - 1) * this.perPage + 1;
+        },
+
+        endIndex() {
+            return Math.min(this.currentPage * this.perPage, this.filteredBiens.length);
+        },
+    },
+
+    async mounted() {
+        await this.loadService();
+        await this.loadBiensImmobiliers();
+        await this.loadStatistics();
+    },
+
+    methods: {
+        // ============================================
+        // CHARGEMENT DES DONNÉES
+        // ============================================
+
+        async loadService() {
+            try {
+                const response = await this.$store.dispatch('typeBiens/getAll');
+                this.services = response || [];
+            } catch (error) {
+                console.error('Erreur chargement services:', error);
+            }
+        },
+
+        async loadBiensImmobiliers() {
+            const loader = this.$loading.show();
+            try {
+                const response = await this.$store.dispatch('biensImmobiliers/getBiensByUser', {
+                    page: 0,
+                    size: 1000
+                });
+
+                if (response && response.content && Array.isArray(response.content)) {
+                    this.biensOriginaux = response.content.filter(bien => bien && bien.id);
+                } else if (Array.isArray(response)) {
+                    this.biensOriginaux = response.filter(bien => bien && bien.id);
+                } else {
+                    this.biensOriginaux = [];
+                }
+
+                console.log('✅ Biens chargés:', this.biensOriginaux.length);
+            } catch (error) {
+                console.error('❌ Erreur chargement biens:', error);
+                ElMessage.error('Erreur lors du chargement des biens');
+            } finally {
+                loader.hide();
+            }
+        },
+
+        async loadStatistics() {
+            try {
+                // Calculer les statistiques à partir des biens
+                const biens = this.biensOriginaux;
+
+                this.stats.totalBiens = biens.length;
+                this.stats.biensLoues = biens.filter(b => b.statut === 'LOUE').length;
+                this.stats.biensDisponibles = biens.filter(b => b.statut === 'DISPONIBLE').length;
+
+                // Revenus (à adapter selon votre structure)
+                this.stats.revenuTotal = biens
+                    .filter(b => b.statut === 'LOUE')
+                    .reduce((sum, b) => sum + (b.prix || 0), 0);
+
+                // Biens créés ce mois
+                const thisMonth = new Date().getMonth();
+                const thisYear = new Date().getFullYear();
+                this.stats.nouveauxCeMois = biens.filter(b => {
+                    const date = new Date(b.dateCreation);
+                    return date.getMonth() === thisMonth && date.getFullYear() === thisYear;
+                }).length;
+
+                // Vues totales
+                this.stats.vuesTotales = biens.reduce((sum, b) => sum + (b.vues || 0), 0);
+
+                // Favoris
+                this.stats.favorisTotal = biens.reduce((sum, b) => sum + (b.favoris || 0), 0);
+
+                // Note moyenne
+                const notesValides = biens.filter(b => b.note > 0);
+                if (notesValides.length > 0) {
+                    const sommeNotes = notesValides.reduce((sum, b) => sum + b.note, 0);
+                    this.stats.noteMoyenne = (sommeNotes / notesValides.length).toFixed(1);
+                } else {
+                    this.stats.noteMoyenne = 0;
+                }
+
+                // Messages non lus (à adapter selon votre API)
+                this.stats.messagesNonLus = 0; // À implémenter
+
+                // Évolution revenu (à adapter)
+                this.stats.evolutionRevenu = 0; // À implémenter
+
+            } catch (error) {
+                console.error('Erreur calcul statistiques:', error);
+            }
+        },
+
+        // ============================================
+        // FILTRES ET RECHERCHE
+        // ============================================
+
+        debouncedSearch() {
+            clearTimeout(this.searchDebounce);
+            this.searchDebounce = setTimeout(() => {
+                this.applyFilters();
+            }, 500);
+        },
+
+        applyFilters() {
+            this.currentPage = 1;
+        },
+
+        resetFilters() {
+            this.searchFilters = {
+                globalSearch: '',
+                type: '',
+                statut: '',
+                prixMin: null,
+                prixMax: null,
+            };
+            this.sortKey = 'dateCreation';
+            this.sortOrder = 'desc';
+            this.currentPage = 1;
+        },
+
+        filterByStatus(status) {
+            this.searchFilters.statut = status;
+            this.applyFilters();
+        },
+
+        sortBiens() {
+            // Le tri est géré automatiquement par le computed
+            this.currentPage = 1;
+        },
+
+        // ============================================
+        // PAGINATION
+        // ============================================
+
+        changePage(page) {
+            if (page >= 1 && page <= this.totalPages) {
+                this.currentPage = page;
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        },
+
+        // ============================================
+        // SÉLECTION
+        // ============================================
+
+        toggleSelectAll() {
+            if (this.selectAll) {
+                this.selectedBiens = this.paginatedBiens.map(b => b.id);
+            } else {
+                this.selectedBiens = [];
+            }
+        },
+
+        isSelected(id) {
+            return this.selectedBiens.includes(id);
+        },
+
+        // ============================================
+        // ACTIONS GROUPÉES
+        // ============================================
+
+        async executeBulkAction() {
+            if (!this.bulkAction || this.selectedBiens.length === 0) {
+                ElMessage.warning('Veuillez sélectionner des biens');
+                return;
+            }
+
+            try {
+                await ElMessageBox.confirm(
+                    `Êtes-vous sûr de vouloir ${this.bulkAction === 'delete' ? 'supprimer' : this.bulkAction === 'archive' ? 'archiver' : 'publier'} ${this.selectedBiens.length} bien(s) ?`,
+                    'Confirmation',
+                    {
+                        confirmButtonText: 'Oui',
+                        cancelButtonText: 'Annuler',
+                        type: 'warning',
+                    }
+                );
+
+                const loader = this.$loading.show();
+
+                switch (this.bulkAction) {
+                    case 'delete':
+                        await Promise.all(
+                            this.selectedBiens.map(id =>
+                                this.$store.dispatch('biensImmobiliers/delete', id)
+                            )
+                        );
+                        ElMessage.success('Biens supprimés avec succès');
+                        break;
+
+                    case 'archive':
+                        await Promise.all(
+                            this.selectedBiens.map(id =>
+                                this.$store.dispatch('biensImmobiliers/update', {
+                                    id,
+                                    statut: 'ARCHIVE'
+                                })
+                            )
+                        );
+                        ElMessage.success('Biens archivés avec succès');
+                        break;
+
+                    case 'publish':
+                        await Promise.all(
+                            this.selectedBiens.map(id =>
+                                this.$store.dispatch('biensImmobiliers/update', {
+                                    id,
+                                    statut: 'DISPONIBLE'
+                                })
+                            )
+                        );
+                        ElMessage.success('Biens publiés avec succès');
+                        break;
+                }
+
+                this.selectedBiens = [];
+                this.selectAll = false;
+                this.bulkAction = '';
+
+                await this.loadBiensImmobiliers();
+                await this.loadStatistics();
+
+                loader.hide();
+
+            } catch (error) {
+                if (error !== 'cancel') {
+                    console.error('Erreur action groupée:', error);
+                    ElMessage.error('Erreur lors de l\'opération');
+                }
+            }
+        },
+
+        // ============================================
+        // ACTIONS SUR UN BIEN
+        // ============================================
+
+        openEditModal(bien) {
+            this.editBien = { ...bien };
+            this.showEditModal = true;
+        },
+
+        async saveEditBien() {
+            if (!this.editBien.nom || !this.editBien.prix) {
+                ElMessage.warning('Veuillez remplir tous les champs obligatoires');
+                return;
+            }
+
+            const loader = this.$loading.show();
+            try {
+                await this.$store.dispatch('biensImmobiliers/update', this.editBien);
+                ElMessage.success('Bien mis à jour avec succès');
+                this.showEditModal = false;
+                await this.loadBiensImmobiliers();
+                await this.loadStatistics();
+            } catch (error) {
+                console.error('Erreur mise à jour:', error);
+                ElMessage.error('Erreur lors de la mise à jour');
+            } finally {
+                loader.hide();
+            }
+        },
+
+        async deleteBien(id) {
+            try {
+                await ElMessageBox.confirm(
+                    'Êtes-vous sûr de vouloir supprimer ce bien ? Cette action est irréversible.',
+                    'Confirmation',
+                    {
+                        confirmButtonText: 'Oui, supprimer',
+                        cancelButtonText: 'Annuler',
+                        type: 'warning',
+                    }
+                );
+
+                const loader = this.$loading.show();
+                await this.$store.dispatch('biensImmobiliers/delete', id);
+                ElMessage.success('Bien supprimé avec succès');
+
+                await this.loadBiensImmobiliers();
+                await this.loadStatistics();
+
+                loader.hide();
+            } catch (error) {
+                if (error !== 'cancel') {
+                    console.error('Erreur suppression:', error);
+                    ElMessage.error('Erreur lors de la suppression');
+                }
+            }
+        },
+
+        async archiveBien(id) {
+            try {
+                const loader = this.$loading.show();
+                await this.$store.dispatch('biensImmobiliers/update', {
+                    id,
+                    statut: 'ARCHIVE'
+                });
+                ElMessage.success('Bien archivé avec succès');
+
+                await this.loadBiensImmobiliers();
+                await this.loadStatistics();
+
+                loader.hide();
+            } catch (error) {
+                console.error('Erreur archivage:', error);
+                ElMessage.error('Erreur lors de l\'archivage');
+            }
+        },
+
+        async duplicateBien(bien) {
+            try {
+                await ElMessageBox.confirm(
+                    'Voulez-vous créer une copie de ce bien ?',
+                    'Duplication',
+                    {
+                        confirmButtonText: 'Oui, dupliquer',
+                        cancelButtonText: 'Annuler',
+                        type: 'info',
+                    }
+                );
+
+                const loader = this.$loading.show();
+
+                const copie = {
+                    ...bien,
+                    id: null,
+                    nom: `${bien.nom} (Copie)`,
+                    dateCreation: new Date().toISOString(),
+                    statut: 'DISPONIBLE',
+                };
+
+                await this.$store.dispatch('biensImmobiliers/create', copie);
+                ElMessage.success('Bien dupliqué avec succès');
+
+                await this.loadBiensImmobiliers();
+                await this.loadStatistics();
+
+                loader.hide();
+            } catch (error) {
+                if (error !== 'cancel') {
+                    console.error('Erreur duplication:', error);
+                    ElMessage.error('Erreur lors de la duplication');
+                }
+            }
+        },
+
+        toggleFavorite(bien) {
+            if (!bien || !bien.id) return;
+
+            bien.isFavorite = !bien.isFavorite;
+
+            this.$store.dispatch('biensImmobiliers/updateFavoriteStatus', {
+                id: bien.id,
+                isFavorite: bien.isFavorite
+            }).catch(err => {
+                console.error('Erreur favori:', err);
+                bien.isFavorite = !bien.isFavorite;
+            });
+        },
+
+        // ============================================
+        // UTILITAIRES
+        // ============================================
+
+        formatCurrency(value) {
+            if (value == null || value === '') return '—';
+            const numValue = Number(value);
+            if (isNaN(numValue)) return '—';
+
+            return new Intl.NumberFormat('fr-FR', {
+                style: 'currency',
+                currency: 'XOF',
+                minimumFractionDigits: 0,
+            }).format(numValue);
+        },
+
+        formatDate(date) {
+            if (!date) return '—';
+            return new Date(date).toLocaleDateString('fr-FR', {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric'
+            });
+        },
+
+        capitalize(value) {
+            if (!value) return '';
+            return value.charAt(0).toUpperCase() + value.slice(1).toLowerCase();
+        },
+
+        getImageUrl(idfile) {
+            if (!idfile) return '';
+            return `${API_URLS.API_BASE}/fichier/download/${idfile}`;
+        },
+
+        handleImageError(event, bien) {
+            console.warn('Erreur image pour bien:', bien.id);
+            event.target.style.display = 'none';
+
+            const placeholder = document.createElement('div');
+            placeholder.className = 'card-img rounded-2 bg-light d-flex align-items-center justify-content-center';
+            placeholder.style.height = '120px';
+            placeholder.innerHTML = '<i class="bi bi-image text-muted" style="font-size: 2rem;"></i>';
+            event.target.parentNode.appendChild(placeholder);
+        },
+
+        getStatutBadgeClass(statut) {
+            const classes = {
+                'DISPONIBLE': 'bg-success',
+                'LOUE': 'bg-info',
+                'MAINTENANCE': 'bg-warning',
+                'ARCHIVE': 'bg-secondary',
+            };
+            return classes[statut] || 'bg-secondary';
+        },
+
+        getStatutLabel(statut) {
+            const labels = {
+                'DISPONIBLE': 'Disponible',
+                'LOUE': 'Loué',
+                'MAINTENANCE': 'Maintenance',
+                'ARCHIVE': 'Archivé',
+            };
+            return labels[statut] || statut;
+        },
     },
 };
 </script>
-<style>
-/* Assurer que l'image remplit le conteneur sans déformation */
+
+<style scoped>
+/* Styles des cartes */
+.listing-item {
+    transition: all 0.3s ease;
+}
+
+.listing-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.listing-item.selected {
+    border-color: #0d6efd;
+    background-color: #f0f7ff;
+}
+
+/* Images */
 .card-img {
     width: 100%;
-    /* Prend toute la largeur de la colonne */
-    height: 100%;
-    /* Prend toute la hauteur disponible */
+    height: 120px;
     object-fit: cover;
-    /* Remplir l'espace sans déformation, en coupant si nécessaire */
-    border-radius: .375rem;
-    /* Si tu veux arrondir les bords des images */
 }
 
-/* Si tu veux limiter la hauteur de l'image pour qu'elle ne dépasse pas un certain seuil */
-.card-img {
-    height: 180px;
-    /* Ajuste cette valeur selon la hauteur souhaitée */
-    object-fit: cover;
-    /* Toujours couvrir l'espace de manière cohérente */
+/* Stats icons */
+.icon-box {
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-/* Style pour les placeholders d'image */
-.image-placeholder {
-    background-color: #f8f9fa;
-    border: 1px dashed #dee2e6;
-    color: #6c757d;
+/* Responsive */
+@media (max-width: 768px) {
+    .card-img {
+        height: 150px;
+    }
 }
 </style>

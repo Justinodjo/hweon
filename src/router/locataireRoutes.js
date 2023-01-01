@@ -8,7 +8,7 @@ const locataireRoutes = [
     meta: {
       requiresAuth: true,
       role: "LOCATAIRE_ROLES",
-      hideHeaderFooter: false,
+      hideHeaderFooter: true,
     },
     redirect: "locataire_dashboard",
     children: [
@@ -88,6 +88,13 @@ const locataireRoutes = [
             name: "profil_details",
             component: () =>
               import("@/views/locataire/ProfilsDetailsLocataire.vue"),
+            meta: { requiresAuth: true },
+            props: true,
+          },
+          {
+            path: "notifications",
+            name: "notifications",
+            component: () => import("@/views/locataire/Notifications.vue"),
             meta: { requiresAuth: true },
             props: true,
           },

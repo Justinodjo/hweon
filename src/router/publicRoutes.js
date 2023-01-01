@@ -53,14 +53,15 @@ const publicRoutes = [
             component: () => import("@/views/TermOfService.vue"),
             meta: { requiresAuth: true },
           },
+          {
+            path: "/liste-biens-360",
+            name: "liste-biens-360",
+            component: () => import("@/views/Visite360.vue"),
+            // meta: { requiresAuth: true },
+          },
         ],
       },
-      {
-        path: "reservation",
-        name: "reservation",
-        component: () => import("@/views/Reservation.vue"),
-        meta: { requiresAuth: true },
-      },
+
       {
         path: "confirmation",
         name: "confirmation",
@@ -68,7 +69,7 @@ const publicRoutes = [
         meta: { requiresAuth: true },
       },
       {
-        path: "/details_menu/:id",
+        path: "details_menu/:id",
         name: "DirectoryDetailsMenu",
         component: () => import("@/views/DetailsBiensImmobiliersMenu.vue"),
         props: true,
@@ -90,6 +91,11 @@ const publicRoutes = [
     component: () => import("@/views/Login.vue"),
   },
   {
+    path: "/login/oauth2/success",
+    name: "OAuth2Success",
+    component: () => import("@/views/OAuth2Redirect.vue"),
+  },
+  {
     path: "/directory/signup",
     name: "SignUp",
     component: () => import("@/views/SignUp.vue"),
@@ -99,6 +105,23 @@ const publicRoutes = [
     name: "forgot",
     component: () => import("@/views/ForgotPassword.vue"),
   },
+  {
+    path: "/directory/verify", // /password-reset/verify
+    name: "PasswordResetVerify",
+    component: () => import("@/views/PasswordResetVerify.vue"),
+  },
+  {
+    path: "/directory/confirm", // /password-reset/confirm
+    name: "PasswordResetConfirm",
+    component: () => import("@/views/PasswordResetConfirm.vue"),
+  },
+  {
+    path: "/select-role",
+    name: "SelectRole",
+    component: () => import("@/components/input/select-role.vue"),
+    meta: { requiresAuth: false },
+  },
+
   // {
   //   path: "*",
   //   name: "NotFound",

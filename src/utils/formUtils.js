@@ -8,34 +8,25 @@ import { getImageUrl } from "@/utils/fileUtils";
 // =========================
 export function buildEquipementsPayload(form) {
   const eq = form.equipements || {};
+  // helper pour récupérer uniquement les keys
+  const extractKeys = (arr) =>
+    Array.isArray(arr) ? arr.map((i) => i.key || i) : [];
   return {
-    services: eq.services || [],
-    securite: eq.securite || [],
-    activites: eq.activites || [],
-    modesPaiement: eq.modesPaiement || [],
-    languesPersonnel: eq.languesPersonnel || [],
-    typeCuisine: eq.typeCuisine || [],
-    typesClimatisation: eq.typesClimatisation || [],
-    typeGarage: eq.typeGarage || [],
-    typeVue: eq.typeVue || [],
-    typeRevetement: eq.typeRevetement || [],
+    services: extractKeys(eq.services),
+    securites: extractKeys(eq.securites),
+    activites: extractKeys(eq.activites),
+    modesPaiement: extractKeys(eq.modesPaiement),
+    languesPersonnel: extractKeys(eq.languesPersonnel),
+    typeCuisine: extractKeys(eq.typeCuisine),
+    typesClimatisation: extractKeys(eq.typesClimatisation),
+    typeGarage: extractKeys(eq.typeGarage),
+    typeVue: extractKeys(eq.typeVue),
+    typeRevetement: extractKeys(eq.typeRevetement),
     autres: eq.autres || "",
   };
 }
 
-export function buildSubmissionData(form, userId, options = {}) {
-  const {
-    services = [],
-    securites = [],
-    activites = [],
-    modesPaiement = [],
-    languesPersonnel = [],
-    typeCuisine = [],
-    typesClimatisation = [],
-    typeGarage = [],
-    typeVue = [],
-  } = options;
-
+export function buildSubmissionData(form, userId) {
   return {
     nom: form.nom,
     adresse: form.adresse,
@@ -89,18 +80,7 @@ export function buildSubmissionData(form, userId, options = {}) {
           fichiers: Array.isArray(detail.fichiers) ? detail.fichiers : [],
         }))
       : [],
-    equipements: buildEquipementsPayload(
-      form,
-      services,
-      securites,
-      activites,
-      modesPaiement,
-      languesPersonnel,
-      typeCuisine,
-      typesClimatisation,
-      typeGarage,
-      typeVue
-    ),
+    equipements: form.equipements,
     fichier: form.fichier.length > 0 ? form.fichier[0] : null,
     fichiers: form.fichiers.length > 0 ? form.fichiers : [],
     userInfo: { id: userId },
@@ -202,7 +182,7 @@ export function handleUploadResponseUnified(
     detailsCount: form.detailsBiensImmobiliers?.length || 0,
   });
 
-  ElMessage.success("Image uploadée avec succès");
+  // ElMessage.success("Image uploadée avec succès");
   return file;
 }
 

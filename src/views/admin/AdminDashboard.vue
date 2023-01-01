@@ -11,7 +11,7 @@
                         <!-- Logo START -->
                         <div class="d-flex align-items-center d-xl-none">
                             <a class="navbar-brand" href="index.html">
-                                <img class="navbar-brand-item h-40px" src="../assets/images/logo-icon.svg" alt="">
+                                <img class="navbar-brand-item h-40px" src="@/assets/images/logo-icon.svg" alt="">
                             </a>
                         </div>
                         <!-- Logo END -->
@@ -178,7 +178,7 @@
                                 <a class="avatar avatar-sm p-0" href="admin-dashboard.html#" id="profileDropdown"
                                     role="button" data-bs-auto-close="outside" data-bs-display="static"
                                     data-bs-toggle="dropdown" aria-expanded="false">
-                                    <img class="avatar-img rounded-2" src="assets/images/avatar/01.jpg" alt="avatar">
+                                    <img class="avatar-img rounded-2" src="@/assets/images/avatar/01.jpg" alt="avatar">
                                 </a>
 
                                 <ul class="dropdown-menu dropdown-animation dropdown-menu-end shadow pt-3"
@@ -189,7 +189,7 @@
                                             <!-- Avatar -->
                                             <div class="avatar me-3">
                                                 <img class="avatar-img rounded-circle shadow"
-                                                    src="assets/images/avatar/01.jpg" alt="avatar">
+                                                    src="@/assets/images/avatar/01.jpg" alt="avatar">
                                             </div>
                                             <div>
                                                 <a class="h6 mt-2 mt-sm-0" href="admin-dashboard.html#">Lori
@@ -325,7 +325,7 @@
                             <div class="row g-4">
                                 <!-- Card img -->
                                 <div class="col-md-3">
-                                    <img src="../assets/images/category/hotel/4by3/10.jpg" class="rounded-2"
+                                    <img src="@/assets/images/category/hotel/4by3/10.jpg" class="rounded-2"
                                         alt="Card image">
                                 </div>
 
@@ -387,7 +387,7 @@
                             <div class="row g-4">
                                 <!-- Card img -->
                                 <div class="col-md-3">
-                                    <img src="../assets/images/category/hotel/4by3/08.jpg" class="rounded-2"
+                                    <img src="@/assets/images/category/hotel/4by3/08.jpg" class="rounded-2"
                                         alt="Card image">
                                 </div>
 
@@ -449,7 +449,7 @@
                             <div class="row g-4">
                                 <!-- Card img -->
                                 <div class="col-md-3">
-                                    <img src="../assets/images/category/hotel/4by3/09.jpg" class="rounded-2"
+                                    <img src="@/assets/images/category/hotel/4by3/09.jpg" class="rounded-2"
                                         alt="Card image">
                                 </div>
 
@@ -511,7 +511,7 @@
                             <div class="row g-4">
                                 <!-- Card img -->
                                 <div class="col-md-3">
-                                    <img src="../assets/images/category/hotel/4by3/07.jpg" class="rounded-2"
+                                    <img src="@/assets/images/category/hotel/4by3/07.jpg" class="rounded-2"
                                         alt="Card image">
                                 </div>
 
@@ -647,8 +647,8 @@
                                     <div class="d-sm-flex align-items-center mb-1 mb-sm-0">
                                         <!-- Avatar -->
                                         <div class="flex-shrink-0">
-                                            <img src="../assets/images/category/hotel/4by3/04.jpg"
-                                                class="rounded h-60px" alt="">
+                                            <img src="@/assets/images/category/hotel/4by3/04.jpg" class="rounded h-60px"
+                                                alt="">
                                         </div>
                                         <!-- Info -->
                                         <div class="ms-sm-3 mt-2 mt-sm-0">
@@ -673,8 +673,8 @@
                                     <div class="d-sm-flex align-items-center mb-1 mb-sm-0">
                                         <!-- Avatar -->
                                         <div class="flex-shrink-0">
-                                            <img src="../assets/images/category/hotel/4by3/05.jpg"
-                                                class="rounded h-60px" alt="">
+                                            <img src="@/assets/images/category/hotel/4by3/05.jpg" class="rounded h-60px"
+                                                alt="">
                                         </div>
                                         <!-- Info -->
                                         <div class="ms-sm-3 mt-2 mt-sm-0">
@@ -700,8 +700,8 @@
                                     <div class="d-sm-flex align-items-center mb-1 mb-sm-0">
                                         <!-- Avatar -->
                                         <div class="flex-shrink-0">
-                                            <img src="../assets/images/category/hotel/4by3/06.jpg"
-                                                class="rounded h-60px" alt="">
+                                            <img src="@/assets/images/category/hotel/4by3/06.jpg" class="rounded h-60px"
+                                                alt="">
                                         </div>
                                         <!-- Info -->
                                         <div class="ms-sm-3 mt-2 mt-sm-0">
@@ -726,8 +726,8 @@
                                     <div class="d-sm-flex align-items-center mb-1 mb-sm-0">
                                         <!-- Avatar -->
                                         <div class="flex-shrink-0">
-                                            <img src="../assets/images/category/hotel/4by3/08.jpg"
-                                                class="rounded h-60px" alt="">
+                                            <img src="@/assets/images/category/hotel/4by3/08.jpg" class="rounded h-60px"
+                                                alt="">
                                         </div>
                                         <!-- Info -->
                                         <div class="ms-sm-3 mt-2 mt-sm-0">
@@ -752,8 +752,8 @@
                                     <div class="d-sm-flex align-items-center mb-1 mb-sm-0">
                                         <!-- Avatar -->
                                         <div class="flex-shrink-0">
-                                            <img src="../assets/images/category/hotel/4by3/02.jpg"
-                                                class="rounded h-60px" alt="">
+                                            <img src="@/assets/images/category/hotel/4by3/02.jpg" class="rounded h-60px"
+                                                alt="">
                                         </div>
                                         <!-- Info -->
                                         <div class="ms-sm-3 mt-2 mt-sm-0">
@@ -795,7 +795,7 @@
                                     <div class="d-sm-flex align-items-center mb-1 mb-sm-0">
                                         <!-- Avatar -->
                                         <div class="avatar avatar-md flex-shrink-0">
-                                            <img class="avatar-img rounded-circle" src="../assets/images/avatar/09.jpg"
+                                            <img class="avatar-img rounded-circle" src="@/assets/images/avatar/09.jpg"
                                                 alt="avatar">
                                         </div>
                                         <!-- Info -->
@@ -820,7 +820,7 @@
                                     <div class="d-sm-flex align-items-center mb-1 mb-sm-0">
                                         <!-- Avatar -->
                                         <div class="avatar avatar-md flex-shrink-0">
-                                            <img class="avatar-img rounded-circle" src="../assets/images/avatar/03.jpg"
+                                            <img class="avatar-img rounded-circle" src="@/assets/images/avatar/03.jpg"
                                                 alt="avatar">
                                         </div>
                                         <!-- Info -->
@@ -845,7 +845,7 @@
                                     <div class="d-sm-flex align-items-center mb-1 mb-sm-0">
                                         <!-- Avatar -->
                                         <div class="avatar avatar-md flex-shrink-0">
-                                            <img class="avatar-img rounded-circle" src="../assets/images/avatar/01.jpg"
+                                            <img class="avatar-img rounded-circle" src="@/assets/images/avatar/01.jpg"
                                                 alt="avatar">
                                         </div>
                                         <!-- Info -->
@@ -870,7 +870,7 @@
                                     <div class="d-sm-flex align-items-center mb-1 mb-sm-0">
                                         <!-- Avatar -->
                                         <div class="avatar avatar-md flex-shrink-0">
-                                            <img class="avatar-img rounded-circle" src="../assets/images/avatar/04.jpg"
+                                            <img class="avatar-img rounded-circle" src="@/assets/images/avatar/04.jpg"
                                                 alt="avatar">
                                         </div>
                                         <!-- Info -->
@@ -895,7 +895,7 @@
                                     <div class="d-sm-flex align-items-center mb-1 mb-sm-0">
                                         <!-- Avatar -->
                                         <div class="avatar avatar-md flex-shrink-0">
-                                            <img class="avatar-img rounded-circle" src="../assets/images/avatar/05.jpg"
+                                            <img class="avatar-img rounded-circle" src="@/assets/images/avatar/05.jpg"
                                                 alt="avatar">
                                         </div>
                                         <!-- Info -->
@@ -920,7 +920,7 @@
                                     <div class="d-sm-flex align-items-center mb-1 mb-sm-0">
                                         <!-- Avatar -->
                                         <div class="avatar avatar-md flex-shrink-0">
-                                            <img class="avatar-img rounded-circle" src="../assets/images/avatar/08.jpg"
+                                            <img class="avatar-img rounded-circle" src="@/assets/images/avatar/08.jpg"
                                                 alt="avatar">
                                         </div>
                                         <!-- Info -->
@@ -961,8 +961,8 @@
                                     <div class="d-sm-flex align-items-center mb-1 mb-sm-0">
                                         <!-- Avatar -->
                                         <div class="flex-shrink-0">
-                                            <img src="../assets/images/category/hotel/4by3/08.jpg"
-                                                class="rounded h-60px" alt="">
+                                            <img src="@/assets/images/category/hotel/4by3/08.jpg" class="rounded h-60px"
+                                                alt="">
                                         </div>
                                         <!-- Info -->
                                         <div class="ms-sm-3 mt-2 mt-sm-0">
@@ -996,8 +996,8 @@
                                     <div class="d-sm-flex align-items-center mb-1 mb-sm-0">
                                         <!-- Avatar -->
                                         <div class="flex-shrink-0">
-                                            <img src="../assets/images/category/hotel/4by3/09.jpg"
-                                                class="rounded h-60px" alt="">
+                                            <img src="@/assets/images/category/hotel/4by3/09.jpg" class="rounded h-60px"
+                                                alt="">
                                         </div>
                                         <!-- Info -->
                                         <div class="ms-sm-3 mt-2 mt-sm-0">
@@ -1031,8 +1031,8 @@
                                     <div class="d-sm-flex align-items-center mb-1 mb-sm-0">
                                         <!-- Avatar -->
                                         <div class="flex-shrink-0">
-                                            <img src="../assets/images/category/hotel/4by3/01.jpg"
-                                                class="rounded h-60px" alt="">
+                                            <img src="@/assets/images/category/hotel/4by3/01.jpg" class="rounded h-60px"
+                                                alt="">
                                         </div>
                                         <!-- Info -->
                                         <div class="ms-sm-3 mt-2 mt-sm-0">
@@ -1066,8 +1066,8 @@
                                     <div class="d-sm-flex align-items-center mb-1 mb-sm-0">
                                         <!-- Avatar -->
                                         <div class="flex-shrink-0">
-                                            <img src="../assets/images/category/hotel/4by3/05.jpg"
-                                                class="rounded h-60px" alt="">
+                                            <img src="@/assets/images/category/hotel/4by3/05.jpg" class="rounded h-60px"
+                                                alt="">
                                         </div>
                                         <!-- Info -->
                                         <div class="ms-sm-3 mt-2 mt-sm-0">
@@ -1101,8 +1101,8 @@
                                     <div class="d-sm-flex align-items-center mb-1 mb-sm-0">
                                         <!-- Avatar -->
                                         <div class="flex-shrink-0">
-                                            <img src="../assets/images/category/hotel/4by3/02.jpg"
-                                                class="rounded h-60px" alt="">
+                                            <img src="@/assets/images/category/hotel/4by3/02.jpg" class="rounded h-60px"
+                                                alt="">
                                         </div>
                                         <!-- Info -->
                                         <div class="ms-sm-3 mt-2 mt-sm-0">

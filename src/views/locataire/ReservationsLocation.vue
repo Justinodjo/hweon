@@ -10,7 +10,7 @@
                 <div class="stat-card active-stat">
                     <div class="stat-icon">🏃‍♂️</div>
                     <div class="stat-content">
-                        <span class="stat-number">{{ upcomingReservations.length }}</span>
+                        <span class="stat-number">{{ ongoingCount }}</span>
                         <span class="stat-label">En cours</span>
                     </div>
                 </div>
@@ -33,8 +33,8 @@
 
         <!-- Navigation par onglets -->
         <div class="tabs-navigation">
-            <button v-for="tab in tabs" :key="tab.id" :class="['tab-button', { active: activeTab === tab.id }]"
-                @click="switchTab(tab.id)">
+            <button v-for="tab in tabsWithCounts" :key="tab.id"
+                :class="['tab-button', { active: activeTab === tab.id }]" @click="switchTab(tab.id)">
                 <i :class="tab.icon"></i>
                 <span>{{ tab.label }}</span>
                 <span class="tab-badge" :class="tab.badgeClass">{{ tab.count }}</span>
@@ -65,50 +65,68 @@
                                     <i class="bi bi-house-door"></i>
                                 </div>
                                 <div class="property-details">
-                                    <h4 class="property-name">{{ reservation.nom }}</h4>
+                                    <h4 class="property-name">{{ reservation.referenceContrat }}</h4>
                                     <div class="property-meta">
                                         <span class="reservation-id">ID: {{ reservation.id }}</span>
-                                        <span class="reservation-date">{{ formatDate(reservation.dateReservation)
-                                            }}</span>
+                                        <span class="reservation-date">{{ formatDate(reservation.dateDebut)
+                                        }}</span>
                                     </div>
                                 </div>
                             </div>
-                            <div class="status-badge status-ongoing">En cours</div>
+                            <div class="status-badge status-ongoing">
+                                {{ formatString(reservation.validationStatus, { case: 'title', separator: '_' }) }}
+                            </div>
                         </div>
 
                         <div class="services-section"
-                            v-if="reservation.typeServices && reservation.typeServices.length">
-                            <h5 class="services-title">Services inclus</h5>
+                            v-if="reservation.detailsBiensImmobiliers && reservation.detailsBiensImmobiliers.length">
+                            <h5 class="services-title">Appartement(s) inclus</h5>
                             <div class="services-table">
                                 <div class="table-header">
-                                    <span>Service</span>
+                                    <span>Appartement</span>
                                     <span>Prix</span>
                                 </div>
-                                <div v-for="service in reservation.typeServices" :key="service.id" class="table-row">
+                                <div v-for="service in reservation.detailsBiensImmobiliers" :key="service.id"
+                                    class="table-row">
                                     <div class="service-info">
                                         <span class="service-id">#{{ service.id || 'N/A' }}</span>
-                                        <span class="service-name">{{ service.nom || 'Service non défini' }}</span>
+                                        <span class="service-name">{{ service.nomdetails || 'Appartement non défini'
+                                        }}</span>
+                                        <span class="service-name">{{ service.description || 'description non défini'
+                                        }}</span>
                                     </div>
                                     <div class="service-price">{{ formatPrice(service.prix) }}</div>
                                 </div>
+                                <div v-if="reservation.biensImmobiliers > 0" class="table-row">
+                                    <div class="service-info">
+                                        <span class="service-id">#{{ reservation.id || 'N/A' }}</span>
+                                        <span class="service-name">{{ reservation.nom || 'Maison non défini'
+                                        }}</span>
+                                        <span class="service-name">
+                                            {{ reservation.description || 'description non défini' }}
+                                        </span>
+                                    </div>
+                                    <div class="service-price">{{ formatPrice(reservation.prix) }}</div>
+                                </div>
+
                             </div>
                         </div>
 
-                        <div class="card-footer">
+                        <div class="card-footer" v-if="getOwnerInfo(reservation)">
                             <div class="footer-info">
                                 <div class="info-item">
                                     <i class="bi bi-calendar-event"></i>
-                                    <span>{{ formatDate(reservation.dateReservation) }}</span>
+                                    <span>{{ formatDate(reservation.createdAt) }}</span>
                                 </div>
                                 <div class="info-item">
                                     <i class="bi bi-person"></i>
-                                    <span>{{ reservation.nom }} {{ reservation.prenom }}</span>
+                                    <span>{{ getOwnerInfo(reservation).fullName }}</span>
                                 </div>
                             </div>
-                            <button class="action-btn" @click="manageReservation(reservation)">
-                                <i class="bi bi-gear"></i>
-                                Gérer
-                            </button>
+                            <span class="owner-contact" v-if="getOwnerInfo(reservation).phone">
+                                <i class="bi bi-telephone"></i>
+                                {{ getOwnerInfo(reservation).phone }}
+                            </span>
                         </div>
                     </div>
                 </div>
@@ -136,28 +154,34 @@
                                     <i class="bi bi-house-door"></i>
                                 </div>
                                 <div class="property-details">
-                                    <h4 class="property-name">{{ reservation.nom }}</h4>
+                                    <h4 class="property-name">{{ reservation.referenceContrat }}</h4>
                                     <div class="property-meta">
                                         <span class="reservation-id">ID: {{ reservation.id }}</span>
                                         <span class="reservation-status">{{ reservation.status }}</span>
                                     </div>
                                 </div>
                             </div>
-                            <div class="status-badge status-canceled">Annulée</div>
+                            <div class="status-badge status-canceled">
+                                {{ formatString(reservation.validationStatus, { case: 'title', separator: '_' }) }}
+                            </div>
                         </div>
 
                         <div class="services-section"
-                            v-if="reservation.typeServices && reservation.typeServices.length">
-                            <h5 class="services-title">Services prévus</h5>
+                            v-if="reservation.detailsBiensImmobiliers && reservation.detailsBiensImmobiliers.length">
+                            <h5 class="services-title">Appartement(s) prévus</h5>
                             <div class="services-table">
                                 <div class="table-header">
                                     <span>Service</span>
                                     <span>Prix</span>
                                 </div>
-                                <div v-for="service in reservation.typeServices" :key="service.id" class="table-row">
+                                <div v-for="service in reservation.detailsBiensImmobiliers" :key="service.id"
+                                    class="table-row">
                                     <div class="service-info">
                                         <span class="service-id">#{{ service.id || 'N/A' }}</span>
-                                        <span class="service-name">{{ service.nom || 'Service non défini' }}</span>
+                                        <span class="service-name">{{ service.nomdetails || 'Appartement(s) non défini'
+                                        }}</span>
+                                        <span class="service-name">{{ service.description || 'description non défini'
+                                        }}</span>
                                     </div>
                                     <div class="service-price">{{ formatPrice(service.prix) }}</div>
                                 </div>
@@ -168,15 +192,15 @@
                             <div class="footer-info">
                                 <div class="info-item">
                                     <i class="bi bi-calendar-x"></i>
-                                    <span>{{ formatDate(reservation.dateReservation) }}</span>
+                                    <span>{{ formatDate(reservation.dateDebut) }}</span>
                                 </div>
                                 <div class="info-item">
                                     <i class="bi bi-person"></i>
-                                    <span>{{ reservation.nom }} {{ reservation.prenom }}</span>
+                                    <span>{{ reservation?.userInfo.name }} {{ reservation?.userInfo.secondName }}</span>
                                 </div>
                             </div>
                             <div class="cancellation-reason">
-                                <small>Annulation le {{ formatDate(reservation.dateReservation) }}</small>
+                                <small>Annulation le {{ formatDate(reservation.dateFin) }}</small>
                             </div>
                         </div>
                     </div>
@@ -197,7 +221,7 @@
                             <div class="illustration-bg"></div>
                         </div>
                         <h4>Aucune location terminée</h4>
-                        <p>Vos locations apparaîtront ici une fois confirmées et terminées</p>
+                        <p>Vos locations apparaîtront ici une fois résiliés et terminées</p>
                         <router-link to="/reservation" class="cta-button">
                             <i class="bi bi-plus-circle"></i>
                             Nouvelle location
@@ -278,29 +302,7 @@ export default {
             canceledReservations: [],
             completedReservations: [],
             isLoading: false,
-            tabs: [
-                {
-                    id: 'ongoing',
-                    label: 'En cours',
-                    icon: 'bi bi-arrow-clockwise',
-                    badgeClass: 'badge-ongoing',
-                    get count() { return this.upcomingReservations?.length || 0; }
-                },
-                {
-                    id: 'canceled',
-                    label: 'Annulées',
-                    icon: 'bi bi-x-octagon',
-                    badgeClass: 'badge-canceled',
-                    get count() { return this.canceledReservations?.length || 0; }
-                },
-                {
-                    id: 'completed',
-                    label: 'Terminées',
-                    icon: 'bi bi-check-circle',
-                    badgeClass: 'badge-completed',
-                    get count() { return this.completedReservations?.length || 0; }
-                }
-            ]
+
         };
     },
 
@@ -311,13 +313,46 @@ export default {
             const userId = this.$store.getters['auth/userInfo'];
             return userId ? userId : null;
         },
+        tabs() {
+            return [
+                {
+                    id: 'ongoing',
+                    label: 'En cours',
+                    icon: 'bi bi-arrow-clockwise',
+                    badgeClass: 'badge-ongoing',
 
+                },
+                {
+                    id: 'canceled',
+                    label: 'Annulées',
+                    icon: 'bi bi-x-octagon',
+                    badgeClass: 'badge-canceled',
+
+                },
+                {
+                    id: 'completed',
+                    label: 'Terminées',
+                    icon: 'bi bi-check-circle',
+                    badgeClass: 'badge-completed',
+
+                }
+            ];
+        },
         // Mise à jour des compteurs dans les onglets
         tabsWithCounts() {
             return this.tabs.map(tab => ({
                 ...tab,
                 count: this.getTabCount(tab.id)
             }));
+        },
+        ongoingCount() {
+            return this.upcomingReservations.length;
+        },
+        canceledCount() {
+            return this.canceledReservations.length;
+        },
+        completedCount() {
+            return this.completedReservations.length;
         }
     },
 
@@ -338,7 +373,7 @@ export default {
                     return;
                 }
 
-                const allReservations = await this.$store.dispatch('contrats/getBiensLouesParUtilisateur', userId);
+                const allReservations = await this.$store.dispatch('contrats/getContratsUtilisateur', userId);
                 console.log('Réservations récupérées :', allReservations);
                 // Vérifier que allReservations est un tableau
                 if (!Array.isArray(allReservations)) {
@@ -346,21 +381,14 @@ export default {
                     return;
                 }
                 // Traitement des réservations (votre logique conservée)
-                const reservationsByUser = allReservations.reduce((acc, reservation) => {
-                    if (!userId) return acc;
-                    if (!acc[userId]) {
-                        acc[userId] = [];
-                    }
-                    acc[userId].push(reservation);
-                    return acc;
-                }, {});
 
-                const allReservationsByUser = Object.values(reservationsByUser).flat();
+
+                const allReservationsByUser = Object.values(allReservations).flat();
 
                 // Filtrage par statut (votre logique conservée)
-                this.upcomingReservations = allReservationsByUser.filter(res => res.status === 'Encours');
-                this.canceledReservations = allReservationsByUser.filter(res => res.status === 'Annulée');
-                this.completedReservations = allReservationsByUser.filter(res => res.status === 'Confirmé');
+                this.upcomingReservations = allReservationsByUser.filter(res => res.status === 'ACTIF');
+                this.canceledReservations = allReservationsByUser.filter(res => res.status === 'RESILIE');
+                this.completedReservations = allReservationsByUser.filter(res => res.status === 'EXPIRE');
 
                 console.log('Réservations en cours:', this.upcomingReservations);
                 console.log('Réservations annulées:', this.canceledReservations);
@@ -416,11 +444,114 @@ export default {
             console.log('Détails de la réservation:', reservation);
             // Vous pouvez ajouter votre logique ici
         },
+        // 🆕 MÉTHODE POUR RÉCUPÉRER LES INFOS DU PROPRIÉTAIRE
+        getOwnerInfo(reservation) {
+            // Méthode 1: Via le bien immobilier
+            if (reservation.biensImmobiliers?.proprietaire) {
+                const owner = reservation.biensImmobiliers.proprietaire;
+                return {
+                    fullName: `${owner.nom || ''} ${owner.prenom || ''}`.trim() || 'Propriétaire',
+                    email: owner.email || null,
+                    phone: owner.telephone || owner.phone || null,
+                    id: owner.id
+                };
+            }
 
+            // Méthode 2: Via les détails du bien
+            if (reservation.detailsBiensImmobiliers?.length > 0) {
+                const firstDetail = reservation.detailsBiensImmobiliers[0];
+                if (firstDetail.bienImmobilier?.proprietaire) {
+                    const owner = firstDetail.bienImmobilier.proprietaire;
+                    return {
+                        fullName: `${owner.nom || ''} ${owner.prenom || ''}`.trim() || 'Propriétaire',
+                        email: owner.email || null,
+                        phone: owner.telephone || owner.phone || null,
+                        id: owner.id
+                    };
+                }
+            }
+
+            // Méthode 3: Via le champ proprietaire direct du contrat
+            if (reservation.proprietaire) {
+                const owner = reservation.proprietaire;
+                return {
+                    fullName: `${owner.nom || ''} ${owner.prenom || ''}`.trim() || 'Propriétaire',
+                    email: owner.email || null,
+                    phone: owner.telephone || owner.phone || null,
+                    id: owner.id
+                };
+            }
+
+            // Méthode 4: Via userInfo (si le propriétaire est l'utilisateur qui a créé le bien)
+            if (reservation.userInfo && reservation.userInfo.id !== this.currentUser) {
+                const owner = reservation.userInfo;
+                return {
+                    fullName: `${owner.name || ''} ${owner.secondName || ''}`.trim() || 'Propriétaire',
+                    email: owner.email || null,
+                    phone: owner.telephone || owner.phone || null,
+                    id: owner.id
+                };
+            }
+
+            return null;
+        },
+        // 🆕 MÉTHODE POUR CONTACTER LE PROPRIÉTAIRE
+        contactOwner(reservation) {
+            const owner = this.getOwnerInfo(reservation);
+            if (!owner) {
+                this.$message.warning('Informations du propriétaire non disponibles');
+                return;
+            }
+
+            // Option 1: Ouvrir une modal de chat
+            this.$router.push({
+                name: 'Chat',
+                params: { userId: owner.id }
+            });
+
+            // Option 2: Créer une notification
+            this.createNotification({
+                type: 'CONTACT_REQUEST',
+                recipientId: owner.id,
+                message: `Le locataire souhaite vous contacter concernant le contrat ${reservation.referenceContrat}`,
+                data: {
+                    contratId: reservation.id,
+                    locataireId: this.currentUser
+                }
+            });
+        },
+        // 🆕 MÉTHODE POUR CRÉER UNE NOTIFICATION
+        async createNotification(notificationData) {
+            try {
+                await this.$store.dispatch('notifications/create', notificationData);
+                this.$message.success('Message envoyé au propriétaire');
+            } catch (error) {
+                console.error('Erreur lors de l\'envoi du message:', error);
+                this.$message.error('Impossible d\'envoyer le message');
+            }
+        },
         showError(message) {
             // Système de notification d'erreur
             console.error(message);
             // Vous pouvez intégrer votre système de toast/notification ici
+        },
+        formatString(input, options = { case: 'title', separator: '_' }) {
+            // Récupérer le separator à partir de options
+            const separator = options.separator;
+            // Remplacer les séparateurs (par défaut underscore) par des espaces
+            let formatted = input.replace(new RegExp(separator, 'g'), " ");
+
+            // Appliquer le format de casse
+            if (options.case === 'uppercase') {
+                formatted = formatted.toUpperCase();
+            } else if (options.case === 'lowercase') {
+                formatted = formatted.toLowerCase();
+            } else if (options.case === 'title') {
+                // Mettre en "title case" (première lettre de chaque mot en majuscule)
+                formatted = formatted.toLowerCase().replace(/\b\w/g, (char) => char.toUpperCase());
+            }
+
+            return formatted;
         }
     }
 };
@@ -434,13 +565,34 @@ export default {
     font-family: 'Inter', system-ui, -apple-system, sans-serif;
 }
 
+.stats-header {
+    background: var(--bs-primary);
+    color: var(--bs-white);
+}
+
+.stat-card.active-stat {
+    background: rgba(var(--bs-success-rgb), 0.15);
+}
+
+.stat-card.canceled-stat {
+    background: rgba(var(--bs-danger-rgb), 0.15);
+}
+
+.stat-card.completed-stat {
+    background: rgba(var(--bs-info-rgb), 0.15);
+}
+
+.stat-icon {
+    color: var(--bs-primary);
+}
+
 /* Header avec statistiques */
 .stats-header {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+
     border-radius: 20px;
     padding: 30px;
     margin-bottom: 30px;
-    color: white;
+
     position: relative;
     overflow: hidden;
 }
@@ -483,7 +635,7 @@ export default {
 }
 
 .stat-card {
-    background: rgba(255, 255, 255, 0.15);
+    background: rgba(255, 255, 255, 0.1);
     backdrop-filter: blur(10px);
     border-radius: 16px;
     padding: 20px;
@@ -515,7 +667,7 @@ export default {
 /* Navigation par onglets */
 .tabs-navigation {
     display: flex;
-    background: white;
+    background: var(--bs-light-bg-subtle);
     border-radius: 16px;
     padding: 8px;
     margin-bottom: 30px;
@@ -535,19 +687,19 @@ export default {
     border-radius: 12px;
     cursor: pointer;
     transition: all 0.3s ease;
-    color: #64748b;
+
     font-weight: 500;
 }
 
 .tab-button.active {
-    background: linear-gradient(135deg, #667eea, #764ba2);
-    color: white;
+    background: var(--bs-primary);
+
     transform: scale(1.02);
 }
 
 .tab-button:not(.active):hover {
-    background: #f8fafc;
-    color: #475569;
+    background: var(--bs-light-bg-subtle);
+
 }
 
 .tab-badge {
@@ -559,10 +711,10 @@ export default {
     font-weight: 600;
 }
 
-.tab-button:not(.active) .tab-badge {
+/* .tab-button:not(.active) .tab-badge {
     background: #e2e8f0;
     color: #64748b;
-}
+} */
 
 /* Contenu des onglets */
 .tab-content-wrapper {
@@ -595,11 +747,11 @@ export default {
 .section-title {
     font-size: 22px;
     font-weight: 700;
-    color: #1e293b;
+    color: rgba(var(--bs-primary), 0.15);
 }
 
 .section-meta {
-    color: #64748b;
+    color: rgba(var(--bs-primary), 0.15);
     font-size: 14px;
 }
 
@@ -607,7 +759,7 @@ export default {
 .empty-state {
     text-align: center;
     padding: 60px 20px;
-    color: #64748b;
+    color: rgba(var(--bs-primary), 0.15);
 }
 
 .empty-icon {
@@ -617,7 +769,7 @@ export default {
 
 .empty-state h4 {
     font-size: 18px;
-    color: #475569;
+    color: rgba(var(--bs-secondary), 0.15);
     margin-bottom: 12px;
 }
 
@@ -696,7 +848,7 @@ export default {
 }
 
 .ongoing-card:hover {
-    border-color: rgba(102, 126, 234, 0.3);
+    border-color: rgba(var(--bs-secondary), 0.15)
 }
 
 .canceled-card:hover {
@@ -704,7 +856,7 @@ export default {
 }
 
 .completed-card:hover {
-    border-color: rgba(34, 197, 94, 0.3);
+    border-color: rgba(var(--bs-info-rgb), 0.15);
 }
 
 /* En-tête de carte */
@@ -725,7 +877,7 @@ export default {
 .property-avatar {
     width: 56px;
     height: 56px;
-    background: linear-gradient(135deg, #667eea, #764ba2);
+    background: linear-gradient(135deg, var(--bs-primary), var(--bs-secondary));
     border-radius: 16px;
     display: flex;
     align-items: center;
@@ -740,13 +892,13 @@ export default {
 }
 
 .property-avatar.completed {
-    background: linear-gradient(135deg, #22c55e, #16a34a);
+    background: linear-gradient(135deg, var(--bs-primary), var(--bs-secondary));
 }
 
 .property-name {
     font-size: 18px;
     font-weight: 700;
-    color: #1e293b;
+    color: rgba(var(--bs-success-rgb), 0.15);
     margin-bottom: 8px;
 }
 
@@ -772,7 +924,7 @@ export default {
 }
 
 .status-ongoing {
-    background: linear-gradient(135deg, #22c55e, #16a34a);
+    background: linear-gradient(135deg, var(--bs-primary), var(--bs-purple));
     color: white;
 }
 
@@ -782,7 +934,7 @@ export default {
 }
 
 .status-completed {
-    background: linear-gradient(135deg, #3b82f6, #2563eb);
+    background: linear-gradient(135deg, var(--bs-primary), var(--bs-secondary));
     color: white;
 }
 
@@ -808,7 +960,7 @@ export default {
     display: grid;
     grid-template-columns: 1fr 100px;
     gap: 16px;
-    background: linear-gradient(135deg, #667eea, #764ba2);
+    background: linear-gradient(135deg, var(--bs-primary), var(--bs-secondary));
     color: white;
     padding: 12px 16px;
     font-size: 14px;
@@ -836,18 +988,18 @@ export default {
 
 .service-id {
     font-size: 12px;
-    color: #667eea;
+    color: rgba(var(--bs-primary), 0.15);
     font-weight: 600;
 }
 
 .service-name {
-    color: #374151;
+    color: var(--bs-gray-800);
     font-weight: 500;
 }
 
 .service-price {
     font-weight: 700;
-    color: #059669;
+    color: rgba(var(--bs-primary), 0.15);
     text-align: right;
 }
 
@@ -876,14 +1028,14 @@ export default {
 }
 
 .info-item i {
-    color: #667eea;
+    color: rgba(var(--bs-primary), 0.15);
 }
 
 .action-btn {
     display: flex;
     align-items: center;
     gap: 8px;
-    background: linear-gradient(135deg, #667eea, #764ba2);
+    background: linear-gradient(135deg, var(--bs-primary), var(--bs-secondary));
     color: white;
     border: none;
     padding: 10px 16px;

@@ -2,7 +2,7 @@
     <div>
         <div class="card border">
             <div class="card-header border-bottom">
-                <h4 class="card-header-title">Informations personnelles</h4>
+                <h4 class="card-header-title text-center">Informations personnelles</h4>
             </div>
 
             <div class="card-body">
@@ -90,9 +90,10 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, markRaw, nextTick } from 'vue'
 import { useStore } from 'vuex'
 import { useLoading } from "vue-loading-overlay";
+import { setFichier, setEmail, setUserName, setUserInfo, setSecondName } from "@/helpers/auth";
 import Dropzone from 'dropzone'
 import 'dropzone/dist/dropzone.css'
 import { getToken } from "@/helpers/auth";
@@ -204,6 +205,9 @@ const saveChanges = async () => {
         //         formData.append('fichier[]', file); // Utilisation du tableau 'fichiers[]' pour plusieurs
         //     });
         // }
+        const fichierId = reponseUpload.value && !isNaN(reponseUpload.value)
+            ? Number(reponseUpload.value)
+            : null;
         const payload = {
             id: store.getters['auth/userInfo'],
             name: user.value.name,
@@ -213,8 +217,7 @@ const saveChanges = async () => {
             adresse: user.value.adresse,
             numero: user.value.numero,
             email: user.value.email,
-            fichier: fichier.value.length > 0 ? fichier.value[0] : null, // Si tu veux seulement un fichier unique
-            fichiers: fichier.value.length > 1 ? fichier.value : [],
+            fichier: fichierId,     // ✅ contient maintenant {id: ...}
         }
         // Envoyer la requête avec FormData
         await store.dispatch('user/update', payload);
@@ -261,11 +264,13 @@ const uploadConfig = {
         },
         withCredentials: true,
         onload: (response) => {
+
             // Transforme la réponse en objet, si nécessaire
             const fileData = JSON.parse(response);  // Si la réponse est une chaîne JSON
+            // ✅ On stocke le fichier renvoyé par le backend
+            fichier.value.push(fileData);
 
-            // Assure-toi que la réponse contient l'information que tu veux (comme l'ID du fichier)
-            fichier.value.push(fileData);  // Ajoute l'objet de fichier à `fichier`
+
 
             return response;
         },
@@ -284,7 +289,21 @@ const reponseUpload = ref(null);
 const UploadResponse = (error, fileData) => {
     if (!error) {
         const reponse = JSON.parse(fileData.serverId);
-        reponseUpload.value = reponse;
+
+
+
+        // ✅ Stocker l'ID globalement
+        reponseUpload.value = reponse.id;
+        // ✅ On met à jour le cookie avec l'ID du fichier
+        setFichier(reponse.id);
+
+        // ✅ On met à jour l’aperçu
+        photoPreview.value = `${API_URLS.API_BASE}/fichier/download/${reponse.id}`;
+        // ✅ Mettre à jour le store Vuex
+        store.commit('auth/setUserFichier', reponse.id); // ou dispatch une action si tu préfères
+
+        // ✅ On notifie le sidebar ou le header
+        emit('avatar-updated', reponse.id);
     }
 };
 

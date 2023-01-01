@@ -24,9 +24,9 @@
 
                         </div>
                     </div> -->
+
                     <FilePond ref="filePond" name="file" :server="uploadConfig" accepted-file-types="image/*"
                         label-idle="Déposez votre image ou cliquez pour sélectionner" @processfile="UploadResponse" />
-
                     <!-- Nom -->
                     <div class="col-md-6">
                         <label class="form-label">Nom<span class="text-danger">*</span></label>
@@ -90,7 +90,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, shallowRef } from 'vue'
 import { useStore } from 'vuex'
 import { useLoading } from "vue-loading-overlay";
 import Dropzone from 'dropzone'
@@ -104,14 +104,18 @@ import FilePondPluginImagePreview from "filepond-plugin-image-preview";
 import { API_URLS } from "@/config/api";
 import { ElMessage, ElMessageBox } from "element-plus";
 import { useRoute } from 'vue-router';
-const FilePond = vueFilePond(
+
+const FilePond = shallowRef(vueFilePond(
     FilePondPluginFileValidateType,
     FilePondPluginImagePreview
-);
+));
+
 const loading = useLoading();
 const fichier = ref([]);
 const store = useStore();
 const route = useRoute();
+defineExpose({ FilePond });
+
 const user = ref({
     name: '',
     secondName: '',
@@ -197,23 +201,9 @@ const saveChanges = async () => {
 
     try {
         // const formData = new FormData();
-
-        // // Ajouter les données de l'utilisateur
-        // for (const key in user.value) {
-        //     formData.append(key, user.value[key]);
-        // }
-
-        // // Ajouter la photo de profil si elle existe
-        // if (selectedFile.value) {
-        //     formData.append('fichier', selectedFile.value);
-        // }
-
-        // // Ajouter les fichiers supplémentaires si existants
-        // if (Array.isArray(user.value.fichier) && user.value.fichier.length > 0) {
-        //     user.value.fichier.forEach((file) => {
-        //         formData.append('fichier[]', file); // Utilisation du tableau 'fichiers[]' pour plusieurs
-        //     });
-        // }
+        const fichierId = reponseUpload.value && !isNaN(reponseUpload.value)
+            ? Number(reponseUpload.value)
+            : null;
         const payload = {
             id: store.getters['auth/userInfo'],
             name: user.value.name,
@@ -223,8 +213,8 @@ const saveChanges = async () => {
             adresse: user.value.adresse,
             numero: user.value.numero,
             email: user.value.email,
-            fichier: fichier.value.length > 0 ? fichier.value[0] : null, // Si tu veux seulement un fichier unique
-            fichiers: fichier.value.length > 1 ? fichier.value : [],
+            fichier: fichierId,
+
         }
         // Envoyer la requête avec FormData
         await store.dispatch('user/update', payload);
@@ -301,7 +291,15 @@ const reponseUpload = ref(null);
 const UploadResponse = (error, fileData) => {
     if (!error) {
         const reponse = JSON.parse(fileData.serverId);
-        reponseUpload.value = reponse;
+        // ✅ Stocker l'ID globalement
+        reponseUpload.value = reponse.id;
+
+        // ✅ On met à jour l’aperçu
+        photoPreview.value = `${API_URLS.API_BASE}/fichier/download/${reponse.id}`;
+        // ✅ Mettre à jour le store Vuex
+        store.commit('auth/SET_USER_FICHIER', reponse.id);
+        // ✅ On notifie le sidebar ou le header
+        emit('avatar-updated', reponse.id);
     }
 };
 
