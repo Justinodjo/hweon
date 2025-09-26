@@ -1,0 +1,89 @@
+import request from "@/http/request";
+
+const state = () => ({
+  all: [],
+  one: {},
+  uploadedFile: null,
+});
+
+const getters = {
+  all: (state) => state.all,
+  one: (state) => state.one,
+  uploadedFile: (state) => state.uploadedFile,
+};
+
+const mutations = {
+  SET_ALL: (state, obj) => {
+    state.all = obj;
+  },
+  SET_ONE: (state, obj) => {
+    state.one = obj;
+  },
+  SET_UPLOADED_FILE: (state, obj) => {
+    state.uploadedFile = obj;
+  },
+  UPDATE_ONE: (state, obj) => {
+    const index = state.all.findIndex((item) => item.id === obj.id);
+    if (index !== -1) {
+      state.all[index] = obj;
+    }
+  },
+  DELETE_ONE: (state, id) => {
+    state.all = state.all.filter((item) => item.id !== id);
+  },
+};
+
+const actions = {
+  async getAll(cxt, payload) {
+    let { data } = await request.get("api/roles/liste");
+    cxt.commit("SET_ALL", data);
+    return data;
+  },
+  async getOne(cxt, id) {
+    let { data } = await request.get("api/roles/" + id);
+    cxt.commit("SET_ONE", data);
+    return data;
+  },
+  async create(cxt, payload) {
+    let { data } = await request.post("api/roles/creer", payload);
+    cxt.commit("SET_ONE", data);
+    return data;
+  },
+  async update(cxt, payload) {
+    let { data } = await request.put("api/roles/" + payload);
+    cxt.commit("UPDATE_ONE", data);
+    return data;
+  },
+  async delete(cxt, id) {
+    await request.delete("api/roles/" + id);
+    cxt.commit("DELETE_ONE", id);
+  },
+  async downloadFichier({ commit }, { fichierId }) {
+    try {
+      const response = await client.get(`fichier/download/${fichierId}`, {
+        responseType: "blob",
+      });
+
+      const fileUrl = URL.createObjectURL(response.data);
+      commit("SET_UPLOADED_FILE", fileUrl);
+
+      return fileUrl;
+    } catch (error) {
+      console.error("Erreur lors du téléchargement du fichier:", error);
+      throw error;
+    }
+  },
+  //   async getAllSousService(cxt, id) {
+  //     let { data } = await request.get("/typeCategorie/categorie/" + id);
+  //     cxt.commit("SET_ALL", data);
+  //     return data;
+  //   },
+};
+
+export default {
+  namespaced: true,
+  state,
+  getters,
+  mutations,
+  actions,
+};

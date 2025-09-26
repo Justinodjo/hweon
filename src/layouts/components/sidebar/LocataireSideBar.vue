@@ -1,0 +1,256 @@
+<template>
+
+    <!-- **************** MAIN CONTENT START **************** -->
+    <main class="">
+
+        <!-- =======================Content START -->
+        <section class="header-main pt-8">
+            <div class="container">
+                <div class="row">
+
+                    <!-- Sidebar START -->
+                    <div class="col-lg-4 col-xl-3">
+                        <!-- Responsive offcanvas body START -->
+                        <div class="offcanvas-lg offcanvas-end" tabindex="-1" id="offcanvasSidebar">
+                            <!-- Offcanvas header -->
+                            <div class="offcanvas-header justify-content-end pb-2">
+                                <button type="button" class="btn-close" data-bs-dismiss="offcanvas"
+                                    data-bs-target="#offcanvasSidebar" aria-label="Close"></button>
+                            </div>
+
+                            <!-- Offcanvas body -->
+                            <div class="offcanvas-body p-3 p-lg-0">
+                                <div class="card bg-light w-100">
+
+                                    <!-- Edit profile button -->
+                                    <div class="position-absolute top-0 end-0 p-3">
+                                        <a href="account-profile.html#" class="text-primary-hover"
+                                            data-bs-toggle="tooltip" data-bs-title="Edit profile">
+                                            <i class="bi bi-pencil-square"></i>
+                                        </a>
+                                    </div>
+
+                                    <!-- Card body START -->
+                                    <div class="card-body p-3">
+                                        <!-- Avatar and content -->
+                                        <div class="text-center mb-3">
+                                            <!-- Avatar -->
+                                            <div class="avatar avatar-xl mb-2">
+                                                <img class="avatar-img rounded-circle border border-2 border-white"
+                                                    src="@/assets/images/avatar/01.jpg" alt="">
+                                            </div>
+                                            <h6 class="mb-0">{{ fullName }}</h6>
+                                            <a href="account-profile.html#"
+                                                class="text-reset text-primary-hover small">{{ handleEmail }}</a>
+                                            <hr>
+                                        </div>
+
+                                        <!-- Sidebar menu item START -->
+                                        <ul class="nav nav-pills-primary-soft flex-column">
+                                            <li class="nav-item" v-if="handlerIdUser">
+                                                <router-link class="nav-link active" to="profils/details_profil"><i
+                                                        class="bi bi-person fa-fw me-2"></i>Mon Profile</router-link>
+                                            </li>
+                                            <li class="nav-item dropdown">
+                                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown"
+                                                    role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                                    <i class="bi bi-ticket-perforated fa-fw me-2"></i>Mon Logement
+                                                </a>
+                                                <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                                    <li><router-link class="dropdown-item"
+                                                            :to="{ name: 'Reservations_location' }">
+                                                            Informations
+                                                            du bien
+                                                            loué</router-link></li>
+                                                    <li><router-link class="dropdown-item"
+                                                            to="profils/annuler_reservation">Détail du
+                                                            bail</router-link></li>
+                                                    <li><router-link class="dropdown-item"
+                                                            to="profils/historique_reservations">Documents
+                                                            contractuels</router-link></li>
+                                                </ul>
+                                            </li>
+                                            <li class="nav-item dropdown">
+                                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown"
+                                                    role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                                    <i class="bi bi-ticket-perforated fa-fw me-2"></i>Paiements &
+                                                    Charges
+                                                </a>
+                                                <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                                    <li><router-link class="dropdown-item"
+                                                            :to="{ name: 'ReservationsDetails' }">
+                                                            Historique
+                                                            des
+                                                            paiements</router-link></li>
+                                                    <li><router-link class="dropdown-item"
+                                                            to="profils/annuler_reservation">Quittances de
+                                                            loyer</router-link></li>
+                                                    <li><router-link class="dropdown-item"
+                                                            to="profils/historique_reservations">Suivi des
+                                                            Charges</router-link></li>
+                                                </ul>
+                                            </li>
+                                            <li class="nav-item dropdown">
+                                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown"
+                                                    role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                                    <i class="bi bi-ticket-perforated fa-fw me-2"></i>Demandes &
+                                                    Services
+                                                </a>
+                                                <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                                    <li><router-link class="dropdown-item"
+                                                            to="profils/reservations_details">
+                                                            Demandes de
+                                                            maintenance</router-link></li>
+                                                    <li><router-link class="dropdown-item"
+                                                            to="profils/annuler_reservation">Réclamations</router-link>
+                                                    </li>
+                                                    <li><router-link class="dropdown-item"
+                                                            to="profils/historique_reservations">Services
+                                                            Annexes</router-link></li>
+                                                </ul>
+                                            </li>
+                                            <li class="nav-item dropdown">
+                                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown"
+                                                    role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                                    <i class="bi bi-ticket-perforated fa-fw me-2"></i>Communications
+                                                </a>
+                                                <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                                    <li><router-link class="dropdown-item"
+                                                            to="profils/reservations_details">Messages avec
+                                                            le
+                                                            gestionnaire</router-link></li>
+                                                    <li><router-link class="dropdown-item"
+                                                            to="profils/annuler_reservation">Notifications
+                                                            importantes</router-link>
+                                                    </li>
+                                                    <li><router-link class="dropdown-item"
+                                                            to="profils/historique_reservations">Annonces de
+                                                            la
+                                                            copropriété</router-link></li>
+                                                </ul>
+                                            </li>
+                                            <li class="nav-item">
+                                                <router-link class="nav-link" to="terms"><i
+                                                        class="bi bi-briefcase fa-fw me-2"></i>Terms et
+                                                    conditions</router-link>
+                                            </li>
+                                            <li class="nav-item">
+                                                <router-link class="nav-link" to="delete_account"><i
+                                                        class="bi bi-trash fa-fw me-2"></i>Delete Profile</router-link>
+                                            </li>
+                                            <li class="nav-item">
+                                                <router-link class="nav-link text-danger bg-danger-soft-hover"
+                                                    to="/directory/login" :onclick="logout"><i
+                                                        class="fas fa-sign-out-alt fa-fw me-2"></i>Sign
+                                                    Out</router-link>
+                                            </li>
+                                        </ul>
+                                        <!-- Sidebar menu item END -->
+                                    </div>
+                                    <!-- Card body END -->
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Responsive offcanvas body END -->
+                    </div>
+                    <!-- Sidebar END -->
+
+
+
+                </div>
+            </div>
+        </section>
+        <!-- =======================
+Content END -->
+
+    </main>
+    <!-- **************** MAIN CONTENT END **************** -->
+</template>
+<script>
+import { tns } from 'tiny-slider';
+import { mapActions, mapGetters } from "vuex";
+import { ref, onMounted, watch, nextTick } from 'vue'
+import { ElMessage, ElMessageBox } from "element-plus";
+import { API_URLS } from "@/config/api";
+import { useStore } from 'vuex'
+import { useLoading } from "vue-loading-overlay";
+import L from 'leaflet';
+import GLightbox from 'glightbox'
+import 'glightbox/dist/css/glightbox.min.css'
+import 'leaflet/dist/leaflet.css'
+import maplibregl from 'maplibre-gl'
+import 'maplibre-gl/dist/maplibre-gl.css'
+export default {
+    name: "LocataireSideBar",
+    data() {
+        return {
+            services: [],
+            // secondName: "",
+            // name: ""
+
+        };
+    },
+    mounted() {
+
+        // this.logout();
+    },
+    computed: {
+        ...mapGetters('auth', ['userName', 'secondName', 'email', 'userRoles', 'userInfo', 'userFichier', 'email']),
+        isAuthenticated() {
+            return this.$store.getters['auth/isAuthenticated']; // adapte selon ton store
+        },
+
+
+        fullName() {
+            // Ici vous pouvez ajouter des calculs ou récupérer le nom de l'utilisateur
+            // Exemple avec vuex
+            if (this.userName && this.secondName) {
+                return this.userName + ' ' + this.secondName
+            } else {
+                return 'Non Connecté'
+            }
+        },
+        handleEmail() {
+            // Idem pour l'email
+            return this.email || 'non@connecte.com';
+        },
+
+        avatarUrl() {
+            if (this.userFichier) {
+                // Construire l'URL de l'avatar à partir du dossier assets
+                return this.userFichier
+                    ? `${API_URLS.API_BASE}/tfe/uploads/${this.userFichier}`
+                    : new URL('@/assets/images/avatar/01.jpg', import.meta.url).href;
+            }
+            return this.defaultAvatarUrl;
+        },
+    },
+    watch: {
+        '$store.state.auth.userName': function (newValue) {
+            console.log("Nom mis à jour :", newValue);
+            // Tu peux ici faire d'autres actions comme mettre à jour des variables locales si nécessaire
+        }
+    },
+    methods: {
+        ...mapActions('auth', ['logout',]),
+        // async loadService() {
+        //     try {
+        //         const response = await this.$store.dispatch('categorie/getAll');
+        //         this.services = response;
+        //     } catch (error) {
+        //         console.error('Erreur lors de l\'ajout de l\'élément fonction :', error);
+        //     }
+        // },
+        // getRouteClass(status) {
+        //     const routeClasses = {
+        //         'Nouveauté': 'text-bg-primary',  // Bleu
+        //         'Vendu': 'text-bg-danger',       // Rouge
+        //         'Disponible': 'text-bg-success', // Vert
+        //         'Plus noté': 'text-bg-warning'   // Jaune
+        //     };
+        //     return routeClasses[status] || 'text-bg-secondary'; // Couleur par défaut (gris)
+        // },
+
+    },
+};
+</script>
