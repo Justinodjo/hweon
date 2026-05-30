@@ -20,7 +20,7 @@ export default {
     setup() {
         const route = useRoute();
 
-        // Vérifie si la route courante est master_dashboard
+        // Vérifie si la route courante est master_dashboard ceci est un commentaire
         // Si la route en cours a meta.hideHeaderFooter à true, on cache header/footer
         const hideHeaderFooter = computed(() => route.meta.hideHeaderFooter === true);
 
